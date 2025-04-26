@@ -1,4 +1,7 @@
-import { FontFamily, FontVariant } from "./styles";
+import {
+  FontFamily,
+  FontVariant,
+} from "@workspace/ui/lib/textTools/textStyle/styles";
 
 export const styleOffsets: Record<
   FontFamily,

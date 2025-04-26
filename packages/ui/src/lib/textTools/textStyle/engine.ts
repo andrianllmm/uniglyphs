@@ -3,8 +3,11 @@ import {
   FontFamily,
   FontVariant,
   TextDecoration,
-} from "./styles";
-import { decorationOffsets, styleOffsets } from "./offsets";
+} from "@workspace/ui/lib/textTools/textStyle/styles";
+import {
+  decorationOffsets,
+  styleOffsets,
+} from "@workspace/ui/lib/textTools/textStyle/offsets";
 
 const CharCode = {
   A: 0x41,
@@ -105,7 +108,7 @@ export function inferTextStyles(text: string): TextStyle {
 
       if (upperInRange || lowerInRange || digitInRange) {
         const { bold: b, italic: i } = getFontVariantByKey(
-          variant as FontVariant,
+          variant as FontVariant
         );
         bold = b;
         italic = i;

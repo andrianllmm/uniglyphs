@@ -18,7 +18,8 @@
     "@workspace/ui": "workspace:*",
     "next-themes": "^0.4.4",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.1.0",
+    "vite-tsconfig-paths": "^5.1.4"
   },
   "devDependencies": {
     "@types/react": "^19.1.0",

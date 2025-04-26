@@ -1,3 +1,3 @@
-export * from "./engine";
-export * from "./styles";
-export * from "./offsets";
+export * from "@workspace/ui/lib/textTools/textStyle/engine";
+export * from "@workspace/ui/lib/textTools/textStyle/styles";
+export * from "@workspace/ui/lib/textTools/textStyle/offsets";

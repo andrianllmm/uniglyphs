@@ -9,7 +9,7 @@ const blockSymbols: Record<BlockType, string> = {
 export function applyBlockStyle(
   text: string,
   type?: BlockType | null,
-  options?: { indent?: number },
+  options?: { indent?: number }
 ): string {
   if (!type || !blockTypes.includes(type)) return text;
 

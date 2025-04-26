@@ -1,7 +1,9 @@
+import { Editor } from "@workspace/ui/components/editor/Editor";
+
 function App() {
   return (
     <div>
-      <h1>UniGlyphs</h1>
+      <Editor />
     </div>
   );
 }

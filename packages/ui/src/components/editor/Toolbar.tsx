@@ -7,7 +7,7 @@ import {
   FontFamily,
   TextDecoration,
   formatFontName,
-} from "@workspace/ui/lib/textTools/textStyle";
+} from "@workspace/ui/lib/textTools/textStyle/";
 import { BlockType } from "@workspace/ui/lib/textTools/textBlock";
 import {
   EmojiPicker,
