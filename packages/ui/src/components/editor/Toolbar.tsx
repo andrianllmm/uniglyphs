@@ -41,7 +41,7 @@ function TextToolbarInner() {
     useTextToolbar();
 
   return (
-    <div className="flex gap-0.5 items-center justify-center">
+    <div className="flex flex-wrap gap-0.5 items-center justify-center">
       <Select
         value={style.family}
         onValueChange={(value: FontFamily) => {
