@@ -1,6 +1,5 @@
 "use client";
 
-import { HotkeysProvider } from "react-hotkeys-hook";
 import {
   applyTextStyles,
   fontFamilies,
@@ -82,8 +81,8 @@ function TextToolbarInner({ className }: { className?: string }) {
           });
         }}
       >
-        {Object.entries(toolbarData.fontVariants.tools).map(
-          ([value, { label, icon, hotkey, func: onSelect }]) => (
+        {Object.entries(toolbarData.fontVariants?.tools || {}).map(
+          ([value, { label, icon, hotkey, handler: onSelect }]) => (
             <ToggleGroupItem
               key={value}
               value={value}
@@ -104,8 +103,8 @@ function TextToolbarInner({ className }: { className?: string }) {
           styleSelection({ ...style, decorations: value });
         }}
       >
-        {Object.entries(toolbarData.textDecorations.tools).map(
-          ([value, { label, icon, hotkey, func: onSelect }]) => (
+        {Object.entries(toolbarData.textDecorations?.tools || {}).map(
+          ([value, { label, icon, hotkey, handler: onSelect }]) => (
             <ToggleGroupItem
               key={value}
               value={value}
@@ -126,8 +125,8 @@ function TextToolbarInner({ className }: { className?: string }) {
           makeBlock(value);
         }}
       >
-        {Object.entries(toolbarData.blockTypes.tools).map(
-          ([value, { label, icon, hotkey, func: onClick }]) => (
+        {Object.entries(toolbarData.blockTypes?.tools || {}).map(
+          ([value, { label, icon, hotkey, handler: onClick }]) => (
             <ToggleGroupItem
               key={value}
               value={value}
@@ -165,8 +164,8 @@ function TextToolbarInner({ className }: { className?: string }) {
       </Popover>
 
       <ButtonGroup>
-        {Object.entries(toolbarData.indentation.tools).map(
-          ([value, { label, icon, hotkey, func: onClick }]) => (
+        {Object.entries(toolbarData.indentation?.tools || {}).map(
+          ([value, { label, icon, hotkey, handler: onClick }]) => (
             <Button
               key={value}
               variant="ghost"
@@ -181,8 +180,8 @@ function TextToolbarInner({ className }: { className?: string }) {
         )}
       </ButtonGroup>
 
-      {Object.entries(toolbarData.miscellaneous.tools).map(
-        ([value, { label, icon, hotkey, func: onClick }]) => (
+      {Object.entries(toolbarData.miscellaneous?.tools || {}).map(
+        ([value, { label, icon, hotkey, handler: onClick }]) => (
           <Button
             key={value}
             variant="ghost"
@@ -207,10 +206,8 @@ export function TextToolbar({
   className?: string;
 }) {
   return (
-    <HotkeysProvider initiallyActiveScopes={["editor"]}>
-      <TextToolbarProvider textBoxRef={textBoxRef}>
-        <TextToolbarInner className={className} />
-      </TextToolbarProvider>
-    </HotkeysProvider>
+    <TextToolbarProvider textBoxRef={textBoxRef}>
+      <TextToolbarInner className={className} />
+    </TextToolbarProvider>
   );
 }

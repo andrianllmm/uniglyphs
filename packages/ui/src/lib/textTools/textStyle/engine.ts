@@ -42,7 +42,7 @@ export function applyTextStyles(text: string, style: TextStyle): string {
 
   text = stripTextStyles(text);
 
-  let result: string[] = [];
+  const result: string[] = [];
 
   for (const char of text) {
     const code = char.codePointAt(0);
@@ -85,7 +85,7 @@ export function inferTextStyles(text: string): TextStyle {
   let family: FontFamily = "serif";
   let bold = false;
   let italic = false;
-  let decorations: TextDecoration[] = [];
+  const decorations: TextDecoration[] = [];
 
   const code = text.codePointAt(0) || NaN;
 
@@ -134,7 +134,7 @@ export function stripTextStyles(text: string): string {
   const offsets = styleOffsets[family][getFontVariantKey(bold, italic)];
   if (!offsets) return text;
 
-  let result: string[] = [];
+  const result: string[] = [];
 
   for (const char of text) {
     const code = char.codePointAt(0);

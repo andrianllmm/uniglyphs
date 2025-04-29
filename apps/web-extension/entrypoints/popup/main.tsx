@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "@workspace/ui/globals.css";
 import "./styles.css";
+import { Providers } from "@/components/providers.tsx";
 import App from "./App.tsx";
 import { Header } from "@/components/Header.tsx";
 

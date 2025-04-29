@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { Providers } from "@/components/providers";
 import getCaretCoordinates from "textarea-caret";
 import { TextToolbar } from "@workspace/ui/components/editor/Toolbar";
 import { Button } from "@workspace/ui/components/button";
@@ -28,11 +29,11 @@ export function App() {
 
       newTop = Math.min(
         newTop,
-        window.innerHeight - (toolbarRef.current?.offsetHeight || 0),
+        window.innerHeight - (toolbarRef.current?.offsetHeight || 0)
       );
       newLeft = Math.min(
         newLeft,
-        window.innerWidth - (toolbarRef.current?.offsetWidth || 0),
+        window.innerWidth - (toolbarRef.current?.offsetWidth || 0)
       );
 
       newTop = Math.max(newTop, 0);

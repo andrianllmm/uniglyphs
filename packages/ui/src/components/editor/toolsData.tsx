@@ -11,13 +11,27 @@ import {
   UnderlineIcon,
 } from "lucide-react";
 
+export type ToolbarData = {
+  [group: string]: {
+    type: string;
+    tools: {
+      [toolName: string]: {
+        label: string;
+        icon: React.ReactNode;
+        hotkey: string;
+        handler: () => void;
+      };
+    };
+  };
+};
+
 export function getToolbarData(handlers: {
   styleSelection: TextToolbarContextType["styleSelection"];
   toggleVariant: TextToolbarContextType["toggleVariant"];
   toggleDecoration: TextToolbarContextType["toggleDecoration"];
   makeBlock: TextToolbarContextType["makeBlock"];
   indent: TextToolbarContextType["indent"];
-}) {
+}): ToolbarData {
   return {
     fontVariants: {
       type: "multiple",
@@ -26,13 +40,13 @@ export function getToolbarData(handlers: {
           label: "Bold",
           icon: <BoldIcon />,
           hotkey: "ctrl+b",
-          func: () => handlers.toggleVariant("bold"),
+          handler: () => handlers.toggleVariant("bold"),
         },
         italic: {
           label: "Italic",
           icon: <ItalicIcon />,
           hotkey: "ctrl+i",
-          func: () => handlers.toggleVariant("italic"),
+          handler: () => handlers.toggleVariant("italic"),
         },
       },
     },
@@ -43,13 +57,13 @@ export function getToolbarData(handlers: {
           label: "Underline",
           icon: <UnderlineIcon />,
           hotkey: "ctrl+u",
-          func: () => handlers.toggleDecoration("underline"),
+          handler: () => handlers.toggleDecoration("underline"),
         },
         strikethrough: {
           label: "Strikethrough",
           icon: <StrikethroughIcon />,
           hotkey: "ctrl+s",
-          func: () => handlers.toggleDecoration("strikethrough"),
+          handler: () => handlers.toggleDecoration("strikethrough"),
         },
       },
     },
@@ -60,13 +74,13 @@ export function getToolbarData(handlers: {
           label: "Bullet",
           icon: <ListIcon />,
           hotkey: "ctrl+9",
-          func: () => handlers.makeBlock("bullet"),
+          handler: () => handlers.makeBlock("bullet"),
         },
         numbered: {
           label: "Numbered",
           icon: <ListOrderedIcon />,
           hotkey: "ctrl+8",
-          func: () => handlers.makeBlock("numbered"),
+          handler: () => handlers.makeBlock("numbered"),
         },
       },
     },
@@ -77,13 +91,13 @@ export function getToolbarData(handlers: {
           label: "Increase indent",
           icon: <IndentIncreaseIcon />,
           hotkey: "tab",
-          func: () => handlers.indent(true),
+          handler: () => handlers.indent(true),
         },
         decrease: {
           label: "Decrease indent",
           icon: <IndentDecreaseIcon />,
           hotkey: "shift+tab",
-          func: () => handlers.indent(false),
+          handler: () => handlers.indent(false),
         },
       },
     },
@@ -94,7 +108,7 @@ export function getToolbarData(handlers: {
           label: "Clear formatting",
           icon: <RemoveFormattingIcon />,
           hotkey: "ctrl+/",
-          func: () =>
+          handler: () =>
             handlers.styleSelection({
               family: "serif",
               bold: false,

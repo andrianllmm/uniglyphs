@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
+import { HotKeys } from "react-hotkeys";
 import {
   applyTextStyles,
   inferTextStyles,
@@ -13,14 +14,13 @@ import {
   inferBlockStyle,
   stripBlockStyle,
 } from "@workspace/ui/lib/textTools/textBlock";
-import { getToolbarData } from "./toolsData";
-import { registerHotkeys } from "./toolsHotkeys";
+import { getToolbarData, ToolbarData } from "./toolsData";
 import { getTextBoxState } from "./textboxState";
 
 export type TextToolbarContextType = {
   style: TextStyle;
   block: BlockType | null | "";
-  toolbarData: ReturnType<typeof getToolbarData>;
+  toolbarData: ToolbarData;
   insertText: (text?: string, type?: "selection" | "line") => void;
   toggleVariant: (variant: "bold" | "italic") => void;
   toggleDecoration: (decoration: TextDecoration) => void;
@@ -30,7 +30,7 @@ export type TextToolbarContextType = {
 };
 
 const TextToolbarContext = createContext<TextToolbarContextType | undefined>(
-  undefined,
+  undefined
 );
 
 export const useTextToolbar = () => {
@@ -57,7 +57,7 @@ export function TextToolbarProvider({ children, textBoxRef }: Props) {
 
   const insertText = (
     text: string = "",
-    type: "selection" | "line" = "selection",
+    type: "selection" | "line" = "selection"
   ) => {
     const textbox = textBoxRef.current;
     if (!textbox) return;
@@ -98,7 +98,7 @@ export function TextToolbarProvider({ children, textBoxRef }: Props) {
       bold: false,
       italic: false,
       decorations: [],
-    },
+    }
   ) => {
     const textbox = textBoxRef.current;
     if (!textbox) return;
@@ -130,7 +130,7 @@ export function TextToolbarProvider({ children, textBoxRef }: Props) {
     const stripped = stripBlockStyle(line);
     insertText(
       type === block ? stripped : applyBlockStyle(stripped, type),
-      "line",
+      "line"
     );
   };
 
@@ -148,7 +148,7 @@ export function TextToolbarProvider({ children, textBoxRef }: Props) {
           ? `${indentChar}${ln}`
           : ln.startsWith(indentChar)
             ? ln.slice(1)
-            : ln,
+            : ln
       );
     const text = lines.join("\n");
 
@@ -162,22 +162,20 @@ export function TextToolbarProvider({ children, textBoxRef }: Props) {
     }, 0);
   };
 
-  const handleSelectionChange = () => {
-    const textbox = textBoxRef.current;
-    if (!textbox) return;
-    const { selection, adjacentChar, line, selectionStart, selectionEnd } =
-      getTextBoxState(textbox);
-
-    const inferredStyles = inferTextStyles(
-      selectionStart === selectionEnd ? adjacentChar : selection,
-    );
-    setStyle(inferredStyles);
-
-    const inferredBlockType = inferBlockStyle(line);
-    setBlock(inferredBlockType || "");
-  };
-
   useEffect(() => {
+    const handleSelectionChange = () => {
+      const textbox = textBoxRef.current;
+      if (!textbox) return;
+      const { selection, adjacentChar, line, selectionStart, selectionEnd } =
+        getTextBoxState(textbox);
+      const inferredStyles = inferTextStyles(
+        selectionStart === selectionEnd ? adjacentChar : selection
+      );
+      setStyle(inferredStyles);
+      const inferredBlockType = inferBlockStyle(line);
+      setBlock(inferredBlockType || "");
+    };
+
     const textbox = textBoxRef.current;
     if (!textbox) return;
 
@@ -193,14 +191,32 @@ export function TextToolbarProvider({ children, textBoxRef }: Props) {
   }, [textBoxRef]);
 
   const toolbarData = getToolbarData({
-    styleSelection: styleSelection,
+    styleSelection,
     toggleVariant,
     toggleDecoration,
-    makeBlock: makeBlock,
+    makeBlock,
     indent,
   });
 
-  registerHotkeys(toolbarData, textBoxRef);
+  const keyMap = Object.values(toolbarData).reduce(
+    (acc, group) => {
+      Object.values(group.tools).forEach((tool) => {
+        acc[tool.label] = tool.hotkey;
+      });
+      return acc;
+    },
+    {} as Record<string, string>
+  );
+
+  const handlers = Object.values(toolbarData).reduce(
+    (acc, section) => {
+      Object.values(section.tools).forEach((tool) => {
+        acc[tool.label] = tool.handler;
+      });
+      return acc;
+    },
+    {} as Record<string, () => void>
+  );
 
   return (
     <TextToolbarContext.Provider
@@ -216,7 +232,9 @@ export function TextToolbarProvider({ children, textBoxRef }: Props) {
         indent,
       }}
     >
-      {children}
+      <HotKeys keyMap={keyMap} handlers={handlers}>
+        {children}
+      </HotKeys>
     </TextToolbarContext.Provider>
   );
 }
