@@ -1,12 +1,11 @@
+import { ThemeToggle } from "@workspace/ui/components/theme-toggle";
 import { Button } from "@workspace/ui/components/button";
 
 export function Header() {
   return (
     <header className="flex sticky top-0 z-50 h-12 w-full items-center border-b-2 border-dotted bg-background/80 backdrop-blur-lg">
       <div className="w-full p-4 flex items-center justify-between gap-2">
-        <h1 className="text-xl tracking-wider select-none">
-          <a href="/">𝔘𝐧𝗂𝒢𝑙𝗒𝕡h𝚜</a>
-        </h1>
+        <h1 className="text-xl tracking-wider select-none">𝔘𝐧𝗂𝒢𝑙𝗒𝕡h𝚜</h1>
 
         <div className="flex items-center gap-1">
           <Button variant="ghost" size="icon" asChild>
@@ -27,6 +26,7 @@ export function Header() {
               </svg>
             </a>
           </Button>
+          <ThemeToggle />
         </div>
       </div>
     </header>

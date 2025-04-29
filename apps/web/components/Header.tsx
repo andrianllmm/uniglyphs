@@ -1,6 +1,7 @@
 import React from "react";
-import { Button } from "@workspace/ui/components/button";
 import Link from "next/link";
+import { ThemeToggle } from "../../../packages/ui/src/components/theme-toggle";
+import { Button } from "@workspace/ui/components/button";
 
 export function Header() {
   return (
@@ -29,6 +30,7 @@ export function Header() {
               </svg>
             </a>
           </Button>
+          <ThemeToggle />
           <Button size="sm" className="w-fit" asChild>
             <a href="#" target="_blank" rel="noreferrer">
               Install

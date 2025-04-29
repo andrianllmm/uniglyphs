@@ -9,6 +9,7 @@ import {
   formatFontName,
 } from "@workspace/ui/lib/textTools/textStyle/";
 import { BlockType } from "@workspace/ui/lib/textTools/textBlock";
+import { cn } from "@workspace/ui/lib/utils";
 import {
   EmojiPicker,
   EmojiPickerSearch,
@@ -36,12 +37,17 @@ import { Button } from "@workspace/ui/components/button";
 import { SmileIcon } from "lucide-react";
 import { TextToolbarProvider, useTextToolbar } from "./ToolbarProvider";
 
-function TextToolbarInner() {
+function TextToolbarInner({ className }: { className?: string }) {
   const { style, block, toolbarData, insertText, styleSelection, makeBlock } =
     useTextToolbar();
 
   return (
-    <div className="flex flex-wrap gap-0.5 items-center justify-center">
+    <div
+      className={cn(
+        "flex flex-wrap gap-0.5 items-center justify-center",
+        className
+      )}
+    >
       <Select
         value={style.family}
         onValueChange={(value: FontFamily) => {
@@ -195,13 +201,15 @@ function TextToolbarInner() {
 
 export function TextToolbar({
   textBoxRef,
+  className,
 }: {
   textBoxRef: React.RefObject<HTMLTextAreaElement | HTMLInputElement | null>;
+  className?: string;
 }) {
   return (
     <HotkeysProvider initiallyActiveScopes={["editor"]}>
       <TextToolbarProvider textBoxRef={textBoxRef}>
-        <TextToolbarInner />
+        <TextToolbarInner className={className} />
       </TextToolbarProvider>
     </HotkeysProvider>
   );
