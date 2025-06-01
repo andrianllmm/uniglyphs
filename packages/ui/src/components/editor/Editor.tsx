@@ -11,7 +11,7 @@ export function Editor({
   className,
 }: {
   textAreaProps?: React.ComponentProps<typeof Textarea>;
-  toolbarProps?: Omit<React.ComponentProps<typeof TextToolbar>, "textBoxRef">;
+  toolbarProps?: Omit<React.ComponentProps<typeof TextToolbar>, "textboxRef">;
   className?: string;
 }) {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -35,7 +35,7 @@ export function Editor({
       />
 
       <TextToolbar
-        textBoxRef={textAreaRef}
+        textboxRef={textAreaRef}
         className={cn(toolbarClassName)}
         {...restToolbarProps}
       />

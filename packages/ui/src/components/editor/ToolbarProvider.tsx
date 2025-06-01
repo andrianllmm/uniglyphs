@@ -15,7 +15,12 @@ import {
   stripBlockStyle,
 } from "@workspace/ui/lib/textTools/textBlock";
 import { getToolbarData, ToolbarData } from "./toolsData";
-import { getTextBoxState } from "./textboxState";
+import {
+  getTextboxState,
+  TextboxElement,
+  updateTextboxSelection,
+  updateTextboxValue,
+} from "./textboxState";
 
 export type TextToolbarContextType = {
   style: TextStyle;
@@ -43,10 +48,10 @@ export const useTextToolbar = () => {
 
 type Props = {
   children: React.ReactNode;
-  textBoxRef: React.RefObject<HTMLTextAreaElement | HTMLInputElement | null>;
+  textboxRef: React.RefObject<TextboxElement | null>;
 };
 
-export function TextToolbarProvider({ children, textBoxRef }: Props) {
+export function TextToolbarProvider({ children, textboxRef }: Props) {
   const [style, setStyle] = useState<TextStyle>({
     family: "serif",
     bold: false,
@@ -59,7 +64,7 @@ export function TextToolbarProvider({ children, textBoxRef }: Props) {
     text: string = "",
     type: "selection" | "line" = "selection"
   ) => {
-    const textbox = textBoxRef.current;
+    const textbox = textboxRef.current;
     if (!textbox) return;
 
     const {
@@ -68,7 +73,7 @@ export function TextToolbarProvider({ children, textBoxRef }: Props) {
       afterSelection,
       beforeLine,
       afterLine,
-    } = getTextBoxState(textbox);
+    } = getTextboxState(textbox);
 
     let before = "",
       after = "";
@@ -83,11 +88,14 @@ export function TextToolbarProvider({ children, textBoxRef }: Props) {
       throw new Error("Invalid type");
     }
 
-    textbox.value = before + text + after;
+    updateTextboxValue(textbox, before + text + after);
 
     setTimeout(() => {
-      textbox.selectionStart = selectionStart;
-      textbox.selectionEnd = selectionStart + text.length;
+      updateTextboxSelection(
+        textbox,
+        selectionStart,
+        selectionStart + text.length
+      );
       textbox.focus();
     }, 0);
   };
@@ -100,12 +108,15 @@ export function TextToolbarProvider({ children, textBoxRef }: Props) {
       decorations: [],
     }
   ) => {
-    const textbox = textBoxRef.current;
+    const textbox = textboxRef.current;
     if (!textbox) return;
 
-    const { selection } = getTextBoxState(textbox);
+    const { selection } = getTextboxState(textbox);
+    const styledSelection = applyTextStyles(selection, newStyle);
+    insertText(styledSelection);
 
-    insertText(applyTextStyles(selection, newStyle));
+    setStyle(inferTextStyles(styledSelection));
+    setBlock(inferBlockStyle(styledSelection));
   };
 
   const toggleVariant = (variant: "bold" | "italic") => {
@@ -123,23 +134,25 @@ export function TextToolbarProvider({ children, textBoxRef }: Props) {
   };
 
   const makeBlock = (type: BlockType | null) => {
-    const textbox = textBoxRef.current!;
+    const textbox = textboxRef.current!;
     if (!textbox) return;
 
-    const { line } = getTextBoxState(textbox);
+    const { line } = getTextboxState(textbox);
     const stripped = stripBlockStyle(line);
-    insertText(
-      type === block ? stripped : applyBlockStyle(stripped, type),
-      "line"
-    );
+    const styledLine =
+      type === block ? stripped : applyBlockStyle(stripped, type);
+    insertText(styledLine, "line");
+
+    setStyle(inferTextStyles(styledLine));
+    setBlock(inferBlockStyle(styledLine));
   };
 
   const indent = (increase: boolean, indentChar: string = "\t") => {
-    const textbox = textBoxRef.current;
+    const textbox = textboxRef.current;
     if (!textbox) return;
 
     const { beforeLine, line, afterLine, selectionStart, selectionEnd } =
-      getTextBoxState(textbox);
+      getTextboxState(textbox);
 
     const lines = line
       .split("\n")
@@ -152,22 +165,25 @@ export function TextToolbarProvider({ children, textBoxRef }: Props) {
       );
     const text = lines.join("\n");
 
-    textbox.value = beforeLine + text + afterLine;
+    updateTextboxValue(textbox, beforeLine + text + afterLine);
 
     setTimeout(() => {
       textbox.focus();
       const shift = increase ? 1 : -1;
-      textbox.selectionStart = Math.max(selectionStart + shift, 0);
-      textbox.selectionEnd = Math.max(selectionEnd + lines.length * shift, 0);
+      updateTextboxSelection(
+        textbox,
+        Math.max(selectionStart + shift, 0),
+        Math.max(selectionEnd + lines.length * shift, 0)
+      );
     }, 0);
   };
 
   useEffect(() => {
     const handleSelectionChange = () => {
-      const textbox = textBoxRef.current;
+      const textbox = textboxRef.current;
       if (!textbox) return;
       const { selection, adjacentChar, line, selectionStart, selectionEnd } =
-        getTextBoxState(textbox);
+        getTextboxState(textbox);
       const inferredStyles = inferTextStyles(
         selectionStart === selectionEnd ? adjacentChar : selection
       );
@@ -176,7 +192,7 @@ export function TextToolbarProvider({ children, textBoxRef }: Props) {
       setBlock(inferredBlockType || "");
     };
 
-    const textbox = textBoxRef.current;
+    const textbox = textboxRef.current;
     if (!textbox) return;
 
     textbox.addEventListener("select", handleSelectionChange);
@@ -188,7 +204,7 @@ export function TextToolbarProvider({ children, textBoxRef }: Props) {
       textbox.removeEventListener("keyup", handleSelectionChange);
       textbox.removeEventListener("mouseup", handleSelectionChange);
     };
-  }, [textBoxRef]);
+  }, [textboxRef]);
 
   const toolbarData = getToolbarData({
     styleSelection,

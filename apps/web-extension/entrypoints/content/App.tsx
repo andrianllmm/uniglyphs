@@ -1,27 +1,33 @@
 import { useEffect, useRef, useState } from "react";
 import { Providers } from "@/components/providers";
-import getCaretCoordinates from "textarea-caret";
+import { getCaretPosition } from "@workspace/ui/lib/caretPosition";
+import {
+  isContentEditable,
+  isTextInput,
+  TextboxElement,
+} from "@workspace/ui/components/editor/textboxState";
 import { TextToolbar } from "@workspace/ui/components/editor/Toolbar";
 import { Button } from "@workspace/ui/components/button";
 import { X } from "lucide-react";
 
-type TextElement = HTMLTextAreaElement | HTMLInputElement;
-
 export function App() {
-  const [activeTextBox, setActiveTextBox] = useState<TextElement | null>(null);
+  const [activeTextbox, setActiveTextbox] = useState<TextboxElement | null>(
+    null
+  );
   const [toolbarPosition, setToolbarPosition] = useState({
     top: window.innerHeight / 2,
     left: window.innerWidth / 2,
   });
-  const textBoxRef = useRef<TextElement | null>(null);
+  const textboxRef = useRef<TextboxElement | null>(null);
   const toolbarRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const updateCaretPosition = () => {
-      const el = textBoxRef.current;
-      if (!el || el.selectionStart == null) return;
+      const el = textboxRef.current;
+      if (!el) return;
 
-      const coords = getCaretCoordinates(el, el.selectionStart);
+      const coords = getCaretPosition(el) || toolbarPosition;
+
       const elRect = el.getBoundingClientRect();
 
       let newTop = elRect.top + coords.top + window.scrollY + 30;
@@ -47,13 +53,11 @@ export function App() {
 
     const handleFocus = (event: FocusEvent) => {
       const target = event.target;
-      if (
-        target instanceof HTMLTextAreaElement ||
-        (target instanceof HTMLInputElement && target.type === "text")
-      ) {
-        textBoxRef.current = target;
+
+      if ((target && isTextInput(target)) || isContentEditable(target)) {
+        textboxRef.current = target;
         setTimeout(updateCaretPosition, 0);
-        setActiveTextBox(target);
+        setActiveTextbox(target);
       }
     };
 
@@ -70,7 +74,7 @@ export function App() {
     };
   }, []);
 
-  if (!activeTextBox) return null;
+  if (!activeTextbox) return null;
 
   return (
     <Providers>
@@ -86,13 +90,13 @@ export function App() {
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 transition-all">
           <div className="bg-transparent p-1 flex gap-1">
             <div className="bg-background p-1 rounded-lg shadow-lg flex gap-1 items-center justify-center">
-              <TextToolbar textBoxRef={textBoxRef} />
+              <TextToolbar textboxRef={textboxRef} />
             </div>
             <Button
               variant="ghost"
               size="icon"
               className="p-0.25! w-fit h-fit rounded-full text-muted-foreground/80 hover:text-muted-foreground bg-muted/10 hover:bg-muted/20"
-              onClick={() => setActiveTextBox(null)}
+              onClick={() => setActiveTextbox(null)}
             >
               <X className="size-3" />
             </Button>

@@ -14,6 +14,15 @@ export default function Page() {
           className: "text-xl!",
         }}
       />
+      <div
+        suppressContentEditableWarning
+        contentEditable
+        className="p-2 border-2"
+      >
+        <p>
+          <span>{textAreaDefaultValue}</span>
+        </p>
+      </div>
     </div>
   );
 }

@@ -28,7 +28,6 @@
   "devDependencies": {
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.2",
-    "@types/textarea-caret": "^3.0.3",
     "@wxt-dev/module-react": "^1.1.3",
     "typescript": "^5.8.3",
     "wxt": "^0.20.0"

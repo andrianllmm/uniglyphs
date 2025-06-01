@@ -1,5 +1,6 @@
 "use client";
 
+import { cn } from "@workspace/ui/lib/utils";
 import {
   applyTextStyles,
   fontFamilies,
@@ -8,7 +9,8 @@ import {
   formatFontName,
 } from "@workspace/ui/lib/textTools/textStyle/";
 import { BlockType } from "@workspace/ui/lib/textTools/textBlock";
-import { cn } from "@workspace/ui/lib/utils";
+import { TextToolbarProvider, useTextToolbar } from "./ToolbarProvider";
+import { TextboxElement } from "./textboxState";
 import {
   EmojiPicker,
   EmojiPickerSearch,
@@ -34,7 +36,6 @@ import {
 import { ButtonGroup } from "@workspace/ui/components/button-group";
 import { Button } from "@workspace/ui/components/button";
 import { SmileIcon } from "lucide-react";
-import { TextToolbarProvider, useTextToolbar } from "./ToolbarProvider";
 
 function TextToolbarInner({ className }: { className?: string }) {
   const { style, block, toolbarData, insertText, styleSelection, makeBlock } =
@@ -199,14 +200,14 @@ function TextToolbarInner({ className }: { className?: string }) {
 }
 
 export function TextToolbar({
-  textBoxRef,
+  textboxRef,
   className,
 }: {
-  textBoxRef: React.RefObject<HTMLTextAreaElement | HTMLInputElement | null>;
+  textboxRef: React.RefObject<TextboxElement | null>;
   className?: string;
 }) {
   return (
-    <TextToolbarProvider textBoxRef={textBoxRef}>
+    <TextToolbarProvider textboxRef={textboxRef}>
       <TextToolbarInner className={className} />
     </TextToolbarProvider>
   );
