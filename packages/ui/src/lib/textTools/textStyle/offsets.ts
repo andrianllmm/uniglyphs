@@ -13,7 +13,7 @@ export const styleOffsets: Record<
     italic: { upper: 0x1d434, lower: 0x1d44e, h: 0x210e },
     boldItalic: { upper: 0x1d468, lower: 0x1d482 },
   },
-  sansSerif: {
+  sans: {
     normal: { upper: 0x1d5a0, lower: 0x1d5ba, digit: 0x1d7e2 },
     bold: { upper: 0x1d5d4, lower: 0x1d5ee, digit: 0x1d7ec },
     italic: { upper: 0x1d608, lower: 0x1d622 },
@@ -49,7 +49,7 @@ export const styleOffsets: Record<
     },
     bold: { upper: 0x1d56c, lower: 0x1d586 },
   },
-  monospace: {
+  mono: {
     normal: {
       upper: 0x1d670,
       lower: 0x1d68a,
@@ -58,7 +58,7 @@ export const styleOffsets: Record<
       "-": 0x2013,
     },
   },
-  doubleStruck: {
+  double: {
     normal: {
       upper: 0x1d538,
       lower: 0x1d552,
@@ -72,7 +72,7 @@ export const styleOffsets: Record<
       Z: 0x2124,
     },
   },
-  fullWidth: {
+  full: {
     normal: {
       upper: 0xff21,
       lower: 0xff41,

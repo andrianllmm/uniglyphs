@@ -23,7 +23,13 @@ import {
 } from "@workspace/ui/components/select";
 import { Button } from "@workspace/ui/components/button";
 
-function TextToolbarInner({ className }: { className?: string }) {
+function TextToolbarInner({
+  portalContainer,
+  className,
+}: {
+  portalContainer?: HTMLElement;
+  className?: string;
+}) {
   const { style, toolbarData, styleSelection } = useTextToolbar();
 
   return (
@@ -45,7 +51,10 @@ function TextToolbarInner({ className }: { className?: string }) {
         >
           <SelectValue placeholder="Font" />
         </SelectTrigger>
-        <SelectContent className="border-input">
+        <SelectContent
+          className="border-input text-black bg-white"
+          portalContainer={portalContainer}
+        >
           {fontFamilies.map((fam) => (
             <SelectItem key={fam} value={fam} title={formatFontName(fam)}>
               {applyTextStyles(formatFontName(fam), { ...style, family: fam })}
@@ -125,13 +134,18 @@ function TextToolbarInner({ className }: { className?: string }) {
 export function TextToolbar({
   textboxRef,
   className,
+  portalContainer,
 }: {
   textboxRef: React.RefObject<TextboxElement | null>;
   className?: string;
+  portalContainer?: HTMLElement;
 }) {
   return (
     <TextToolbarProvider textboxRef={textboxRef}>
-      <TextToolbarInner className={className} />
+      <TextToolbarInner
+        className={className}
+        portalContainer={portalContainer}
+      />
     </TextToolbarProvider>
   );
 }

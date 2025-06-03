@@ -10,7 +10,7 @@ import { TextToolbar } from "@workspace/ui/components/editor/Toolbar";
 import { Button } from "@workspace/ui/components/button";
 import { X } from "lucide-react";
 
-export function App() {
+export function App({ portalContainer }: { portalContainer: HTMLElement }) {
   const [activeTextbox, setActiveTextbox] = useState<TextboxElement | null>(
     null
   );
@@ -80,17 +80,20 @@ export function App() {
     <Providers>
       <div
         ref={toolbarRef}
-        className="absolute z-50 transition-all duration-300"
+        className="bg-transparent text-foreground text-black absolute z-50 transition-all duration-300"
         tabIndex={-1}
         style={{
           top: `${toolbarPosition.top}px`,
           left: `${toolbarPosition.left}px`,
         }}
       >
-        <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 transition-all">
+        <div className="bg-transparent animate-in fade-in slide-in-from-bottom-4 duration-500 transition-all">
           <div className="bg-transparent p-1 flex gap-1">
-            <div className="bg-background p-1 rounded-lg shadow-lg flex gap-1 items-center justify-center">
-              <TextToolbar textboxRef={textboxRef} />
+            <div className="bg-background bg-white p-1 rounded-lg shadow-lg flex gap-1 items-center justify-center">
+              <TextToolbar
+                textboxRef={textboxRef}
+                portalContainer={portalContainer}
+              />
             </div>
             <Button
               variant="ghost"

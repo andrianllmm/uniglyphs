@@ -16,9 +16,8 @@ export default defineContentScript({
       onMount: (container) => {
         const wrapper = document.createElement("div");
         container.append(wrapper);
-
         const root = ReactDOM.createRoot(wrapper);
-        root.render(<App />);
+        root.render(<App portalContainer={container} />);
         return { root, wrapper };
       },
       onRemove: (elements) => {

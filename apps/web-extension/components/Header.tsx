@@ -1,4 +1,3 @@
-import { ThemeToggle } from "@workspace/ui/components/theme-toggle";
 import { Button } from "@workspace/ui/components/button";
 
 export function Header() {
@@ -26,7 +25,6 @@ export function Header() {
               </svg>
             </a>
           </Button>
-          <ThemeToggle />
         </div>
       </div>
     </header>

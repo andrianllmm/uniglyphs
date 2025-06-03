@@ -1,11 +1,11 @@
 export const fontFamilies = [
   "serif",
-  "sansSerif",
+  "sans",
   "script",
   "gothic",
-  "monospace",
-  "doubleStruck",
-  "fullWidth",
+  "mono",
+  "double",
+  "full",
 ] as const;
 export type FontFamily = (typeof fontFamilies)[number];
 
