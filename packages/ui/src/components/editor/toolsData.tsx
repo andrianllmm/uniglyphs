@@ -1,11 +1,7 @@
 import { TextToolbarContextType } from "./ToolbarProvider";
 import {
   BoldIcon,
-  IndentDecreaseIcon,
-  IndentIncreaseIcon,
   ItalicIcon,
-  ListIcon,
-  ListOrderedIcon,
   RemoveFormattingIcon,
   StrikethroughIcon,
   UnderlineIcon,
@@ -29,8 +25,6 @@ export function getToolbarData(handlers: {
   styleSelection: TextToolbarContextType["styleSelection"];
   toggleVariant: TextToolbarContextType["toggleVariant"];
   toggleDecoration: TextToolbarContextType["toggleDecoration"];
-  makeBlock: TextToolbarContextType["makeBlock"];
-  indent: TextToolbarContextType["indent"];
 }): ToolbarData {
   return {
     fontVariants: {
@@ -64,40 +58,6 @@ export function getToolbarData(handlers: {
           icon: <StrikethroughIcon />,
           hotkey: "ctrl+s",
           handler: () => handlers.toggleDecoration("strikethrough"),
-        },
-      },
-    },
-    blockTypes: {
-      type: "single",
-      tools: {
-        bullet: {
-          label: "Bullet",
-          icon: <ListIcon />,
-          hotkey: "ctrl+9",
-          handler: () => handlers.makeBlock("bullet"),
-        },
-        numbered: {
-          label: "Numbered",
-          icon: <ListOrderedIcon />,
-          hotkey: "ctrl+8",
-          handler: () => handlers.makeBlock("numbered"),
-        },
-      },
-    },
-    indentation: {
-      type: "any",
-      tools: {
-        increase: {
-          label: "Increase indent",
-          icon: <IndentIncreaseIcon />,
-          hotkey: "tab",
-          handler: () => handlers.indent(true),
-        },
-        decrease: {
-          label: "Decrease indent",
-          icon: <IndentDecreaseIcon />,
-          hotkey: "shift+tab",
-          handler: () => handlers.indent(false),
         },
       },
     },

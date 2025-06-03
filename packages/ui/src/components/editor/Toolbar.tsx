@@ -8,15 +8,8 @@ import {
   TextDecoration,
   formatFontName,
 } from "@workspace/ui/lib/textTools/textStyle/";
-import { BlockType } from "@workspace/ui/lib/textTools/textBlock";
 import { TextToolbarProvider, useTextToolbar } from "./ToolbarProvider";
 import { TextboxElement } from "./textboxState";
-import {
-  EmojiPicker,
-  EmojiPickerSearch,
-  EmojiPickerContent,
-  EmojiPickerFooter,
-} from "@workspace/ui/components/emoji-picker";
 import {
   ToggleGroup,
   ToggleGroupItem,
@@ -28,18 +21,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@workspace/ui/components/select";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@workspace/ui/components/popover";
-import { ButtonGroup } from "@workspace/ui/components/button-group";
 import { Button } from "@workspace/ui/components/button";
-import { SmileIcon } from "lucide-react";
 
 function TextToolbarInner({ className }: { className?: string }) {
-  const { style, block, toolbarData, insertText, styleSelection, makeBlock } =
-    useTextToolbar();
+  const { style, toolbarData, styleSelection } = useTextToolbar();
 
   return (
     <div
@@ -118,68 +103,6 @@ function TextToolbarInner({ className }: { className?: string }) {
           )
         )}
       </ToggleGroup>
-
-      <ToggleGroup
-        type="single"
-        value={block ?? undefined}
-        onValueChange={(value: BlockType) => {
-          makeBlock(value);
-        }}
-      >
-        {Object.entries(toolbarData.blockTypes?.tools || {}).map(
-          ([value, { label, icon, hotkey, handler: onClick }]) => (
-            <ToggleGroupItem
-              key={value}
-              value={value}
-              className="p-1 w-fit h-fit"
-              title={`${label} (${hotkey})`}
-              onClick={onClick}
-            >
-              {icon}
-            </ToggleGroupItem>
-          )
-        )}
-      </ToggleGroup>
-
-      <Popover>
-        <PopoverTrigger asChild>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="p-1 w-fit h-fit"
-            title="Emoji"
-          >
-            <SmileIcon />
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-fit p-0">
-          <EmojiPicker
-            className="h-[300px]"
-            onEmojiSelect={({ emoji }) => insertText(emoji)}
-          >
-            <EmojiPickerSearch />
-            <EmojiPickerContent />
-            <EmojiPickerFooter />
-          </EmojiPicker>
-        </PopoverContent>
-      </Popover>
-
-      <ButtonGroup>
-        {Object.entries(toolbarData.indentation?.tools || {}).map(
-          ([value, { label, icon, hotkey, handler: onClick }]) => (
-            <Button
-              key={value}
-              variant="ghost"
-              size="icon"
-              className="p-1 w-fit h-fit"
-              title={`${label} (${hotkey})`}
-              onClick={onClick}
-            >
-              {icon}
-            </Button>
-          )
-        )}
-      </ButtonGroup>
 
       {Object.entries(toolbarData.miscellaneous?.tools || {}).map(
         ([value, { label, icon, hotkey, handler: onClick }]) => (

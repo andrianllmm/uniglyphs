@@ -8,12 +8,6 @@ import {
   TextDecoration,
   TextStyle,
 } from "@workspace/ui/lib/textTools/textStyle";
-import {
-  applyBlockStyle,
-  BlockType,
-  inferBlockStyle,
-  stripBlockStyle,
-} from "@workspace/ui/lib/textTools/textBlock";
 import { getToolbarData, ToolbarData } from "./toolsData";
 import {
   getTextboxState,
@@ -24,14 +18,11 @@ import {
 
 export type TextToolbarContextType = {
   style: TextStyle;
-  block: BlockType | null | "";
   toolbarData: ToolbarData;
   insertText: (text?: string, type?: "selection" | "line") => void;
   toggleVariant: (variant: "bold" | "italic") => void;
   toggleDecoration: (decoration: TextDecoration) => void;
   styleSelection: (style: TextStyle) => void;
-  makeBlock: (type: BlockType | null) => void;
-  indent: (increase: boolean) => void;
 };
 
 const TextToolbarContext = createContext<TextToolbarContextType | undefined>(
@@ -58,7 +49,6 @@ export function TextToolbarProvider({ children, textboxRef }: Props) {
     italic: false,
     decorations: [],
   });
-  const [block, setBlock] = useState<BlockType | null | "">(null);
 
   const insertText = (
     text: string = "",
@@ -116,7 +106,6 @@ export function TextToolbarProvider({ children, textboxRef }: Props) {
     insertText(styledSelection);
 
     setStyle(inferTextStyles(styledSelection));
-    setBlock(inferBlockStyle(styledSelection));
   };
 
   const toggleVariant = (variant: "bold" | "italic") => {
@@ -133,63 +122,16 @@ export function TextToolbarProvider({ children, textboxRef }: Props) {
     styleSelection({ ...style, decorations: newDecorations });
   };
 
-  const makeBlock = (type: BlockType | null) => {
-    const textbox = textboxRef.current!;
-    if (!textbox) return;
-
-    const { line } = getTextboxState(textbox);
-    const stripped = stripBlockStyle(line);
-    const styledLine =
-      type === block ? stripped : applyBlockStyle(stripped, type);
-    insertText(styledLine, "line");
-
-    setStyle(inferTextStyles(styledLine));
-    setBlock(inferBlockStyle(styledLine));
-  };
-
-  const indent = (increase: boolean, indentChar: string = "\t") => {
-    const textbox = textboxRef.current;
-    if (!textbox) return;
-
-    const { beforeLine, line, afterLine, selectionStart, selectionEnd } =
-      getTextboxState(textbox);
-
-    const lines = line
-      .split("\n")
-      .map((ln) =>
-        increase
-          ? `${indentChar}${ln}`
-          : ln.startsWith(indentChar)
-            ? ln.slice(1)
-            : ln
-      );
-    const text = lines.join("\n");
-
-    updateTextboxValue(textbox, beforeLine + text + afterLine);
-
-    setTimeout(() => {
-      textbox.focus();
-      const shift = increase ? 1 : -1;
-      updateTextboxSelection(
-        textbox,
-        Math.max(selectionStart + shift, 0),
-        Math.max(selectionEnd + lines.length * shift, 0)
-      );
-    }, 0);
-  };
-
   useEffect(() => {
     const handleSelectionChange = () => {
       const textbox = textboxRef.current;
       if (!textbox) return;
-      const { selection, adjacentChar, line, selectionStart, selectionEnd } =
+      const { selection, adjacentChar, selectionStart, selectionEnd } =
         getTextboxState(textbox);
       const inferredStyles = inferTextStyles(
         selectionStart === selectionEnd ? adjacentChar : selection
       );
       setStyle(inferredStyles);
-      const inferredBlockType = inferBlockStyle(line);
-      setBlock(inferredBlockType || "");
     };
 
     const textbox = textboxRef.current;
@@ -210,8 +152,6 @@ export function TextToolbarProvider({ children, textboxRef }: Props) {
     styleSelection,
     toggleVariant,
     toggleDecoration,
-    makeBlock,
-    indent,
   });
 
   const keyMap = Object.values(toolbarData).reduce(
@@ -238,14 +178,11 @@ export function TextToolbarProvider({ children, textboxRef }: Props) {
     <TextToolbarContext.Provider
       value={{
         style,
-        block,
         toolbarData,
         insertText,
         styleSelection,
         toggleVariant,
         toggleDecoration,
-        makeBlock,
-        indent,
       }}
     >
       <HotKeys keyMap={keyMap} handlers={handlers}>
