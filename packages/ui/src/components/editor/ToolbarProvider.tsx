@@ -13,7 +13,7 @@ import {
   getTextboxState,
   TextboxElement,
   updateTextboxSelection,
-  updateTextboxValue,
+  insertTextboxValue,
 } from "./textboxState";
 
 export type TextToolbarContextType = {
@@ -50,35 +50,13 @@ export function TextToolbarProvider({ children, textboxRef }: Props) {
     decorations: [],
   });
 
-  const insertText = (
-    text: string = "",
-    type: "selection" | "line" = "selection"
-  ) => {
+  const insertText = (text: string = "") => {
     const textbox = textboxRef.current;
     if (!textbox) return;
 
-    const {
-      selectionStart,
-      beforeSelection,
-      afterSelection,
-      beforeLine,
-      afterLine,
-    } = getTextboxState(textbox);
+    const { selectionStart } = getTextboxState(textbox);
 
-    let before = "",
-      after = "";
-
-    if (type === "selection") {
-      before = beforeSelection;
-      after = afterSelection;
-    } else if (type === "line") {
-      before = beforeLine;
-      after = afterLine;
-    } else {
-      throw new Error("Invalid type");
-    }
-
-    updateTextboxValue(textbox, before + text + after);
+    insertTextboxValue(textbox, text);
 
     setTimeout(() => {
       updateTextboxSelection(

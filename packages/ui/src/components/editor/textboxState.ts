@@ -52,26 +52,32 @@ export function getTextboxState(textbox: TextboxElement): TextboxState {
     state.selectionStart = textbox.selectionStart ?? 0;
     state.selectionEnd = textbox.selectionEnd ?? 0;
   } else if (isContentEditable(textbox)) {
-    const selection = window.getSelection();
-    if (!selection || selection.rangeCount === 0) {
-      return state;
-    }
-
-    const fullText = textbox.innerText || textbox.textContent || "";
+    const fullText = textbox.innerText || "";
     state.text = fullText;
 
-    const range = selection.getRangeAt(0);
+    const selection = window.getSelection();
+    if (!selection || selection.rangeCount === 0) {
+      state.selectionStart = 0;
+      state.selectionEnd = 0;
+    } else {
+      const range = selection.getRangeAt(0);
 
-    const preCaretRange = range.cloneRange();
-    preCaretRange.selectNodeContents(textbox);
-    preCaretRange.setEnd(range.startContainer, range.startOffset);
-    state.selectionStart = preCaretRange.toString().length;
+      state.selectionStart = getNodeOffset(
+        textbox,
+        range.startContainer,
+        range.startOffset
+      );
 
-    const postCaretRange = range.cloneRange();
-    postCaretRange.selectNodeContents(textbox);
-    postCaretRange.setEnd(range.endContainer, range.endOffset);
-    state.selectionEnd = postCaretRange.toString().length;
+      state.selectionEnd = getNodeOffset(
+        textbox,
+        range.endContainer,
+        range.endOffset
+      );
+    }
   }
+
+  state.selectionStart = Math.min(state.selectionStart, state.text.length);
+  state.selectionEnd = Math.min(state.selectionEnd, state.text.length);
 
   state.selection = state.text.slice(state.selectionStart, state.selectionEnd);
   state.adjacentChar =
@@ -91,11 +97,55 @@ export function getTextboxState(textbox: TextboxElement): TextboxState {
   return state;
 }
 
-export function updateTextboxValue(textbox: TextboxElement, text: string) {
+export function insertTextboxValue(textbox: TextboxElement, text: string) {
   if (isTextInput(textbox)) {
-    textbox.value = text;
+    const start = textbox.selectionStart ?? 0;
+    const end = textbox.selectionEnd ?? 0;
+    const value = textbox.value;
+
+    textbox.value = value.slice(0, start) + text + value.slice(end);
   } else if (isContentEditable(textbox)) {
-    textbox.textContent = text;
+    const inserted = simulatePaste(textbox, text);
+
+    if (!inserted) {
+      const selection = window.getSelection();
+      if (!selection || selection.rangeCount === 0) return;
+
+      const range = selection.getRangeAt(0);
+      range.deleteContents();
+
+      const lines = text.split("\n");
+      const fragment = document.createDocumentFragment();
+
+      lines.forEach((line, i) => {
+        fragment.appendChild(document.createTextNode(line));
+        if (i < lines.length - 1)
+          fragment.appendChild(document.createElement("br"));
+      });
+
+      range.insertNode(fragment);
+
+      range.collapse(false);
+      selection.removeAllRanges();
+      selection.addRange(range);
+    }
+  }
+}
+
+function simulatePaste(el: HTMLElement, text: string): boolean {
+  try {
+    const dataTransfer = new DataTransfer();
+    dataTransfer.setData("text/plain", text);
+
+    const pasteEvent = new ClipboardEvent("paste", {
+      clipboardData: dataTransfer,
+      bubbles: true,
+      cancelable: true,
+    });
+
+    return !el.dispatchEvent(pasteEvent) || !!el.textContent?.includes(text);
+  } catch {
+    return false;
   }
 }
 
@@ -111,33 +161,125 @@ export function updateTextboxSelection(
     const selection = window.getSelection();
     if (!selection || selection.rangeCount === 0) return;
 
-    const range = selection.getRangeAt(0);
+    textbox.focus();
 
-    const textNode = getTextNodeAtOffset(textbox, selectionStart);
-    range.setStart(textNode, selectionStart);
-    range.setEnd(textNode, selectionEnd);
+    const { node: startNode, nodeOffset: startOffset } = getNodeAtOffset(
+      textbox,
+      selectionStart
+    );
+    const { node: endNode, nodeOffset: endOffset } = getNodeAtOffset(
+      textbox,
+      selectionEnd
+    );
+
+    if (!startNode || !endNode) return;
+
+    const range = document.createRange();
+    range.setStart(startNode, startOffset);
+    range.setEnd(endNode, endOffset);
 
     selection.removeAllRanges();
     selection.addRange(range);
+
+    textbox.dispatchEvent(new Event("selectionchange", { bubbles: true }));
   }
 }
 
-function getTextNodeAtOffset(element: HTMLElement, offset: number): Text {
-  const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, null);
+/**
+ * Returns the character offset within the contenteditable element
+ * for a given node and offset within that node.
+ */
+function getNodeOffset(
+  root: HTMLElement,
+  node: Node,
+  offsetInNode: number
+): number {
+  let totalOffset = 0;
 
-  let currentNode: Text | null = null;
-  let currentOffset = 0;
+  const walker = document.createTreeWalker(
+    root,
+    NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT,
+    {
+      acceptNode(n) {
+        if (n.nodeType === Node.TEXT_NODE) return NodeFilter.FILTER_ACCEPT;
+        if (
+          n.nodeType === Node.ELEMENT_NODE &&
+          (n as Element).tagName === "BR"
+        ) {
+          return NodeFilter.FILTER_ACCEPT;
+        }
+        return NodeFilter.FILTER_SKIP;
+      },
+    }
+  );
 
   while (walker.nextNode()) {
-    currentNode = walker.currentNode as Text;
-    const length = currentNode.length;
-
-    if (currentOffset + length >= offset) {
-      return currentNode;
+    const curr = walker.currentNode;
+    if (curr === node) {
+      return totalOffset + offsetInNode;
     }
 
-    currentOffset += length;
+    if (curr.nodeType === Node.TEXT_NODE) {
+      totalOffset += (curr as Text).length;
+    } else if (
+      curr.nodeType === Node.ELEMENT_NODE &&
+      (curr as Element).tagName === "BR"
+    ) {
+      totalOffset += 1;
+    }
   }
 
-  return currentNode as Text;
+  return totalOffset;
+}
+
+/**
+ * Returns the DOM node and offset within it corresponding to a
+ * given character offset in the contenteditable element.
+ */
+function getNodeAtOffset(
+  root: HTMLElement,
+  offset: number
+): { node: Text | Element | null; nodeOffset: number } {
+  let runningTotal = 0;
+
+  const walker = document.createTreeWalker(
+    root,
+    NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT,
+    {
+      acceptNode(n) {
+        if (n.nodeType === Node.TEXT_NODE) return NodeFilter.FILTER_ACCEPT;
+        if (
+          n.nodeType === Node.ELEMENT_NODE &&
+          (n as Element).tagName === "BR"
+        ) {
+          return NodeFilter.FILTER_ACCEPT;
+        }
+        return NodeFilter.FILTER_SKIP;
+      },
+    }
+  );
+
+  while (walker.nextNode()) {
+    const curr = walker.currentNode;
+    if (curr.nodeType === Node.TEXT_NODE) {
+      const txtLen = (curr as Text).length;
+      if (runningTotal + txtLen >= offset) {
+        return {
+          node: curr as Text,
+          nodeOffset: offset - runningTotal,
+        };
+      }
+      runningTotal += txtLen;
+    } else if (
+      curr.nodeType === Node.ELEMENT_NODE &&
+      (curr as Element).tagName === "BR"
+    ) {
+      if (runningTotal + 1 > offset) {
+        return { node: curr as Element, nodeOffset: 0 };
+      }
+      runningTotal += 1;
+    }
+  }
+
+  return { node: null, nodeOffset: 0 };
 }

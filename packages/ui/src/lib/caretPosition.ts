@@ -4,20 +4,6 @@ import {
   TextboxElement,
 } from "../components/editor/textboxState";
 
-export function getCaretPosition(
-  el: TextboxElement
-): { top: number; left: number } | null {
-  if (isTextInput(el)) {
-    return getPositionInInput(el);
-  }
-
-  if (isContentEditable(el)) {
-    return getPositionInContentEditable(el);
-  }
-
-  return null;
-}
-
 const properties = [
   "direction",
   "boxSizing",
@@ -53,6 +39,14 @@ const properties = [
   "letterSpacing",
   "wordSpacing",
 ] as const;
+
+export function getCaretPosition(
+  el: TextboxElement
+): { top: number; left: number } | null {
+  if (isTextInput(el)) return getPositionInInput(el);
+  if (isContentEditable(el)) return getPositionInContentEditable(el);
+  return null;
+}
 
 export function getPositionInInput(
   element: HTMLInputElement | HTMLTextAreaElement
