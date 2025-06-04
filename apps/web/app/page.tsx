@@ -2,7 +2,7 @@ import React from "react";
 import { Editor } from "@workspace/ui/components/editor/Editor";
 
 const textAreaDefaultValue =
-  "Write 𝑏𝑒𝑡𝑡𝑒𝑟-𝑙𝑜𝑜𝑘𝑖𝑛𝑔 𝓈𝕙�𝔱 anywhere\nwith this 𝐔𝐧𝐢𝐜𝐨𝐝𝐞-based text editor✍️";
+  "Write 𝑏𝑒𝑡𝑡𝑒𝑟-𝑙𝑜𝑜𝑘𝑖𝑛𝑔 𝓈𝕙�𝔱 anywhere\nwith this 𝐔𝐧𝐢𝐜𝐨𝐝𝐞-based text editor";
 
 export default function Page() {
   return (
@@ -14,15 +14,6 @@ export default function Page() {
           className: "text-xl!",
         }}
       />
-      <div
-        suppressContentEditableWarning
-        contentEditable
-        className="p-2 border-2"
-      >
-        <p>
-          <span>{textAreaDefaultValue}</span>
-        </p>
-      </div>
     </div>
   );
 }
