@@ -22,10 +22,6 @@ export type TextToolbarContextType = {
   toggleVariant: (variant: "bold" | "italic") => void;
   toggleDecoration: (decoration: TextDecoration) => void;
   styleSelection: (style: TextStyle) => void;
-  hidden: boolean;
-  setHidden: (hidden: boolean) => void;
-  sticky: boolean;
-  setSticky: (sticky: boolean) => void;
 };
 
 const TextToolbarContext = createContext<TextToolbarContextType | undefined>(
@@ -43,20 +39,9 @@ export const useTextToolbar = () => {
 type Props = {
   children: React.ReactNode;
   textboxRef: React.RefObject<TextboxElement | null>;
-  hidden?: boolean;
-  setHidden?: (hidden: boolean) => void;
-  sticky?: boolean;
-  setSticky?: (sticky: boolean) => void;
 };
 
-export function TextToolbarProvider({
-  children,
-  textboxRef,
-  hidden = false,
-  setHidden = () => {},
-  sticky = false,
-  setSticky = () => {},
-}: Props) {
+export function TextToolbarProvider({ children, textboxRef }: Props) {
   const [style, setStyle] = useState<TextStyle>({
     family: "serif",
     bold: false,
@@ -200,10 +185,6 @@ export function TextToolbarProvider({
         styleSelection,
         toggleVariant,
         toggleDecoration,
-        setHidden,
-        hidden,
-        setSticky,
-        sticky,
       }}
     >
       {children}

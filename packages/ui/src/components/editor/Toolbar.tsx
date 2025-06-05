@@ -9,6 +9,7 @@ import {
   formatFontName,
 } from "@workspace/ui/lib/textTools/textStyle/";
 import { useTextToolbar } from "./ToolbarProvider";
+import { useTextToolbarState } from "./ToolbarStateProvider";
 import {
   ToggleGroup,
   ToggleGroupItem,
@@ -41,15 +42,8 @@ export function TextToolbar({
   portalContainer?: HTMLElement;
   className?: string;
 }) {
-  const {
-    style,
-    toolbarData,
-    styleSelection,
-    hidden,
-    setHidden,
-    sticky,
-    setSticky,
-  } = useTextToolbar();
+  const { style, toolbarData, styleSelection } = useTextToolbar();
+  const { hidden, sticky, setHidden, setSticky } = useTextToolbarState();
 
   return (
     <div
@@ -199,7 +193,7 @@ export function TextToolbar({
         <Button
           variant="ghost"
           size="icon"
-          className="p-1 text-lg hover:text-xl hover:rotate-[21deg] font-bold rounded-full transition-all"
+          className="p-1 bg-popover text-popover-foreground text-lg font-bold rounded-full border-2 shadow-lg hover:text-xl hover:rotate-[21deg] transition-all"
           title="Show Uniglyphs Toolbar"
           onClick={() => setTimeout(() => setHidden(false), 10)}
         >
