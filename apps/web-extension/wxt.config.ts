@@ -3,6 +3,11 @@ import tsconfigPaths from "vite-tsconfig-paths";
 
 // See https://wxt.dev/api/config.html
 export default defineConfig({
+  dev: {
+    server: {
+      port: 1234,
+    },
+  },
   modules: ["@wxt-dev/module-react"],
   vite: () => ({
     plugins: [tsconfigPaths()],
