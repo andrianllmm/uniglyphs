@@ -40,18 +40,18 @@ const styleProperties = [
 /**
  * Determines caret position of a textbox element
  */
-export function getCaretPosition(
+export function getCaretPos(
   el: TextboxElement
 ): { top: number; left: number } | null {
-  if (isTextInput(el)) return getPositionInInput(el);
-  if (isContentEditable(el)) return getPositionInContentEditable(el);
+  if (isTextInput(el)) return getPosInInput(el);
+  if (isContentEditable(el)) return getPosInContentEditable(el);
   return null;
 }
 
 /**
  * Calculates caret position inside an input or textarea
  */
-export function getPositionInInput(
+export function getPosInInput(
   element: HTMLInputElement | HTMLTextAreaElement
 ): { top: number; left: number } {
   // Create hidden mirror div and span to replicate text layout
@@ -108,7 +108,7 @@ export function getPositionInInput(
 /**
  * Calculates caret position inside a contenteditable element
  */
-export function getPositionInContentEditable(
+export function getPosInContentEditable(
   element: HTMLElement
 ): { top: number; left: number } | null {
   // Get the current user selection

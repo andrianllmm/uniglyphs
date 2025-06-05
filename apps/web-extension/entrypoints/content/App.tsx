@@ -1,21 +1,18 @@
 import { useEffect, useRef, useState } from "react";
+import { cn } from "@workspace/ui/lib/utils";
 import { Providers } from "@/components/providers";
-import { getCaretPosition } from "@workspace/ui/lib/caretPosition";
+import { useDebouncedCallback } from "@workspace/ui/lib/debounceCallback";
+import {
+  getToolbarPos,
+  getAlignToolbarPos,
+} from "@workspace/ui/components/editor/toolbarPosition";
 import {
   isContentEditable,
   isTextInput,
   TextboxElement,
 } from "@workspace/ui/lib/textboxState";
-import { TextToolbar } from "@workspace/ui/components/editor/Toolbar";
-import { Button } from "@workspace/ui/components/button";
-import { X } from "lucide-react";
-import {
-  TOOLBAR_FALLBACK_HEIGHT,
-  TOOLBAR_FALLBACK_WIDTH,
-  TOOLBAR_VERTICAL_OFFSET,
-} from "@workspace/ui/components/editor/Editor";
-import { useDebouncedCallback } from "@workspace/ui/lib/debounceCallback";
 import { TextToolbarProvider } from "@workspace/ui/components/editor/ToolbarProvider";
+import { TextToolbar } from "@workspace/ui/components/editor/Toolbar";
 
 export function App({ portalContainer }: { portalContainer: HTMLElement }) {
   const textboxRef = useRef<TextboxElement | null>(null);
@@ -24,96 +21,68 @@ export function App({ portalContainer }: { portalContainer: HTMLElement }) {
   const [activeTextbox, setActiveTextbox] = useState<TextboxElement | null>(
     null
   );
-  const [toolbarPosition, setToolbarPosition] = useState({ top: 0, left: 0 });
+  const [toolbarPos, setToolbarPos] = useState({ top: 0, left: 0 });
+  const [hidden, setHidden] = useState(false);
+  const [sticky, setSticky] = useState(false);
 
-  const updateCaretPosition = useCallback(() => {
-    const el = textboxRef.current;
-    if (!el) return;
+  const handleHiddenChange = (hidden: boolean) => {
+    if (hidden && sticky) setSticky(false);
+    setHidden(hidden);
+  };
 
-    const coords = getCaretPosition(el);
-    if (!coords || (coords.left === 0 && coords.top === 0)) {
-      if (typeof window === "undefined") return;
-      const toolbarHeight =
-        toolbarRef.current?.offsetHeight || TOOLBAR_FALLBACK_HEIGHT;
-      const toolbarWidth =
-        toolbarRef.current?.offsetWidth || TOOLBAR_FALLBACK_WIDTH;
-      setToolbarPosition({
-        top: window.innerHeight - toolbarHeight - TOOLBAR_VERTICAL_OFFSET,
-        left: (window.innerWidth - toolbarWidth) / 2,
-      });
+  const handleStickyChange = (sticky: boolean) => {
+    if (sticky && hidden) setHidden(false);
+    setSticky(sticky);
+  };
+
+  const updateCaretPos = useCallback(() => {
+    if (sticky) {
+      setToolbarPos(getAlignToolbarPos(toolbarRef.current, "center"));
+      return;
+    }
+    if (hidden) {
+      setToolbarPos(getAlignToolbarPos(toolbarRef.current, "right"));
       return;
     }
 
-    const elRect = el.getBoundingClientRect();
+    setToolbarPos(getToolbarPos(textboxRef.current, toolbarRef.current));
+  }, [sticky, hidden]);
 
-    let newTop =
-      elRect.top + coords.top + window.scrollY + TOOLBAR_VERTICAL_OFFSET;
-    let newLeft = elRect.left + coords.left + window.scrollX;
-
-    newTop = Math.min(
-      newTop,
-      window.innerHeight - (toolbarRef.current?.offsetHeight || 0)
-    );
-    newLeft = Math.min(
-      newLeft,
-      window.innerWidth - (toolbarRef.current?.offsetWidth || 0)
-    );
-
-    newTop = Math.max(newTop, 0);
-    newLeft = Math.max(newLeft, 0);
-
-    setToolbarPosition({ top: newTop, left: newLeft });
-  }, []);
-
-  const updateCaretPositionDebounced = useDebouncedCallback(
-    updateCaretPosition,
-    10
-  );
+  const updateCaretPosDebounced = useDebouncedCallback(updateCaretPos, 10);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    // Set initial position to bottom center
-    const toolbarHeight =
-      toolbarRef.current?.offsetHeight || TOOLBAR_FALLBACK_HEIGHT;
-    const toolbarWidth =
-      toolbarRef.current?.offsetWidth || TOOLBAR_FALLBACK_WIDTH;
-    setToolbarPosition({
-      top: window.innerHeight - toolbarHeight - TOOLBAR_VERTICAL_OFFSET,
-      left: (window.innerWidth - toolbarWidth) / 2,
-    });
+    setToolbarPos(getAlignToolbarPos(toolbarRef.current, "center"));
 
     const handleFocus = (event: FocusEvent) => {
       const target = event.target;
 
       if ((target && isTextInput(target)) || isContentEditable(target)) {
         textboxRef.current = target;
-        setTimeout(updateCaretPosition, 0);
+        setTimeout(updateCaretPos, 0);
         setActiveTextbox(target);
       }
     };
 
     // Trigger caret position update shortly after mount
     const timeoutId = setTimeout(() => {
-      updateCaretPositionDebounced();
+      updateCaretPosDebounced();
     }, 100);
 
     document.addEventListener("focus", handleFocus, true);
-    document.addEventListener("selectionchange", updateCaretPositionDebounced);
-    document.addEventListener("input", updateCaretPositionDebounced);
-    window.addEventListener("scroll", updateCaretPositionDebounced);
+    document.addEventListener("selectionchange", updateCaretPosDebounced);
+    document.addEventListener("input", updateCaretPosDebounced);
+    window.addEventListener("scroll", updateCaretPosDebounced);
 
     return () => {
       clearTimeout(timeoutId);
       document.removeEventListener("focus", handleFocus, true);
-      document.removeEventListener(
-        "selectionchange",
-        updateCaretPositionDebounced
-      );
-      document.removeEventListener("input", updateCaretPositionDebounced);
-      window.removeEventListener("scroll", updateCaretPositionDebounced);
+      document.removeEventListener("selectionchange", updateCaretPosDebounced);
+      document.removeEventListener("input", updateCaretPosDebounced);
+      window.removeEventListener("scroll", updateCaretPosDebounced);
     };
-  }, [updateCaretPositionDebounced]);
+  }, [updateCaretPosDebounced]);
 
   if (!activeTextbox) return null;
 
@@ -121,31 +90,29 @@ export function App({ portalContainer }: { portalContainer: HTMLElement }) {
     <Providers>
       <div
         ref={toolbarRef}
-        className="bg-transparent text-black absolute z-[9999] transition-all duration-300"
+        className="bg-transparent text-black absolute z-[9000] transition-all duration-300"
         tabIndex={0}
         style={{
-          top: `${toolbarPosition.top}px`,
-          left: `${toolbarPosition.left}px`,
+          top: `${toolbarPos.top}px`,
+          left: `${toolbarPos.left}px`,
         }}
       >
         <div className="bg-transparent animate-in fade-in slide-in-from-bottom-4 duration-500 transition-all">
-          <div className="bg-transparent p-1 flex gap-1">
-            <div className="bg-white p-1 rounded-lg shadow-lg flex gap-1 items-center justify-center">
-              <TextToolbarProvider textboxRef={textboxRef}>
-                <TextToolbar portalContainer={portalContainer} />
-              </TextToolbarProvider>
-            </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="p-0.25! w-fit h-fit rounded-full text-muted-foreground/80 hover:text-muted-foreground bg-muted/10 hover:bg-muted/20"
-              onClick={() => {
-                setActiveTextbox(null);
-                textboxRef.current = null;
-              }}
+          <div
+            className={cn(
+              "bg-white p-1 rounded-lg shadow-lg flex gap-1 items-center justify-center",
+              hidden && "rounded-full border-2 p-0"
+            )}
+          >
+            <TextToolbarProvider
+              textboxRef={textboxRef}
+              hidden={hidden}
+              setHidden={handleHiddenChange}
+              sticky={sticky}
+              setSticky={handleStickyChange}
             >
-              <X className="size-3" />
-            </Button>
+              <TextToolbar portalContainer={portalContainer} />
+            </TextToolbarProvider>
           </div>
         </div>
       </div>
