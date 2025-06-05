@@ -15,6 +15,7 @@ import {
   TOOLBAR_VERTICAL_OFFSET,
 } from "@workspace/ui/components/editor/Editor";
 import { useDebouncedCallback } from "@workspace/ui/lib/debounceCallback";
+import { TextToolbarProvider } from "@workspace/ui/components/editor/ToolbarProvider";
 
 export function App({ portalContainer }: { portalContainer: HTMLElement }) {
   const textboxRef = useRef<TextboxElement | null>(null);
@@ -130,10 +131,9 @@ export function App({ portalContainer }: { portalContainer: HTMLElement }) {
         <div className="bg-transparent animate-in fade-in slide-in-from-bottom-4 duration-500 transition-all">
           <div className="bg-transparent p-1 flex gap-1">
             <div className="bg-white p-1 rounded-lg shadow-lg flex gap-1 items-center justify-center">
-              <TextToolbar
-                textboxRef={textboxRef}
-                portalContainer={portalContainer}
-              />
+              <TextToolbarProvider textboxRef={textboxRef}>
+                <TextToolbar portalContainer={portalContainer} />
+              </TextToolbarProvider>
             </div>
             <Button
               variant="ghost"

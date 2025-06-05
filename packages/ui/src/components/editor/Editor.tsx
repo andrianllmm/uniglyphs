@@ -6,6 +6,7 @@ import { TextToolbar } from "@workspace/ui/components/editor/Toolbar";
 import { Textarea } from "@workspace/ui/components/textarea";
 import { getCaretPosition } from "@workspace/ui/lib/caretPosition";
 import { useDebouncedCallback } from "@workspace/ui/lib/debounceCallback";
+import { TextToolbarProvider } from "./ToolbarProvider";
 
 export const TOOLBAR_VERTICAL_OFFSET = 30;
 export const TOOLBAR_FALLBACK_HEIGHT = 40;
@@ -137,11 +138,12 @@ export function Editor({
         >
           <div className="bg-transparent animate-in fade-in slide-in-from-bottom-4 duration-500 transition-all">
             <div className="bg-background p-1 rounded-lg shadow-lg flex gap-1 items-center justify-center">
-              <TextToolbar
-                textboxRef={textAreaRef}
-                className={cn(toolbarClassName)}
-                {...restToolbarProps}
-              />
+              <TextToolbarProvider textboxRef={textAreaRef}>
+                <TextToolbar
+                  className={cn(toolbarClassName)}
+                  {...restToolbarProps}
+                />
+              </TextToolbarProvider>
             </div>
           </div>
         </div>

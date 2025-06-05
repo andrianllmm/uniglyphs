@@ -8,8 +8,7 @@ import {
   TextDecoration,
   formatFontName,
 } from "@workspace/ui/lib/textTools/textStyle/";
-import { TextToolbarProvider, useTextToolbar } from "./ToolbarProvider";
-import { TextboxElement } from "../../lib/textboxState";
+import { useTextToolbar } from "./ToolbarProvider";
 import {
   ToggleGroup,
   ToggleGroupItem,
@@ -23,7 +22,7 @@ import {
 } from "@workspace/ui/components/select";
 import { Button } from "@workspace/ui/components/button";
 
-function TextToolbarInner({
+export function TextToolbar({
   portalContainer,
   className,
 }: {
@@ -132,25 +131,5 @@ function TextToolbarInner({
         )
       )}
     </div>
-  );
-}
-
-// Wrapper to provide context
-export function TextToolbar({
-  textboxRef,
-  className,
-  portalContainer,
-}: {
-  textboxRef: React.RefObject<TextboxElement | null>;
-  className?: string;
-  portalContainer?: HTMLElement;
-}) {
-  return (
-    <TextToolbarProvider textboxRef={textboxRef}>
-      <TextToolbarInner
-        className={className}
-        portalContainer={portalContainer}
-      />
-    </TextToolbarProvider>
   );
 }
