@@ -1,7 +1,6 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
-import { HotKeys } from "react-hotkeys";
 import {
   applyTextStyles,
   inferTextStyles,
@@ -105,6 +104,13 @@ export function TextToolbarProvider({ children, textboxRef }: Props) {
     styleSelection({ ...style, decorations: newDecorations });
   };
 
+  // Build toolbar config from available tools
+  const toolbarData = getToolbarData({
+    styleSelection,
+    toggleVariant,
+    toggleDecoration,
+  });
+
   // Listen to selection changes and update style state accordingly
   useEffect(() => {
     const handleSelectionChange = () => {
@@ -134,36 +140,42 @@ export function TextToolbarProvider({ children, textboxRef }: Props) {
     };
   }, [textboxRef]);
 
-  // Build toolbar config from available tools
-  const toolbarData = getToolbarData({
-    styleSelection,
-    toggleVariant,
-    toggleDecoration,
-  });
+  // Build a map from hotkey string to the handler function
+  useEffect(() => {
+    const hotkeyMap = new Map<string, () => void>();
 
-  // Create key mappings for keyboard shortcuts
-  const keyMap = Object.values(toolbarData).reduce(
-    (acc, group) => {
+    Object.values(toolbarData).forEach((group) => {
       Object.values(group.tools).forEach((tool) => {
-        acc[tool.label] = tool.hotkey;
+        hotkeyMap.set(tool.hotkey.toLowerCase(), tool.handler);
       });
-      return acc;
-    },
-    {} as Record<string, string>
-  );
+    });
 
-  // Create event handlers for keyboard shortcuts
-  const handlers = Object.values(toolbarData).reduce(
-    (acc, section) => {
-      Object.values(section.tools).forEach((tool) => {
-        acc[tool.label] = tool.handler;
-      });
-      return acc;
-    },
-    {} as Record<string, () => void>
-  );
+    const handleKeyDown = (event: KeyboardEvent) => {
+      const modifiers = [];
+      if (event.ctrlKey) modifiers.push("ctrl");
+      if (event.metaKey) modifiers.push("meta");
+      if (event.altKey) modifiers.push("alt");
+      if (event.shiftKey) modifiers.push("shift");
+      const key = event.key.toLowerCase();
 
-  // Wrap children with context and HotKeys handler
+      const keyCombo = [...modifiers, key].join("+");
+
+      const handler = hotkeyMap.get(keyCombo);
+      if (handler) {
+        // Call handler with priority
+        event.preventDefault();
+        event.stopPropagation();
+        handler();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown, { capture: true });
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown, { capture: true });
+    };
+  }, [toolbarData]);
+
   return (
     <TextToolbarContext.Provider
       value={{
@@ -175,9 +187,7 @@ export function TextToolbarProvider({ children, textboxRef }: Props) {
         toggleDecoration,
       }}
     >
-      <HotKeys keyMap={keyMap} handlers={handlers}>
-        {children}
-      </HotKeys>
+      {children}
     </TextToolbarContext.Provider>
   );
 }
