@@ -86,19 +86,24 @@ export function ToolbarStateProvider({ children, textboxRef }: Props) {
       updateCaretPosDebounced();
     }, 10);
 
-    window.addEventListener("focus", updateCaretPosDebounced, true);
-    document.addEventListener("selectionchange", updateCaretPosDebounced);
-    document.addEventListener("input", updateCaretPosDebounced);
-    window.addEventListener("scroll", updateCaretPosDebounced);
-    window.addEventListener("resize", updateCaretPosDebounced);
+    const windowEvents = ["focus", "input", "scroll", "resize"];
+    const documentEvents = ["selectionchange"];
+
+    windowEvents.forEach((e) =>
+      window.addEventListener(e, updateCaretPosDebounced)
+    );
+    documentEvents.forEach((e) =>
+      document.addEventListener(e, updateCaretPosDebounced)
+    );
 
     return () => {
       clearTimeout(timeoutId);
-      window.removeEventListener("focus", updateCaretPosDebounced, true);
-      document.removeEventListener("selectionchange", updateCaretPosDebounced);
-      document.removeEventListener("input", updateCaretPosDebounced);
-      window.removeEventListener("scroll", updateCaretPosDebounced);
-      window.removeEventListener("resize", updateCaretPosDebounced);
+      windowEvents.forEach((e) =>
+        window.removeEventListener(e, updateCaretPosDebounced)
+      );
+      documentEvents.forEach((e) =>
+        document.removeEventListener(e, updateCaretPosDebounced)
+      );
     };
   }, [updateCaretPosDebounced]);
 

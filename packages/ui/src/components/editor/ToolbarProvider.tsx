@@ -83,7 +83,7 @@ export function ToolbarProvider({ children, textboxRef }: Props) {
     const styledSelection = applyTextStyles(selection, newStyle);
     insertText(styledSelection);
 
-    setStyle(inferTextStyles(styledSelection));
+    setStyle(newStyle);
   };
 
   // Toggle bold or italic styles
@@ -118,23 +118,34 @@ export function ToolbarProvider({ children, textboxRef }: Props) {
       // Infer style from selected text or adjacent char if collapsed
       const { selection, adjacentChar, selectionStart, selectionEnd } =
         getTextboxState(textbox);
+
       const inferredStyles = inferTextStyles(
         selectionStart === selectionEnd ? adjacentChar : selection
       );
+
       setStyle(inferredStyles);
     };
 
     const textbox = textboxRef.current;
     if (!textbox) return;
 
-    textbox.addEventListener("select", handleSelectionChange);
-    textbox.addEventListener("keyup", handleSelectionChange);
-    textbox.addEventListener("mouseup", handleSelectionChange);
+    const windowEvents = ["input", "keyup", "mouseup"];
+    const documentEvents = ["selectionchange"];
+
+    windowEvents.forEach((e) =>
+      window.addEventListener(e, handleSelectionChange)
+    );
+    documentEvents.forEach((e) =>
+      document.addEventListener(e, handleSelectionChange)
+    );
 
     return () => {
-      textbox.removeEventListener("select", handleSelectionChange);
-      textbox.removeEventListener("keyup", handleSelectionChange);
-      textbox.removeEventListener("mouseup", handleSelectionChange);
+      windowEvents.forEach((e) =>
+        window.removeEventListener(e, handleSelectionChange)
+      );
+      documentEvents.forEach((e) =>
+        document.removeEventListener(e, handleSelectionChange)
+      );
     };
   }, [textboxRef]);
 
