@@ -5,9 +5,9 @@ import {
   isTextInput,
   TextboxElement,
 } from "@workspace/ui/lib/textboxState";
-import { TextToolbarProvider } from "@workspace/ui/components/editor/ToolbarProvider";
-import { TextToolbar } from "@workspace/ui/components/editor/Toolbar";
-import { TextToolbarStateProvider } from "@workspace/ui/components/editor/ToolbarStateProvider";
+import { ToolbarProvider } from "@workspace/ui/components/editor/ToolbarProvider";
+import { Toolbar } from "@workspace/ui/components/editor/Toolbar";
+import { ToolbarStateProvider } from "@workspace/ui/components/editor/ToolbarStateProvider";
 
 export function App({ portalContainer }: { portalContainer: HTMLElement }) {
   const textboxRef = useRef<TextboxElement | null>(null);
@@ -32,11 +32,11 @@ export function App({ portalContainer }: { portalContainer: HTMLElement }) {
 
   return (
     <Providers>
-      <TextToolbarStateProvider textboxRef={textboxRef}>
-        <TextToolbarProvider textboxRef={textboxRef}>
-          <TextToolbar portalContainer={portalContainer} />
-        </TextToolbarProvider>
-      </TextToolbarStateProvider>
+      <ToolbarStateProvider textboxRef={textboxRef}>
+        <ToolbarProvider textboxRef={textboxRef}>
+          <Toolbar portalContainer={portalContainer} />
+        </ToolbarProvider>
+      </ToolbarStateProvider>
     </Providers>
   );
 }

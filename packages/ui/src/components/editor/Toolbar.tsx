@@ -8,8 +8,8 @@ import {
   TextDecoration,
   formatFontName,
 } from "@workspace/ui/lib/textTools/textStyle/";
-import { useTextToolbar } from "./ToolbarProvider";
-import { useTextToolbarState } from "./ToolbarStateProvider";
+import { useToolbar } from "./ToolbarProvider";
+import { useToolbarState } from "./ToolbarStateProvider";
 import {
   ToggleGroup,
   ToggleGroupItem,
@@ -35,15 +35,15 @@ import {
   PinOffIcon,
 } from "lucide-react";
 
-export function TextToolbar({
+export function Toolbar({
   portalContainer,
   className,
 }: {
   portalContainer?: HTMLElement;
   className?: string;
 }) {
-  const { style, toolbarData, styleSelection } = useTextToolbar();
-  const { hidden, sticky, setHidden, setSticky } = useTextToolbarState();
+  const { style, toolbarData, styleSelection } = useToolbar();
+  const { hidden, sticky, setHidden, setSticky } = useToolbarState();
 
   return (
     <div

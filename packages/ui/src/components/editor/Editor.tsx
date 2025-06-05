@@ -2,10 +2,10 @@
 
 import { useRef } from "react";
 import { cn } from "@workspace/ui/lib/utils";
-import { TextToolbarProvider } from "./ToolbarProvider";
-import { TextToolbar } from "@workspace/ui/components/editor/Toolbar";
+import { ToolbarProvider } from "./ToolbarProvider";
+import { Toolbar } from "@workspace/ui/components/editor/Toolbar";
 import { Textarea } from "@workspace/ui/components/textarea";
-import { TextToolbarStateProvider } from "./ToolbarStateProvider";
+import { ToolbarStateProvider } from "./ToolbarStateProvider";
 
 export function Editor({
   textAreaProps = {},
@@ -13,7 +13,7 @@ export function Editor({
   className,
 }: {
   textAreaProps?: React.ComponentProps<typeof Textarea>;
-  toolbarProps?: Omit<React.ComponentProps<typeof TextToolbar>, "textboxRef">;
+  toolbarProps?: Omit<React.ComponentProps<typeof Toolbar>, "textboxRef">;
   className?: string;
 }) {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -36,11 +36,11 @@ export function Editor({
         {...restTextAreaProps}
       />
 
-      <TextToolbarStateProvider textboxRef={textAreaRef}>
-        <TextToolbarProvider textboxRef={textAreaRef}>
-          <TextToolbar className={cn(toolbarClassName)} {...restToolbarProps} />
-        </TextToolbarProvider>
-      </TextToolbarStateProvider>
+      <ToolbarStateProvider textboxRef={textAreaRef}>
+        <ToolbarProvider textboxRef={textAreaRef}>
+          <Toolbar className={cn(toolbarClassName)} {...restToolbarProps} />
+        </ToolbarProvider>
+      </ToolbarStateProvider>
     </div>
   );
 }

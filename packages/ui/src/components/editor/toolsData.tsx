@@ -1,4 +1,4 @@
-import { TextToolbarContextType } from "./ToolbarProvider";
+import { ToolbarContextType } from "./ToolbarProvider";
 import {
   BoldIcon,
   ItalicIcon,
@@ -22,9 +22,9 @@ export type ToolbarData = {
 };
 
 export function getToolbarData(handlers: {
-  styleSelection: TextToolbarContextType["styleSelection"];
-  toggleVariant: TextToolbarContextType["toggleVariant"];
-  toggleDecoration: TextToolbarContextType["toggleDecoration"];
+  styleSelection: ToolbarContextType["styleSelection"];
+  toggleVariant: ToolbarContextType["toggleVariant"];
+  toggleDecoration: ToolbarContextType["toggleDecoration"];
 }): ToolbarData {
   return {
     fontVariants: {

@@ -15,7 +15,7 @@ import {
   insertTextboxValue,
 } from "../../lib/textboxState";
 
-export type TextToolbarContextType = {
+export type ToolbarContextType = {
   style: TextStyle;
   toolbarData: ToolbarData;
   insertText: (text?: string, type?: "selection" | "line") => void;
@@ -24,14 +24,12 @@ export type TextToolbarContextType = {
   styleSelection: (style: TextStyle) => void;
 };
 
-const TextToolbarContext = createContext<TextToolbarContextType | undefined>(
-  undefined
-);
+const ToolbarContext = createContext<ToolbarContextType | undefined>(undefined);
 
-export const useTextToolbar = () => {
-  const context = useContext(TextToolbarContext);
+export const useToolbar = () => {
+  const context = useContext(ToolbarContext);
   if (!context) {
-    throw new Error("useTextToolbar must be used within a TextToolbarProvider");
+    throw new Error("useToolbar must be used within a ToolbarProvider");
   }
   return context;
 };
@@ -41,7 +39,7 @@ type Props = {
   textboxRef: React.RefObject<TextboxElement | null>;
 };
 
-export function TextToolbarProvider({ children, textboxRef }: Props) {
+export function ToolbarProvider({ children, textboxRef }: Props) {
   const [style, setStyle] = useState<TextStyle>({
     family: "serif",
     bold: false,
@@ -177,7 +175,7 @@ export function TextToolbarProvider({ children, textboxRef }: Props) {
   }, [toolbarData]);
 
   return (
-    <TextToolbarContext.Provider
+    <ToolbarContext.Provider
       value={{
         style,
         toolbarData,
@@ -188,6 +186,6 @@ export function TextToolbarProvider({ children, textboxRef }: Props) {
       }}
     >
       {children}
-    </TextToolbarContext.Provider>
+    </ToolbarContext.Provider>
   );
 }

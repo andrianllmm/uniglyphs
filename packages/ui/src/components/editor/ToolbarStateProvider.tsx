@@ -13,7 +13,7 @@ import { useDebouncedCallback } from "@workspace/ui/lib/debounceCallback";
 import { getAlignToolbarPos, getToolbarPos } from "./toolbarPosition";
 import { TextboxElement } from "../../lib/textboxState";
 
-export type TextToolbarStateContextType = {
+export type ToolbarStateContextType = {
   toolbarRef: React.RefObject<HTMLDivElement | null>;
   toolbarPos: { top: number; left: number };
   setToolbarPos: (pos: { top: number; left: number }) => void;
@@ -23,15 +23,15 @@ export type TextToolbarStateContextType = {
   setSticky: (sticky: boolean) => void;
 };
 
-const TextToolbarStateContext = createContext<
-  TextToolbarStateContextType | undefined
->(undefined);
+const ToolbarStateContext = createContext<ToolbarStateContextType | undefined>(
+  undefined
+);
 
-export const useTextToolbarState = () => {
-  const context = useContext(TextToolbarStateContext);
+export const useToolbarState = () => {
+  const context = useContext(ToolbarStateContext);
   if (!context) {
     throw new Error(
-      "useTextToolbarState must be used within a TextToolbarStateProvider"
+      "useToolbarState must be used within a ToolbarStateProvider"
     );
   }
   return context;
@@ -42,7 +42,7 @@ type Props = {
   textboxRef: React.RefObject<TextboxElement | null>;
 };
 
-export function TextToolbarStateProvider({ children, textboxRef }: Props) {
+export function ToolbarStateProvider({ children, textboxRef }: Props) {
   const toolbarRef = useRef<HTMLDivElement | null>(null);
 
   const [toolbarReady, setToolbarReady] = useState(false);
@@ -103,7 +103,7 @@ export function TextToolbarStateProvider({ children, textboxRef }: Props) {
   }, [updateCaretPosDebounced]);
 
   return (
-    <TextToolbarStateContext.Provider
+    <ToolbarStateContext.Provider
       value={{
         toolbarRef,
         toolbarPos,
@@ -134,6 +134,6 @@ export function TextToolbarStateProvider({ children, textboxRef }: Props) {
           </div>
         </div>
       )}
-    </TextToolbarStateContext.Provider>
+    </ToolbarStateContext.Provider>
   );
 }
