@@ -13,6 +13,9 @@ import { useDebouncedCallback } from "@workspace/ui/lib/debounceCallback";
 import { getAlignToolbarPos, getToolbarPos } from "./toolbarPosition";
 import { TextboxElement } from "../../lib/textboxState";
 
+const ToolbarHiddenKey = "toolbar-hidden";
+const ToolbarStickyKey = "toolbar-sticky";
+
 export type ToolbarStateContextType = {
   toolbarRef: React.RefObject<HTMLDivElement | null>;
   toolbarPos: { top: number; left: number };
@@ -47,8 +50,16 @@ export function ToolbarStateProvider({ children, textboxRef }: Props) {
 
   const [toolbarReady, setToolbarReady] = useState(false);
   const [toolbarPos, setToolbarPos] = useState({ top: 0, left: 0 });
-  const [hidden, setHidden] = useState(false);
-  const [sticky, setSticky] = useState(false);
+
+  const [hidden, setHidden] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return localStorage.getItem(ToolbarHiddenKey) === "true";
+  });
+
+  const [sticky, setSticky] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return localStorage.getItem(ToolbarStickyKey) === "true";
+  });
 
   const handleHiddenChange = (hidden: boolean) => {
     if (hidden && sticky) setSticky(false);
@@ -106,6 +117,14 @@ export function ToolbarStateProvider({ children, textboxRef }: Props) {
       );
     };
   }, [updateCaretPosDebounced]);
+
+  useEffect(() => {
+    localStorage.setItem(ToolbarHiddenKey, hidden.toString());
+  }, [hidden]);
+
+  useEffect(() => {
+    localStorage.setItem(ToolbarStickyKey, sticky.toString());
+  }, [sticky]);
 
   return (
     <ToolbarStateContext.Provider
