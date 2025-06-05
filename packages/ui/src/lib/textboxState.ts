@@ -79,28 +79,40 @@ export function getTextboxState(textbox: TextboxElement): TextboxState {
     }
   }
 
+  const chars = Array.from(state.text);
+
   // Clamp selection offsets to text length
-  state.selectionStart = Math.min(state.selectionStart, state.text.length);
-  state.selectionEnd = Math.min(state.selectionEnd, state.text.length);
+  const startStrIndex = Math.min(state.selectionStart, state.text.length);
+  const endStrIndex = Math.min(state.selectionEnd, state.text.length);
+
+  // Convert string indices to char indices
+  state.selectionStart = strToCharIdx(state.text, startStrIndex);
+  state.selectionEnd = strToCharIdx(state.text, endStrIndex);
 
   // Extract selection
-  state.selection = state.text.slice(state.selectionStart, state.selectionEnd);
+  state.selection = chars
+    .slice(state.selectionStart, state.selectionEnd)
+    .join("");
 
-  state.beforeSelection = state.text.slice(0, state.selectionStart);
-  state.afterSelection = state.text.slice(state.selectionEnd);
+  state.beforeSelection = chars.slice(0, state.selectionStart).join("");
+  state.afterSelection = chars.slice(state.selectionEnd).join("");
 
-  // Extract adjacent char (char before selection start)
   state.adjacentChar =
-    state.selectionStart > 0 ? state.text[state.selectionStart - 1] || "" : "";
+    state.selectionStart == state.selectionEnd
+      ? chars.slice(state.selectionStart - 1, state.selectionStart - 0).join("")
+      : chars.slice(0, 1).join("");
 
   // Extract line
   state.lineStart = state.text.lastIndexOf("\n", state.selectionStart - 1) + 1;
   const lineEndRaw = state.text.indexOf("\n", state.selectionEnd);
   state.lineEnd = lineEndRaw === -1 ? state.text.length : lineEndRaw;
-  state.line = state.text.slice(state.lineStart, state.lineEnd);
+  state.line = chars.slice(state.lineStart, state.lineEnd).join("");
 
-  state.beforeLine = state.text.slice(0, state.lineStart);
-  state.afterLine = state.text.slice(state.lineEnd);
+  state.beforeLine = chars.slice(0, state.lineStart).join("");
+  state.afterLine = chars.slice(state.lineEnd).join("");
+
+  state.selectionStart = charToStrIdx(state.text, state.selectionStart);
+  state.selectionEnd = charToStrIdx(state.text, state.selectionEnd);
 
   return state;
 }
@@ -311,4 +323,38 @@ function getNodeAtOffset(
 
   // If offset is beyond content length, return null/default
   return { node: null, nodeOffset: 0 };
+}
+
+/**
+ * Converts a UTF-16 string index to a Unicode character index.
+ */
+function strToCharIdx(text: string, stringIndex: number): number {
+  let charCount = 0;
+  let strIdx = 0;
+  const len = text.length;
+
+  while (strIdx < stringIndex && strIdx < len) {
+    const codePoint = text.codePointAt(strIdx);
+    if (codePoint === undefined) break;
+    strIdx += codePoint > 0xffff ? 2 : 1;
+    charCount++;
+  }
+
+  return charCount;
+}
+
+/**
+ * Converts a Unicode character index to a UTF-16 string index.
+ */
+function charToStrIdx(text: string, charIdx: number): number {
+  let strIdx = 0;
+  let count = 0;
+
+  for (const char of text) {
+    if (count === charIdx) break;
+    strIdx += char.length;
+    count++;
+  }
+
+  return strIdx;
 }
