@@ -125,7 +125,28 @@ export function getPositionInContentEditable(
   range.collapse(true);
 
   // Get caret and container rect (object with position and size relative to viewport)
-  const rect = range.getBoundingClientRect();
+  let rect = range.getBoundingClientRect();
+
+  if (rect.left === 0 && rect.top === 0) {
+    // Insert temporary span at caret position
+    const tempSpan = document.createElement("span");
+    // Zero-width non-breaking space character, ensures span has width
+    tempSpan.textContent = "\u200B";
+    range.insertNode(tempSpan);
+
+    rect = tempSpan.getBoundingClientRect();
+
+    // Clean up
+    tempSpan.parentNode?.removeChild(tempSpan);
+
+    // Restore selection to after the tempSpan
+    selection.removeAllRanges();
+    const newRange = document.createRange();
+    newRange.setStart(range.startContainer, range.startOffset);
+    newRange.collapse(true);
+    selection.addRange(newRange);
+  }
+
   const containerRect = element.getBoundingClientRect();
 
   // Calculate caret position relative to element plus page scroll

@@ -8,6 +8,10 @@ export default defineContentScript({
   cssInjectionMode: "ui",
 
   async main(ctx) {
+    const url = window.location.href;
+    const mySite = import.meta.env.WXT_UNIGLYPHS_WEBSITE_URL + "/";
+    if (url.startsWith(mySite)) return;
+
     const ui = await createShadowRootUi(ctx, {
       name: "floating-toolbar",
       position: "inline",
