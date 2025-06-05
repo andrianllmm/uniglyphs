@@ -9,6 +9,7 @@ import {
   styleOffsets,
 } from "@workspace/ui/lib/textTools/textStyle/offsets";
 
+// Character codes for reference ranges
 const CharCode = {
   A: 0x41,
   Z: 0x5a,
@@ -18,6 +19,7 @@ const CharCode = {
   nine: 0x39,
 } as const;
 
+// Regex to match combining marks (accents, diacritics)
 const CombiningMarks = /[\u0300-\u036f]/g;
 
 export type TextStyle = {
@@ -27,15 +29,20 @@ export type TextStyle = {
   decorations: TextDecoration[];
 };
 
+/**
+ * Applies given text styles by mapping chars to styled Unicode variants
+ * and appends decoration marks as combining characters.
+ */
 export function applyTextStyles(text: string, style: TextStyle): string {
   const { family, bold, italic, decorations } = style;
-
   const variant = getFontVariantKey(bold, italic);
 
+  // Get style offsets for the font family and variant
   const offsets =
     styleOffsets[family][variant] ?? styleOffsets[family]["normal"];
   if (!offsets) return text;
 
+  // Convert decorations to corresponding combining marks
   const marks = decorations
     .map((decoration) => String.fromCodePoint(decorationOffsets[decoration]))
     .join("");
@@ -53,6 +60,7 @@ export function applyTextStyles(text: string, style: TextStyle): string {
 
     let transformed = char;
 
+    // Transform the character by applying offsets
     if (transformed in offsets) {
       transformed = String.fromCodePoint(offsets[transformed] || code);
     } else if (
@@ -75,12 +83,17 @@ export function applyTextStyles(text: string, style: TextStyle): string {
       transformed = String.fromCodePoint(code + offsets.digit - CharCode.zero);
     }
 
+    // Append combining marks
     result.push(transformed + marks);
   }
 
   return result.join("");
 }
 
+/**
+ * Infers text styles from the first character of the text by checking
+ * which style offsets it falls into and detects applied decorations.
+ */
 export function inferTextStyles(text: string): TextStyle {
   let family: FontFamily = "serif";
   let bold = false;
@@ -89,6 +102,7 @@ export function inferTextStyles(text: string): TextStyle {
 
   const code = text.codePointAt(0) || NaN;
 
+  // Determine font family and variant by checking code ranges in styleOffsets
   for (const [key, variants] of Object.entries(styleOffsets)) {
     for (const [variant, offsets] of Object.entries(variants)) {
       const upperInRange =
@@ -118,6 +132,7 @@ export function inferTextStyles(text: string): TextStyle {
     }
   }
 
+  // Detect any decoration combining marks in the text
   for (const decoration of textDecorations) {
     if (text.includes(String.fromCodePoint(decorationOffsets[decoration]))) {
       decorations.push(decoration);
@@ -127,7 +142,12 @@ export function inferTextStyles(text: string): TextStyle {
   return { family, bold, italic, decorations };
 }
 
+/**
+ * Removes all applied text styles by reversing style offsets and
+ * stripping decoration combining marks and diacritics.
+ */
 export function stripTextStyles(text: string): string {
+  // Normalize text and remove combining marks (diacritics)
   text = text.normalize("NFKC").normalize("NFD").replace(CombiningMarks, "");
 
   const { family, bold, italic } = inferTextStyles(text);
@@ -171,6 +191,7 @@ export function stripTextStyles(text: string): string {
   return result.join("");
 }
 
+/** Returns the variant key string based on bold/italic flags */
 export function getFontVariantKey(bold: boolean, italic: boolean): FontVariant {
   if (bold && italic) return "boldItalic";
   if (bold) return "bold";
@@ -178,6 +199,7 @@ export function getFontVariantKey(bold: boolean, italic: boolean): FontVariant {
   return "normal";
 }
 
+/** Returns bold and italic flags from variant key string */
 export function getFontVariantByKey(key: FontVariant): {
   bold: boolean;
   italic: boolean;
@@ -188,6 +210,7 @@ export function getFontVariantByKey(key: FontVariant): {
   };
 }
 
+/** Formats font family from camelCase to sentence case */
 export function formatFontName(text: string): string {
   return text.replace(/([A-Z])/g, " $1").replace(/^./, (s) => s.toUpperCase());
 }

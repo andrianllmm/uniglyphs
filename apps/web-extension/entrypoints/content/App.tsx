@@ -5,10 +5,12 @@ import {
   isContentEditable,
   isTextInput,
   TextboxElement,
-} from "@workspace/ui/components/editor/textboxState";
+} from "@workspace/ui/lib/textboxState";
 import { TextToolbar } from "@workspace/ui/components/editor/Toolbar";
 import { Button } from "@workspace/ui/components/button";
 import { X } from "lucide-react";
+
+const TOOLBAR_VERTICAL_OFFSET = 30;
 
 export function App({ portalContainer }: { portalContainer: HTMLElement }) {
   const [activeTextbox, setActiveTextbox] = useState<TextboxElement | null>(
@@ -30,9 +32,11 @@ export function App({ portalContainer }: { portalContainer: HTMLElement }) {
 
       const elRect = el.getBoundingClientRect();
 
-      let newTop = elRect.top + coords.top + window.scrollY + 30;
+      let newTop =
+        elRect.top + coords.top + window.scrollY + TOOLBAR_VERTICAL_OFFSET;
       let newLeft = elRect.left + coords.left + window.scrollX;
 
+      // Ensure the toolbar stays within the viewport
       newTop = Math.min(
         newTop,
         window.innerHeight - (toolbarRef.current?.offsetHeight || 0)

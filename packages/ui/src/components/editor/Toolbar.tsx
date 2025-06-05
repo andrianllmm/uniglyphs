@@ -9,7 +9,7 @@ import {
   formatFontName,
 } from "@workspace/ui/lib/textTools/textStyle/";
 import { TextToolbarProvider, useTextToolbar } from "./ToolbarProvider";
-import { TextboxElement } from "./textboxState";
+import { TextboxElement } from "../../lib/textboxState";
 import {
   ToggleGroup,
   ToggleGroupItem,
@@ -39,6 +39,7 @@ function TextToolbarInner({
         className
       )}
     >
+      {/* Font family dropdown */}
       <Select
         value={style.family}
         onValueChange={(value: FontFamily) => {
@@ -63,6 +64,7 @@ function TextToolbarInner({
         </SelectContent>
       </Select>
 
+      {/* Toggle buttons for bold and italic */}
       <ToggleGroup
         type="multiple"
         value={[style.bold ? "bold" : "", style.italic ? "italic" : ""].filter(
@@ -91,6 +93,7 @@ function TextToolbarInner({
         )}
       </ToggleGroup>
 
+      {/* Toggle buttons for text decorations */}
       <ToggleGroup
         type="multiple"
         value={style.decorations}
@@ -113,6 +116,7 @@ function TextToolbarInner({
         )}
       </ToggleGroup>
 
+      {/* Miscellaneous toolbar buttons (e.g., clear) */}
       {Object.entries(toolbarData.miscellaneous?.tools || {}).map(
         ([value, { label, icon, hotkey, handler: onClick }]) => (
           <Button
@@ -131,6 +135,7 @@ function TextToolbarInner({
   );
 }
 
+// Wrapper to provide context
 export function TextToolbar({
   textboxRef,
   className,

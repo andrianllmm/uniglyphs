@@ -14,7 +14,7 @@ import {
   TextboxElement,
   updateTextboxSelection,
   insertTextboxValue,
-} from "./textboxState";
+} from "../../lib/textboxState";
 
 export type TextToolbarContextType = {
   style: TextStyle;
@@ -50,6 +50,7 @@ export function TextToolbarProvider({ children, textboxRef }: Props) {
     decorations: [],
   });
 
+  // Insert text into the textbox and preserve selection
   const insertText = (text: string = "") => {
     const textbox = textboxRef.current;
     if (!textbox) return;
@@ -58,6 +59,7 @@ export function TextToolbarProvider({ children, textboxRef }: Props) {
 
     insertTextboxValue(textbox, text);
 
+    // Restore selection after update
     setTimeout(() => {
       updateTextboxSelection(
         textbox,
@@ -68,6 +70,7 @@ export function TextToolbarProvider({ children, textboxRef }: Props) {
     }, 0);
   };
 
+  // Apply a text style to the current selection
   const styleSelection = (
     newStyle: TextStyle = {
       family: "serif",
@@ -86,6 +89,7 @@ export function TextToolbarProvider({ children, textboxRef }: Props) {
     setStyle(inferTextStyles(styledSelection));
   };
 
+  // Toggle bold or italic styles
   const toggleVariant = (variant: "bold" | "italic") => {
     styleSelection({
       ...style,
@@ -93,6 +97,7 @@ export function TextToolbarProvider({ children, textboxRef }: Props) {
     });
   };
 
+  // Toggle a text decoration
   const toggleDecoration = (decoration: TextDecoration) => {
     const newDecorations = style.decorations.includes(decoration)
       ? style.decorations.filter((d) => d !== decoration)
@@ -100,10 +105,13 @@ export function TextToolbarProvider({ children, textboxRef }: Props) {
     styleSelection({ ...style, decorations: newDecorations });
   };
 
+  // Listen to selection changes and update style state accordingly
   useEffect(() => {
     const handleSelectionChange = () => {
       const textbox = textboxRef.current;
       if (!textbox) return;
+
+      // Infer style from selected text or adjacent char if collapsed
       const { selection, adjacentChar, selectionStart, selectionEnd } =
         getTextboxState(textbox);
       const inferredStyles = inferTextStyles(
@@ -126,12 +134,14 @@ export function TextToolbarProvider({ children, textboxRef }: Props) {
     };
   }, [textboxRef]);
 
+  // Build toolbar config from available tools
   const toolbarData = getToolbarData({
     styleSelection,
     toggleVariant,
     toggleDecoration,
   });
 
+  // Create key mappings for keyboard shortcuts
   const keyMap = Object.values(toolbarData).reduce(
     (acc, group) => {
       Object.values(group.tools).forEach((tool) => {
@@ -142,6 +152,7 @@ export function TextToolbarProvider({ children, textboxRef }: Props) {
     {} as Record<string, string>
   );
 
+  // Create event handlers for keyboard shortcuts
   const handlers = Object.values(toolbarData).reduce(
     (acc, section) => {
       Object.values(section.tools).forEach((tool) => {
@@ -152,6 +163,7 @@ export function TextToolbarProvider({ children, textboxRef }: Props) {
     {} as Record<string, () => void>
   );
 
+  // Wrap children with context and HotKeys handler
   return (
     <TextToolbarContext.Provider
       value={{
