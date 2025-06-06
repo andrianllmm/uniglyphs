@@ -18,7 +18,7 @@ import {
 import { Button } from "../button";
 
 const MAX_CHAR_COUNT = 1000;
-const MAX_FONT_SIZE = 36;
+const MAX_FONT_SIZE = 32;
 const MIN_FONT_SIZE = 12;
 
 const VALUE_KEY = "editor_value";
@@ -87,17 +87,18 @@ export function Editor({
   }, [fontSize]);
 
   useEffect(() => {
+    if (textAreaProps.autoFocus !== true) return;
     const textarea = textAreaRef.current;
     if (textarea) {
-      let selection = initialSelection;
-      if (!selection) {
-        selection = [textarea?.value.length ?? 0, textarea?.value.length ?? 0];
-      }
+      const selection = initialSelection ?? [
+        textarea.value.length,
+        textarea.value.length,
+      ];
       textarea.setSelectionRange(...selection);
       textarea.scrollTop = textarea.scrollHeight;
       textarea.focus();
     }
-  }, []);
+  }, [textAreaProps.autoFocus, initialSelection]);
 
   const { className: textAreaClassName, ...restTextAreaProps } =
     textAreaProps ?? {};
@@ -123,7 +124,6 @@ export function Editor({
           textAreaClassName
         )}
         style={{ fontSize: `${fontSize}px` }}
-        autoFocus
         {...restTextAreaProps}
       />
 

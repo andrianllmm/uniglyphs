@@ -7,6 +7,5 @@
       "react": ["./node_modules/@types/react"]
     }
   },
-  "include": ["."],
   "exclude": ["node_modules", "dist"]
 }

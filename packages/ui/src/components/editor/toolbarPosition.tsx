@@ -1,7 +1,7 @@
 import { getCaretPos } from "@workspace/ui/lib/caretPosition";
 import { TextboxElement } from "@workspace/ui/lib/textboxState";
 
-export const MIN_VERTICAL_TOOLBAR_OFFSET = 30;
+export const MIN_VERTICAL_TOOLBAR_OFFSET = 36;
 export const DEFAULT_TOOLBAR_OFFSET = 30;
 export const TOOLBAR_FALLBACK_HEIGHT = 40;
 export const TOOLBAR_FALLBACK_WIDTH = 200;

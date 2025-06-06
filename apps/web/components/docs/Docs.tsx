@@ -3,9 +3,9 @@ import { GlitchStyledText } from "@workspace/ui/components/glitch-styles";
 import { H1, P } from "@workspace/ui/components/heading-with-anchor";
 import { ExternalLink } from "@workspace/ui/components/external-link";
 
-export function Docs() {
+export function Docs({ className = "" }: { className?: string }) {
   return (
-    <>
+    <div className={className}>
       <H1>
         What is <GlitchStyledText text="UniGlyphs" />?
       </H1>
@@ -18,6 +18,6 @@ export function Docs() {
       <br />
 
       <StylesSection />
-    </>
+    </div>
   );
 }
