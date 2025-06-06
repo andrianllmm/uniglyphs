@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { Button } from "../button";
 
-const MAX_CHAR_COUNT = 1000;
+const MAX_CHAR_COUNT = 10000;
 const MAX_FONT_SIZE = 32;
 const MIN_FONT_SIZE = 12;
 
@@ -117,7 +117,14 @@ export function Editor({
       <Textarea
         ref={textAreaRef}
         value={value}
-        onChange={(e) => setValue(e.target.value)}
+        onChange={(e) => {
+          const input = e.target.value;
+          if (input.length <= MAX_CHAR_COUNT) {
+            setValue(input);
+          } else {
+            setValue(input.slice(0, MAX_CHAR_COUNT));
+          }
+        }}
         placeholder="Type something..."
         className={cn(
           "border-transparent focus-visible:border-transparent focus-visible:ring-0 p-0 rounded-none",
@@ -131,7 +138,7 @@ export function Editor({
         <div className="flex w-full gap-1 items-center" title="Character count">
           <CircularProgress
             className="max-w-4"
-            value={value.length / MAX_CHAR_COUNT}
+            value={value.length}
             max={MAX_CHAR_COUNT}
           />
           <span className="text-nowrap select-none text-sm text-muted-foreground">
