@@ -17,6 +17,12 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@fontsource/inter": "^5.2.5",
+    "@fontsource/lora": "^5.2.5",
+    "@fontsource/merriweather": "^5.2.8",
+    "@fontsource/noto-sans": "^5.2.7",
+    "@fontsource/playfair": "^5.2.5",
+    "@fontsource/roboto": "^5.2.5",
     "@workspace/ui": "workspace:*",
     "lucide-react": "^0.475.0",
     "react": "^19.1.0",

@@ -6,11 +6,17 @@ import { Providers } from "@/components/providers.tsx";
 import App from "./App.tsx";
 import { Header } from "@/components/Header.tsx";
 import { Footer } from "@/components/Footer.tsx";
+import "@fontsource/noto-sans";
+import "@fontsource/roboto";
+import "@fontsource/inter";
+import "@fontsource/merriweather";
+import "@fontsource/playfair";
+import "@fontsource/lora";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <Providers>
-      <div className="container min-w-[320px] max-w-[480px] min-[480px] max-[600px] w-full h-full mx-auto flex flex-col">
+      <div className="font-custom antialiased container min-w-[320px] max-w-[480px] min-[480px] max-[600px] w-full h-full mx-auto flex flex-col">
         <Header />
         <div className="flex flex-col w-full h-full">
           <main className="p-3 grow">

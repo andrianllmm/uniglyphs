@@ -1,20 +1,15 @@
 import React from "react";
 import "@workspace/ui/globals.css";
-import { Geist, Geist_Mono } from "next/font/google";
+import "@fontsource/noto-sans";
+import "@fontsource/roboto";
+import "@fontsource/inter";
+import "@fontsource/merriweather";
+import "@fontsource/playfair";
+import "@fontsource/lora";
 import { Metadata } from "next";
 import { Providers } from "@/components/providers";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-
-const fontSans = Geist({
-  subsets: ["latin"],
-  variable: "--font-sans",
-});
-
-const fontMono = Geist_Mono({
-  subsets: ["latin"],
-  variable: "--font-mono",
-});
 
 export const metadata: Metadata = {
   title: "UniGlyphs",
@@ -28,9 +23,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${fontSans.variable} ${fontMono.variable} font-sans antialiased`}
-      >
+      <body className="font-custom antialiased">
         <Providers>
           <div className="container max-w-[640px] mx-auto flex flex-col">
             <Header />

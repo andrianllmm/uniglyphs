@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import { FontSelect } from "@workspace/ui/components/font-select";
 import { Button } from "@workspace/ui/components/button";
 import { DownloadIcon } from "lucide-react";
 
@@ -12,7 +13,7 @@ export function Header() {
         </h1>
 
         <div className="flex items-center gap-1">
-          <Button variant="ghost" size="icon" asChild>
+          <Button variant="ghost" size="icon" className="p-1" asChild>
             <a
               href="https://github.com/andrianllmm/uniglyphs"
               target="_blank"
@@ -30,16 +31,14 @@ export function Header() {
               </svg>
             </a>
           </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            className="w-fit h-fit px-2 py-1"
-            asChild
-          >
+
+          <Button variant="ghost" size="icon" className="p-1" asChild>
             <a href="#" target="_blank" rel="noreferrer">
-              <DownloadIcon size={4} /> Install
+              <DownloadIcon size={4} />
             </a>
           </Button>
+
+          <FontSelect />
         </div>
       </div>
     </header>

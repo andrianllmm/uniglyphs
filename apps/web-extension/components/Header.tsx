@@ -1,3 +1,4 @@
+import { FontSelect } from "@workspace/ui/components/font-select";
 import { Button } from "@workspace/ui/components/button";
 
 export function Header() {
@@ -9,7 +10,7 @@ export function Header() {
         </h1>
 
         <div className="flex items-center gap-1">
-          <Button variant="ghost" size="icon" asChild>
+          <Button variant="ghost" size="icon" className="p-1" asChild>
             <a
               href="https://github.com/andrianllmm/uniglyphs"
               target="_blank"
@@ -27,6 +28,8 @@ export function Header() {
               </svg>
             </a>
           </Button>
+
+          <FontSelect />
         </div>
       </div>
     </header>

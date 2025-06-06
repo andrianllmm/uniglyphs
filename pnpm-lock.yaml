@@ -26,6 +26,24 @@ importers:
 
   apps/web:
     dependencies:
+      '@fontsource/inter':
+        specifier: ^5.2.5
+        version: 5.2.5
+      '@fontsource/lora':
+        specifier: ^5.2.5
+        version: 5.2.5
+      '@fontsource/merriweather':
+        specifier: ^5.2.8
+        version: 5.2.8
+      '@fontsource/noto-sans':
+        specifier: ^5.2.7
+        version: 5.2.7
+      '@fontsource/playfair':
+        specifier: ^5.2.5
+        version: 5.2.5
+      '@fontsource/roboto':
+        specifier: ^5.2.5
+        version: 5.2.5
       '@workspace/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -66,6 +84,24 @@ importers:
 
   apps/web-extension:
     dependencies:
+      '@fontsource/inter':
+        specifier: ^5.2.5
+        version: 5.2.5
+      '@fontsource/lora':
+        specifier: ^5.2.5
+        version: 5.2.5
+      '@fontsource/merriweather':
+        specifier: ^5.2.8
+        version: 5.2.8
+      '@fontsource/noto-sans':
+        specifier: ^5.2.7
+        version: 5.2.7
+      '@fontsource/playfair':
+        specifier: ^5.2.5
+        version: 5.2.5
+      '@fontsource/roboto':
+        specifier: ^5.2.5
+        version: 5.2.5
       '@workspace/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -568,6 +604,24 @@ packages:
 
   '@floating-ui/utils@0.2.9':
     resolution: {integrity: sha512-MDWhGtE+eHw5JW7lq4qhc5yRLS11ERl1c7Z6Xd0a58DozHES6EnNNwUWbMiG4J9Cgj053Bhk8zvlhFYKVhULwg==}
+
+  '@fontsource/inter@5.2.5':
+    resolution: {integrity: sha512-kbsPKj0S4p44JdYRFiW78Td8Ge2sBVxi/PIBwmih+RpSXUdvS9nbs1HIiuUSPtRMi14CqLEZ/fbk7dj7vni1Sg==}
+
+  '@fontsource/lora@5.2.5':
+    resolution: {integrity: sha512-Jr+jXw+0USPcCBKFfEyPgwKV3dD6w066PIC+1VXgINwjkOEXVX6enqEjz7uGe2WoUjOG+VbIPp4SIlzpMlWzdw==}
+
+  '@fontsource/merriweather@5.2.8':
+    resolution: {integrity: sha512-eimTMn3NO25M0ULicSOrpC0rgqBjzCb8L3wzoN/Oe811E6fvodhBGMngkvYJqqnR6aP/V9H01t3B3+d/1SXfwQ==}
+
+  '@fontsource/noto-sans@5.2.7':
+    resolution: {integrity: sha512-mTpMSMft6Nb+ZSF4DSiJVYnLzKCRjHNFieZ/swuxSDQK+v1hjUeDTBxLHKUdfmC+ZPg6TUEWw4oRq2ltnDbSjQ==}
+
+  '@fontsource/playfair@5.2.5':
+    resolution: {integrity: sha512-51kBky8MDbUWdWaZD02j/XWxCl5LvfKYCTs2NpQHzc2rWjkLL9r41OWy5KwccZ0BAOSB+rsR5dqyhzGpdDd8MA==}
+
+  '@fontsource/roboto@5.2.5':
+    resolution: {integrity: sha512-70r2UZ0raqLn5W+sPeKhqlf8wGvUXFWlofaDlcbt/S3d06+17gXKr3VNqDODB0I1ASme3dGT5OJj9NABt7OTZQ==}
 
   '@humanfs/core@0.19.1':
     resolution: {integrity: sha512-5DyQ4+1JEUzejeK1JGICcideyfUbGixgS9jNgex5nqkW+cY7WZhxBigmieN5Qnw9ZosSNVC9KQKyb+GUaGyKUA==}
@@ -5041,6 +5095,18 @@ snapshots:
       react-dom: 19.0.0(react@19.0.0)
 
   '@floating-ui/utils@0.2.9': {}
+
+  '@fontsource/inter@5.2.5': {}
+
+  '@fontsource/lora@5.2.5': {}
+
+  '@fontsource/merriweather@5.2.8': {}
+
+  '@fontsource/noto-sans@5.2.7': {}
+
+  '@fontsource/playfair@5.2.5': {}
+
+  '@fontsource/roboto@5.2.5': {}
 
   '@humanfs/core@0.19.1': {}
 
