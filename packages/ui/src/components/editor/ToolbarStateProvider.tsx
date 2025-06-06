@@ -115,7 +115,7 @@ export function ToolbarStateProvider({
     // Trigger caret position update shortly after mount
     const timeoutId = setTimeout(() => {
       updateCaretPosDebounced();
-    }, 10);
+    }, 100);
 
     const windowEvents = ["focus", "input", "scroll", "resize"];
     const documentEvents = ["selectionchange"];

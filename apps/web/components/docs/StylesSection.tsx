@@ -41,7 +41,7 @@ export function StylesSection() {
 
   return (
     <>
-      <H1 anchor="tools">Styles</H1>
+      <H1 anchor="styles">Styles</H1>
 
       <P>
         These styles work by replacing each letter with a different version of
