@@ -42,6 +42,7 @@ export default function Page() {
       </section>
 
       <HomePage />
+      <br />
     </div>
   );
 }

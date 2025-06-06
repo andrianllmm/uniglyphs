@@ -46,12 +46,12 @@ const headingVariants = cva("font-bold", {
   variants: {
     variant: {
       h1: "leading-10 text-xl mb-2 font-semibold",
-      h2: "leading-10 text-lg mb-2 font-semibold",
+      h2: "leading-10 text-base mb-2 font-semibold",
       h3: "leading-8 text-base mb-1 font-semibold",
-      h4: "leading-8 text-base mb-1 font-semibold",
+      h4: "leading-8 text-sm mb-1 font-semibold",
       h5: "leading-7 text-sm font-semibold",
-      h6: "leading-7 text-sm font-semibold",
-      p: "leading-5 text-base mb-1 font-normal",
+      h6: "leading-7 text-xs font-semibold",
+      p: "leading-5 mb-1 font-normal",
     },
   },
   defaultVariants: {

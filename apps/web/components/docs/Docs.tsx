@@ -1,7 +1,9 @@
 import { StylesSection } from "./StylesSection";
 import { GlitchStyledText } from "@workspace/ui/components/glitch-styles";
-import { H1, P } from "@workspace/ui/components/heading-with-anchor";
+import { H1, H2, P } from "@workspace/ui/components/heading-with-anchor";
 import { ExternalLink } from "@workspace/ui/components/external-link";
+import { FeaturesSection } from "./FeaturesSection";
+import { FAQ } from "./FAQ";
 
 export function Docs({ className = "" }: { className?: string }) {
   return (
@@ -17,7 +19,20 @@ export function Docs({ className = "" }: { className?: string }) {
       </P>
       <br />
 
+      <H1>Getting Started</H1>
+      <P>
+        Install the UniGlyphs extension from the{" "}
+        <ExternalLink href="https://chrome.google.com/webstore">
+          Chrome Web Store
+        </ExternalLink>
+        . Once installed, you can activate the toolbar on any supported website.
+      </P>
+      <br />
+
       <StylesSection />
+      <FeaturesSection />
+      <FAQ />
+      <br />
     </div>
   );
 }

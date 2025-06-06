@@ -44,8 +44,9 @@ export function StylesSection() {
       <H1 anchor="styles">Styles</H1>
 
       <P>
-        These styles work by replacing each letter with a different version of
-        it from the Unicode set.
+        A style consists of a "font" family, a variant (weight and slant), and a
+        set of decorations. You can try a couple of combinations and see how
+        they look below.
       </P>
       <br />
 
