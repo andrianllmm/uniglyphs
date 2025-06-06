@@ -1,5 +1,6 @@
 {
-  "name": "web",
+  "name": "UniGlyphsWeb",
+  "description": "A browser extension to style Unicode text anywhere using a dynamic toolbar.",
   "version": "0.0.1",
   "type": "module",
   "private": true,

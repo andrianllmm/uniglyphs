@@ -13,7 +13,8 @@ import { Footer } from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: "UniGlyphs",
-  description: "UniGlyphs",
+  description:
+    "A browser extension to style Unicode text anywhere using a floating toolbar.",
 };
 
 export default function RootLayout({

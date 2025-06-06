@@ -1,6 +1,6 @@
 {
-  "name": "web-extension",
-  "description": "manifest.json description",
+  "name": "UniGlyphs",
+  "description": "A browser extension to style Unicode text anywhere using a dynamic toolbar.",
   "private": true,
   "version": "0.0.0",
   "type": "module",
