@@ -15,6 +15,7 @@ export function Header() {
             variant="ghost"
             size="icon"
             className="p-1 w-fit! h-fit!"
+            title="GitHub"
             asChild
           >
             <a
@@ -39,6 +40,7 @@ export function Header() {
             variant="ghost"
             size="icon"
             className="p-1 w-fit! h-fit!"
+            title="Docs"
             asChild
           >
             <a

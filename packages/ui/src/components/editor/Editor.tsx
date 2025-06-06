@@ -128,7 +128,7 @@ export function Editor({
       />
 
       <div className="flex gap-1 justify-between">
-        <div className="flex w-full gap-1 items-center">
+        <div className="flex w-full gap-1 items-center" title="Character count">
           <CircularProgress
             className="max-w-4"
             value={value.length / MAX_CHAR_COUNT}
@@ -144,6 +144,7 @@ export function Editor({
             size="icon"
             variant="ghost"
             className="p-1 w-fit h-fit"
+            title="Copy"
             onClick={handleCopy}
           >
             {isCopied ? <CopyCheckIcon /> : <CopyIcon />}
@@ -152,6 +153,7 @@ export function Editor({
             size="icon"
             variant="ghost"
             className="p-1 w-fit h-fit"
+            title="Paste"
             onClick={handlePaste}
           >
             {isPasted ? <ClipboardCheckIcon /> : <ClipboardIcon />}
@@ -161,6 +163,7 @@ export function Editor({
               size="icon"
               variant="ghost"
               className="p-1 w-fit h-fit"
+              title="Decrease font size"
               onClick={decreaseFontSize}
             >
               <MinusIcon />
@@ -170,6 +173,7 @@ export function Editor({
               size="icon"
               variant="ghost"
               className="p-1 w-fit h-fit"
+              title="Increase font size"
               onClick={increaseFontSize}
             >
               <PlusIcon />

@@ -20,7 +20,13 @@ export function Header() {
         </h1>
 
         <div className="flex items-center gap-1">
-          <Button variant="ghost" size="icon" className="p-1" asChild>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="p-1"
+            title="GitHub"
+            asChild
+          >
             <a
               href="https://github.com/andrianllmm/uniglyphs"
               target="_blank"
@@ -39,7 +45,13 @@ export function Header() {
             </a>
           </Button>
 
-          <Button variant="ghost" size="icon" className="p-1" asChild>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="p-1"
+            title="Install"
+            asChild
+          >
             <a href="#" target="_blank" rel="noreferrer">
               <DownloadIcon size={4} />
             </a>
