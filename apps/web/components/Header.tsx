@@ -1,12 +1,13 @@
 import React from "react";
 import Link from "next/link";
 import { Button } from "@workspace/ui/components/button";
+import { DownloadIcon } from "lucide-react";
 
 export function Header() {
   return (
     <header className="flex sticky top-0 z-50 h-14 w-full items-center border-b-2 border-dotted bg-background/80 backdrop-blur-lg">
       <div className="w-full p-4 flex items-center justify-between gap-2">
-        <h1 className="text-xl tracking-wider select-none">
+        <h1 className="text-xl font-semibold tracking-wider select-none">
           <Link href="/">𝔘𝐧𝗂𝒢𝑙𝗒𝕡h𝚜</Link>
         </h1>
 
@@ -29,9 +30,14 @@ export function Header() {
               </svg>
             </a>
           </Button>
-          <Button size="sm" className="w-fit" asChild>
+          <Button
+            variant="outline"
+            size="sm"
+            className="w-fit h-fit px-2 py-1"
+            asChild
+          >
             <a href="#" target="_blank" rel="noreferrer">
-              Install
+              <DownloadIcon size={4} /> Install
             </a>
           </Button>
         </div>

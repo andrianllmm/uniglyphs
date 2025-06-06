@@ -10,7 +10,11 @@ import {
 } from "react";
 import { cn } from "@workspace/ui/lib/utils";
 import { useDebouncedCallback } from "@workspace/ui/lib/debounceCallback";
-import { getAlignToolbarPos, getToolbarPos } from "./toolbarPosition";
+import {
+  DefaultToolbarOffset,
+  getToolbarPos,
+  getAlignToolbarPos,
+} from "./toolbarPosition";
 import { TextboxElement } from "../../lib/textboxState";
 
 const ToolbarHiddenKey = "toolbar-hidden";
@@ -43,9 +47,14 @@ export const useToolbarState = () => {
 type Props = {
   children: React.ReactNode;
   textboxRef: React.RefObject<TextboxElement | null>;
+  offset?: number;
 };
 
-export function ToolbarStateProvider({ children, textboxRef }: Props) {
+export function ToolbarStateProvider({
+  children,
+  textboxRef,
+  offset = DefaultToolbarOffset,
+}: Props) {
   const toolbarRef = useRef<HTMLDivElement | null>(null);
 
   const [toolbarReady, setToolbarReady] = useState(false);
@@ -73,23 +82,25 @@ export function ToolbarStateProvider({ children, textboxRef }: Props) {
 
   const updateCaretPos = useCallback(() => {
     if (sticky) {
-      setToolbarPos(getAlignToolbarPos(toolbarRef.current, "center"));
+      setToolbarPos(getAlignToolbarPos(toolbarRef.current, "center", offset));
       return;
     }
     if (hidden) {
-      setToolbarPos(getAlignToolbarPos(toolbarRef.current, "right"));
+      setToolbarPos(getAlignToolbarPos(toolbarRef.current, "right", offset));
       return;
     }
 
-    setToolbarPos(getToolbarPos(textboxRef.current, toolbarRef.current));
-  }, [sticky, hidden, textboxRef]);
+    setToolbarPos(
+      getToolbarPos(textboxRef.current, toolbarRef.current, "center", offset)
+    );
+  }, [textboxRef, sticky, hidden, offset]);
 
   const updateCaretPosDebounced = useDebouncedCallback(updateCaretPos, 5);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    setToolbarPos(getAlignToolbarPos(toolbarRef.current, "center"));
+    setToolbarPos(getAlignToolbarPos(toolbarRef.current, "center", offset));
     setToolbarReady(true);
 
     // Trigger caret position update shortly after mount
@@ -116,7 +127,7 @@ export function ToolbarStateProvider({ children, textboxRef }: Props) {
         document.removeEventListener(e, updateCaretPosDebounced)
       );
     };
-  }, [updateCaretPosDebounced]);
+  }, [updateCaretPosDebounced, offset]);
 
   useEffect(() => {
     localStorage.setItem(ToolbarHiddenKey, hidden.toString());
