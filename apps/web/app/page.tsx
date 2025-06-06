@@ -27,7 +27,7 @@ export default function Page() {
 
       <section id="editor" className="scroll-mt-24 h-full mt-8 mb-24">
         <Editor
-          className="w-full"
+          className="w-full animate-in slide-in-from-bottom-2 fade-in duration-500"
           textAreaProps={{
             defaultValue: editing ? "" : TEXT_DEFAULT_VALUE,
             className: "h-[calc(100vh-14rem)] resize-none",

@@ -1,16 +1,22 @@
 import { FontSelect } from "@workspace/ui/components/font-select";
 import { Button } from "@workspace/ui/components/button";
+import { FileTextIcon } from "lucide-react";
 
 export function Header() {
   return (
-    <header className="flex sticky top-0 z-50 h-12 w-full items-center border-b-2 border-dotted bg-background/80 backdrop-blur-lg">
+    <header className="flex sticky top-0 z-50 h-10 w-full items-center border-b-2 border-dotted bg-background/80 backdrop-blur-lg animate-in slide-in-from-top fade-in duration-300">
       <div className="w-full p-4 flex items-center justify-between gap-2">
         <h1 className="text-lg font-semibold tracking-wider select-none">
           𝔘𝐧𝗂𝒢𝑙𝗒𝕡h𝚜
         </h1>
 
         <div className="flex items-center gap-1">
-          <Button variant="ghost" size="icon" className="p-1" asChild>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="p-1 w-fit! h-fit!"
+            asChild
+          >
             <a
               href="https://github.com/andrianllmm/uniglyphs"
               target="_blank"
@@ -29,7 +35,23 @@ export function Header() {
             </a>
           </Button>
 
-          <FontSelect />
+          <Button
+            variant="ghost"
+            size="icon"
+            className="p-1 w-fit! h-fit!"
+            asChild
+          >
+            <a
+              href={import.meta.env.WXT_UNIGLYPHS_WEBSITE_URL + "/#docs"}
+              target="_blank"
+              rel="noreferrer"
+              className="flex gap-1"
+            >
+              <FileTextIcon />
+            </a>
+          </Button>
+
+          <FontSelect className="p-1 w-fit! h-fit!" />
         </div>
       </div>
     </header>

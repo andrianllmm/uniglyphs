@@ -1,15 +1,22 @@
 import React from "react";
 import Link from "next/link";
 import { FontSelect } from "@workspace/ui/components/font-select";
+import { GlitchStyledText } from "@workspace/ui/components/glitch-styles";
 import { Button } from "@workspace/ui/components/button";
 import { DownloadIcon } from "lucide-react";
 
 export function Header() {
   return (
-    <header className="flex sticky top-0 z-50 h-14 w-full items-center border-b-2 border-dotted bg-background/80 backdrop-blur-lg">
+    <header className="flex sticky top-0 z-50 h-14 w-full items-center border-b-2 border-dotted bg-background/80 backdrop-blur-lg animate-in slide-in-from-top fade-in duration-800">
       <div className="w-full p-4 flex items-center justify-between gap-2">
         <h1 className="text-xl font-semibold tracking-wider select-none">
-          <Link href="/">𝔘𝐧𝗂𝒢𝑙𝗒𝕡h𝚜</Link>
+          <Link href="/">
+            <GlitchStyledText
+              text="𝔘𝐧𝗂𝒢𝑙𝗒𝕡h𝚜"
+              intervalDuration={100}
+              duration={1500}
+            />
+          </Link>
         </h1>
 
         <div className="flex items-center gap-1">

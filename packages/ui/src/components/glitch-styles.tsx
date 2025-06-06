@@ -3,33 +3,52 @@
 import { useState, useEffect } from "react";
 import { cn } from "../lib/utils";
 import { applyRandomStyle } from "../lib/textTools/textStyle/random";
+import { stripTextStyles } from "../lib/textTools/textStyle";
 
 type GlitchStyledTextProps = {
   text: string;
   intervalDuration?: number;
+  duration?: number;
   className?: string;
 };
 
 export function GlitchStyledText({
   text,
   intervalDuration = 200,
+  duration,
   className = "",
 }: GlitchStyledTextProps) {
+  const strippedText = stripTextStyles(text);
   const [styledText, setStyledText] = useState<string>(text);
   const [paused, setPaused] = useState<boolean>(false);
 
   useEffect(() => {
     if (paused) return;
 
-    // Apply a new random style at regular intervals
-    const interval = setInterval(() => {
-      setStyledText(applyRandomStyle(text));
-    }, intervalDuration);
+    let interval: NodeJS.Timeout;
+    let timeout: NodeJS.Timeout;
 
-    setStyledText(applyRandomStyle(text));
+    const startGlitch = () => {
+      interval = setInterval(() => {
+        setStyledText(applyRandomStyle(strippedText));
+      }, intervalDuration);
+      setStyledText(applyRandomStyle(strippedText));
+    };
 
-    return () => clearInterval(interval);
-  }, [text, intervalDuration, paused]);
+    startGlitch();
+
+    if (duration) {
+      timeout = setTimeout(() => {
+        clearInterval(interval);
+        setStyledText(text);
+      }, duration);
+    }
+
+    return () => {
+      clearInterval(interval);
+      if (timeout) clearTimeout(timeout);
+    };
+  }, [text, strippedText, intervalDuration, duration, paused]);
 
   return (
     <span
