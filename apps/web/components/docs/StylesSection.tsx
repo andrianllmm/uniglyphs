@@ -21,17 +21,17 @@ import {
 } from "@workspace/ui/components/toggle-group";
 import { Button } from "@workspace/ui/components/button";
 
-const Letters = "abcdefghijklmnopqrstuvwxyz";
-const Numbers = "0123456789";
-const Symbols = ".,";
-const SampleText = "Pack my box with five dozen liquor jugs.";
+const LETTERS = "abcdefghijklmnopqrstuvwxyz";
+const NUMBERS = "0123456789";
+const SYMBOLS = ".,";
+const SAMPLE_TEXT = "Pack my box with five dozen liquor jugs.";
 
 const toggleGroupItemClass = cva(
   "p-1 border-2 rounded! text-center bg-background! hover:border-primary data-[state=on]:border-primary data-[state=off]:border-dotted"
 );
 
 export function StylesSection() {
-  const [letters, setLetters] = useState(Letters);
+  const [letters, setLetters] = useState(LETTERS);
   const [style, setStyle] = useState<TextStyle>({
     family: "serif",
     bold: false,
@@ -53,13 +53,13 @@ export function StylesSection() {
       <div className="mb-1">
         {/* Sentence */}
         <div className="p-1 text-center text-sm border-2 border-dotted hover:border-primary">
-          {applyTextStyles(SampleText, style)}
+          {applyTextStyles(SAMPLE_TEXT, style)}
         </div>
         {/* Characters */}
         <div className="grid gap-0 grid-cols-[repeat(auto-fit,minmax(2rem,1fr))]">
           {[
             ...applyTextStyles(
-              [...letters, ...Numbers, ...Symbols].join(""),
+              [...letters, ...NUMBERS, ...SYMBOLS].join(""),
               style
             ),
           ].map((char, index) => (
@@ -86,7 +86,7 @@ export function StylesSection() {
           variant="ghost"
           size="icon"
           className="text-xs font-semibold p-1 !w-fit !h-fit"
-          onClick={() => setLetters(Letters.toUpperCase())}
+          onClick={() => setLetters(LETTERS.toUpperCase())}
         >
           AB
         </Button>
@@ -94,7 +94,7 @@ export function StylesSection() {
           variant="ghost"
           size="icon"
           className="text-xs font-semibold p-1 !w-fit !h-fit"
-          onClick={() => setLetters(Letters.toLowerCase())}
+          onClick={() => setLetters(LETTERS.toLowerCase())}
         >
           ab
         </Button>

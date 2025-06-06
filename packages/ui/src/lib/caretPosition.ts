@@ -1,7 +1,7 @@
 import { isContentEditable, isTextInput, TextboxElement } from "./textboxState";
 
 // CSS properties to copy from the input
-const styleProperties = [
+const STYLE_PROPERTIES = [
   "direction",
   "boxSizing",
   "width",
@@ -72,7 +72,7 @@ export function getPosInInput(
   mirrorStyle.overflow = "hidden";
 
   // Copy relevant styles to mirror
-  for (const prop of styleProperties) {
+  for (const prop of STYLE_PROPERTIES) {
     mirrorStyle[prop] = computedStyle[prop];
   }
 

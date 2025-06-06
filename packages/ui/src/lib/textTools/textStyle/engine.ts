@@ -10,7 +10,7 @@ import {
 } from "@workspace/ui/lib/textTools/textStyle/offsets";
 
 // Character codes for reference ranges
-const CharCode = {
+const CHAR_CODE = {
   A: 0x41,
   Z: 0x5a,
   a: 0x61,
@@ -20,7 +20,7 @@ const CharCode = {
 } as const;
 
 // Regex to match combining marks (accents, diacritics)
-const CombiningMarks = /[\u0300-\u036f]/g;
+const COMBINING_MARKS = /[\u0300-\u036f]/g;
 
 export type TextStyle = {
   family: FontFamily;
@@ -65,22 +65,22 @@ export function applyTextStyles(text: string, style: TextStyle): string {
       transformed = String.fromCodePoint(offsets[transformed] || code);
     } else if (
       offsets.upper !== undefined &&
-      code >= CharCode.A &&
-      code <= CharCode.Z
+      code >= CHAR_CODE.A &&
+      code <= CHAR_CODE.Z
     ) {
-      transformed = String.fromCodePoint(code + offsets.upper - CharCode.A);
+      transformed = String.fromCodePoint(code + offsets.upper - CHAR_CODE.A);
     } else if (
       offsets.lower !== undefined &&
-      code >= CharCode.a &&
-      code <= CharCode.z
+      code >= CHAR_CODE.a &&
+      code <= CHAR_CODE.z
     ) {
-      transformed = String.fromCodePoint(code + offsets.lower - CharCode.a);
+      transformed = String.fromCodePoint(code + offsets.lower - CHAR_CODE.a);
     } else if (
       offsets.digit !== undefined &&
-      code >= CharCode.zero &&
-      code <= CharCode.nine
+      code >= CHAR_CODE.zero &&
+      code <= CHAR_CODE.nine
     ) {
-      transformed = String.fromCodePoint(code + offsets.digit - CharCode.zero);
+      transformed = String.fromCodePoint(code + offsets.digit - CHAR_CODE.zero);
     }
 
     // Append combining marks
@@ -148,7 +148,7 @@ export function inferTextStyles(text: string): TextStyle {
  */
 export function stripTextStyles(text: string): string {
   // Normalize text and remove combining marks (diacritics)
-  text = text.normalize("NFKC").normalize("NFD").replace(CombiningMarks, "");
+  text = text.normalize("NFKC").normalize("NFD").replace(COMBINING_MARKS, "");
 
   const { family, bold, italic } = inferTextStyles(text);
   const offsets = styleOffsets[family][getFontVariantKey(bold, italic)];
@@ -166,23 +166,23 @@ export function stripTextStyles(text: string): string {
     let transformed = char;
 
     if (
-      code >= CharCode.A &&
-      code <= CharCode.Z &&
+      code >= CHAR_CODE.A &&
+      code <= CHAR_CODE.Z &&
       offsets.upper !== undefined
     ) {
-      transformed = String.fromCodePoint(code - offsets.upper + CharCode.A);
+      transformed = String.fromCodePoint(code - offsets.upper + CHAR_CODE.A);
     } else if (
-      code >= CharCode.a &&
-      code <= CharCode.z &&
+      code >= CHAR_CODE.a &&
+      code <= CHAR_CODE.z &&
       offsets.lower !== undefined
     ) {
-      transformed = String.fromCodePoint(code - offsets.lower + CharCode.a);
+      transformed = String.fromCodePoint(code - offsets.lower + CHAR_CODE.a);
     } else if (
-      code >= CharCode.zero &&
-      code <= CharCode.nine &&
+      code >= CHAR_CODE.zero &&
+      code <= CHAR_CODE.nine &&
       offsets.digit !== undefined
     ) {
-      transformed = String.fromCodePoint(code - offsets.digit + CharCode.zero);
+      transformed = String.fromCodePoint(code - offsets.digit + CHAR_CODE.zero);
     }
 
     result.push(transformed);

@@ -1,16 +1,16 @@
 import { getCaretPos } from "@workspace/ui/lib/caretPosition";
 import { TextboxElement } from "@workspace/ui/lib/textboxState";
 
-export const MinVerticalToolbarOffset = 30;
-export const DefaultToolbarOffset = 30;
-export const ToolbarFallbackHeight = 40;
-export const ToolbarFallbackWidth = 200;
+export const MIN_VERTICAL_TOOLBAR_OFFSET = 30;
+export const DEFAULT_TOOLBAR_OFFSET = 30;
+export const TOOLBAR_FALLBACK_HEIGHT = 40;
+export const TOOLBAR_FALLBACK_WIDTH = 200;
 
 export function getToolbarPos(
   textbox: TextboxElement | null,
   toolbar: HTMLDivElement | null,
   fallback_alignment: "center" | "right" | "left" = "center",
-  offset: number = DefaultToolbarOffset
+  offset: number = DEFAULT_TOOLBAR_OFFSET
 ) {
   if (!textbox) return { top: 0, left: 0 };
 
@@ -25,18 +25,20 @@ export function getToolbarPos(
     textboxRect.top +
     coords.top +
     window.scrollY +
-    Math.max(offset, MinVerticalToolbarOffset);
+    Math.max(offset, MIN_VERTICAL_TOOLBAR_OFFSET);
   let newLeft = textboxRect.left + coords.left + window.scrollX;
 
   newTop = Math.min(
     newTop,
     window.innerHeight -
-      (toolbar?.offsetHeight || ToolbarFallbackHeight) -
+      (toolbar?.offsetHeight || TOOLBAR_FALLBACK_HEIGHT) -
       offset
   );
   newLeft = Math.min(
     newLeft,
-    window.innerWidth - (toolbar?.offsetWidth || ToolbarFallbackWidth) - offset
+    window.innerWidth -
+      (toolbar?.offsetWidth || TOOLBAR_FALLBACK_WIDTH) -
+      offset
   );
 
   newTop = Math.max(newTop, 0);
@@ -48,10 +50,10 @@ export function getToolbarPos(
 export function getAlignToolbarPos(
   toolbar: HTMLDivElement | null,
   alignment: "center" | "right" | "left" = "center",
-  offset: number = DefaultToolbarOffset
+  offset: number = DEFAULT_TOOLBAR_OFFSET
 ) {
-  const toolbarHeight = toolbar?.offsetHeight || ToolbarFallbackHeight;
-  const toolbarWidth = toolbar?.offsetWidth || ToolbarFallbackWidth;
+  const toolbarHeight = toolbar?.offsetHeight || TOOLBAR_FALLBACK_HEIGHT;
+  const toolbarWidth = toolbar?.offsetWidth || TOOLBAR_FALLBACK_WIDTH;
 
   const top = window.scrollY + window.innerHeight - toolbarHeight - offset;
   let left = 0;

@@ -17,9 +17,9 @@ import {
 } from "lucide-react";
 import { Button } from "../button";
 
-const MaxCharCount = 1000;
-const MaxFontSize = 36;
-const MinFontSize = 12;
+const MAX_CHAR_COUNT = 1000;
+const MAX_FONT_SIZE = 36;
+const MIN_FONT_SIZE = 12;
 
 export function Editor({
   textAreaProps = {},
@@ -43,7 +43,7 @@ export function Editor({
   const [isCopied, setIsCopied] = useState(false);
   const [isPasted, setIsPasted] = useState(false);
   const [fontSize, setFontSize] = useState(
-    Math.max(Math.min(defaultFontSize, MaxFontSize), MinFontSize)
+    Math.max(Math.min(defaultFontSize, MAX_FONT_SIZE), MIN_FONT_SIZE)
   );
 
   const handleCopy = () => {
@@ -61,9 +61,9 @@ export function Editor({
   };
 
   const increaseFontSize = () =>
-    setFontSize((prevSize) => Math.min(prevSize + 2, MaxFontSize));
+    setFontSize((prevSize) => Math.min(prevSize + 2, MAX_FONT_SIZE));
   const decreaseFontSize = () =>
-    setFontSize((prevSize) => Math.max(prevSize - 2, MinFontSize));
+    setFontSize((prevSize) => Math.max(prevSize - 2, MIN_FONT_SIZE));
 
   useEffect(() => {
     const textarea = textAreaRef.current;
@@ -105,11 +105,11 @@ export function Editor({
         <div className="flex w-full gap-1 items-center">
           <CircularProgress
             className="max-w-4"
-            value={value.length / MaxCharCount}
-            max={MaxCharCount}
+            value={value.length / MAX_CHAR_COUNT}
+            max={MAX_CHAR_COUNT}
           />
           <span className="text-nowrap select-none text-sm text-muted-foreground">
-            {value.length}/{MaxCharCount}
+            {value.length}/{MAX_CHAR_COUNT}
           </span>
         </div>
 
