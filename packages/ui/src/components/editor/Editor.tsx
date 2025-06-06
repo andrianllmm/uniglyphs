@@ -21,10 +21,13 @@ const MAX_CHAR_COUNT = 1000;
 const MAX_FONT_SIZE = 36;
 const MIN_FONT_SIZE = 12;
 
+const VALUE_KEY = "editor_value";
+const FONTSIZE_KEY = "editor_fontSize";
+
 export function Editor({
   textAreaProps = {},
   toolbarProps = {},
-  initialSelection = [0, 0],
+  initialSelection,
   defaultFontSize = 18,
   toolbarOffset,
   className,
@@ -37,9 +40,7 @@ export function Editor({
   className?: string;
 }) {
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
-  const [value, setValue] = useState<string>(
-    textAreaProps.defaultValue?.toString() || ""
-  );
+  const [value, setValue] = useState<string>("");
   const [isCopied, setIsCopied] = useState(false);
   const [isPasted, setIsPasted] = useState(false);
   const [fontSize, setFontSize] = useState(
@@ -66,9 +67,34 @@ export function Editor({
     setFontSize((prevSize) => Math.max(prevSize - 2, MIN_FONT_SIZE));
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
+    const savedValue = localStorage.getItem(VALUE_KEY);
+    if (savedValue != null) {
+      setValue(savedValue);
+    } else {
+      setValue(textAreaProps.defaultValue?.toString() || "");
+    }
+    const savedFs = localStorage.getItem(FONTSIZE_KEY);
+    if (savedFs) setFontSize(parseInt(savedFs));
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem(VALUE_KEY, value);
+  }, [value]);
+
+  useEffect(() => {
+    localStorage.setItem(FONTSIZE_KEY, fontSize.toString());
+  }, [fontSize]);
+
+  useEffect(() => {
     const textarea = textAreaRef.current;
     if (textarea) {
-      textarea.setSelectionRange(...initialSelection);
+      let selection = initialSelection;
+      if (!selection) {
+        selection = [textarea?.value.length ?? 0, textarea?.value.length ?? 0];
+      }
+      textarea.setSelectionRange(...selection);
+      textarea.scrollTop = textarea.scrollHeight;
       textarea.focus();
     }
   }, []);

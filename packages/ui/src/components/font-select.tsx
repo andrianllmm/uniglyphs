@@ -8,7 +8,6 @@ import {
   SelectItem,
   SelectTrigger,
 } from "@workspace/ui/components/select";
-import { TypeIcon } from "lucide-react";
 
 const fontOptions = [
   { value: "notoSans", label: "Noto Sans" },
@@ -19,20 +18,19 @@ const fontOptions = [
   { value: "lora", label: "Lora" },
 ];
 const defaultFont = "notoSans";
-const fontKey = "font";
+const FONT_KEY = "font";
 
 export function FontSelect({ className }: { className?: string }) {
   const [font, setFont] = useState<string>(defaultFont);
-  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const saved = localStorage.getItem(fontKey);
-    if (saved) setFont(saved);
-    setMounted(true);
+    if (typeof window === "undefined") return;
+    const savedFont = localStorage.getItem(FONT_KEY);
+    if (savedFont) setFont(savedFont);
   }, []);
 
   useEffect(() => {
-    localStorage.setItem(fontKey, font);
+    localStorage.setItem(FONT_KEY, font);
     document.documentElement.style.setProperty(
       "--chosen-font",
       `var(--font-${font})`
@@ -40,7 +38,7 @@ export function FontSelect({ className }: { className?: string }) {
   }, [font]);
 
   return (
-    <Select value={mounted ? font : ""} onValueChange={setFont}>
+    <Select value={font} onValueChange={setFont}>
       <SelectTrigger
         className={cn(
           "p-2 hover:bg-accent hover:text-accent-foreground font-extrabold border-0 shadow-none gap-0",

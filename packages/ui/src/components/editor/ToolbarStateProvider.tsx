@@ -60,15 +60,8 @@ export function ToolbarStateProvider({
   const [toolbarReady, setToolbarReady] = useState(false);
   const [toolbarPos, setToolbarPos] = useState({ top: 0, left: 0 });
 
-  const [hidden, setHidden] = useState(() => {
-    if (typeof window === "undefined") return false;
-    return localStorage.getItem(TOOLBAR_HIDDEN_KEY) === "true";
-  });
-
-  const [sticky, setSticky] = useState(() => {
-    if (typeof window === "undefined") return false;
-    return localStorage.getItem(TOOLBAR_STICKY_KEY) === "true";
-  });
+  const [hidden, setHidden] = useState(false);
+  const [sticky, setSticky] = useState(false);
 
   const handleHiddenChange = (hidden: boolean) => {
     if (hidden && sticky) setSticky(false);
@@ -95,7 +88,23 @@ export function ToolbarStateProvider({
     );
   }, [textboxRef, sticky, hidden, offset]);
 
-  const updateCaretPosDebounced = useDebouncedCallback(updateCaretPos, 5);
+  const updateCaretPosDebounced = useDebouncedCallback(updateCaretPos, 10);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const savedHidden = localStorage.getItem(TOOLBAR_HIDDEN_KEY);
+    setHidden(savedHidden === "true");
+    const savedSticky = localStorage.getItem(TOOLBAR_STICKY_KEY);
+    setSticky(savedSticky === "true");
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem(TOOLBAR_HIDDEN_KEY, hidden.toString());
+  }, [hidden]);
+
+  useEffect(() => {
+    localStorage.setItem(TOOLBAR_STICKY_KEY, sticky.toString());
+  }, [sticky]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -128,14 +137,6 @@ export function ToolbarStateProvider({
       );
     };
   }, [updateCaretPosDebounced, offset]);
-
-  useEffect(() => {
-    localStorage.setItem(TOOLBAR_HIDDEN_KEY, hidden.toString());
-  }, [hidden]);
-
-  useEffect(() => {
-    localStorage.setItem(TOOLBAR_STICKY_KEY, sticky.toString());
-  }, [sticky]);
 
   return (
     <ToolbarStateContext.Provider

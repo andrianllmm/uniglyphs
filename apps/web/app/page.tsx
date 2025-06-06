@@ -6,7 +6,14 @@ import { ScrollButton } from "@/components/ScrollButton";
 const TEXT_DEFAULT_VALUE =
   "Write 𝑏𝑒𝑡𝑡𝑒𝑟-𝑙𝑜𝑜𝑘𝑖𝑛𝑔 𝓈𝕙�𝔱 anywhere\nwith a 𝐔𝐧𝐢𝐜𝐨𝐝𝐞 editor";
 
-export default function Page() {
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+  const { editing: editingParam } = await searchParams;
+  const editing = editingParam === "true";
+
   return (
     <div className="flex flex-col">
       <ScrollButton />
@@ -15,14 +22,14 @@ export default function Page() {
         <Editor
           className="w-full"
           textAreaProps={{
-            defaultValue: TEXT_DEFAULT_VALUE,
+            defaultValue: editing ? "" : TEXT_DEFAULT_VALUE,
             className: "h-[calc(100vh-14rem)] resize-none",
           }}
           initialSelection={[
             TEXT_DEFAULT_VALUE.length,
             TEXT_DEFAULT_VALUE.length,
           ]}
-          defaultFontSize={28}
+          defaultFontSize={editing ? 20 : 28}
         />
       </section>
 
