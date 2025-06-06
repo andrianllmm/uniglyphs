@@ -8,7 +8,7 @@ export default defineConfig({
       port: 1234,
     },
   },
-  modules: ["@wxt-dev/module-react"],
+  modules: ["@wxt-dev/module-react", "@wxt-dev/auto-icons"],
   vite: () => ({
     plugins: [tsconfigPaths()],
   }),
