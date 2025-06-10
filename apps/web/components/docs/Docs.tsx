@@ -9,7 +9,7 @@ export function Docs({ className = "" }: { className?: string }) {
   return (
     <div className={className}>
       <H1>
-        What is <GlitchStyledText text="UniGlyphs" />?
+        What is <GlitchStyledText text="UniGlyphs" />�
       </H1>
       <P>
         UniGlyphs is a browser extension that lets you style text on any

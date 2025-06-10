@@ -7,7 +7,7 @@ import { HomePage } from "@/components/HomePage";
 import { useSearchParams } from "next/navigation";
 
 const TEXT_DEFAULT_VALUE =
-  "Write 𝑏𝑒𝑡𝑡𝑒𝑟-𝑙𝑜𝑜𝑘𝑖𝑛𝑔 𝓈𝕙�𝔱 anywhere\nwith a 𝐔𝐧𝐢𝐜𝐨𝐝𝐞 editor";
+  "Write 𝑏𝑒𝑡𝑡𝑒𝑟-𝑙𝑜𝑜𝑘𝑖𝑛𝑔 text 𝐚𝐧𝐲𝐰𝐡𝐞𝐫𝐞 with a 𝖀𝐧𝑖𝕔𝚘𝒹𝖾 e̲d̲i̲t̲o̲r̲";
 
 export default function Page() {
   const searchParams = useSearchParams();
