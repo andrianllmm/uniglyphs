@@ -1,6 +1,6 @@
 import { StylesSection } from "./StylesSection";
 import { GlitchStyledText } from "@workspace/ui/components/glitch-styles";
-import { H1, H2, P } from "@workspace/ui/components/heading-with-anchor";
+import { H1, P } from "@workspace/ui/components/heading-with-anchor";
 import { ExternalLink } from "@workspace/ui/components/external-link";
 import { FeaturesSection } from "./FeaturesSection";
 import { FAQ } from "./FAQ";

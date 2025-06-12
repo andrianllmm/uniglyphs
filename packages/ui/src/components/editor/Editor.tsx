@@ -76,7 +76,7 @@ export function Editor({
     }
     const savedFs = localStorage.getItem(FONTSIZE_KEY);
     if (savedFs) setFontSize(parseInt(savedFs));
-  }, []);
+  }, [textAreaProps.defaultValue]);
 
   useEffect(() => {
     localStorage.setItem(VALUE_KEY, value);

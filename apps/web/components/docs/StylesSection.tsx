@@ -44,9 +44,9 @@ export function StylesSection() {
       <H1 anchor="styles">Styles</H1>
 
       <P>
-        A style consists of a "font" family, a variant (weight and slant), and a
-        set of decorations. You can try a couple of combinations and see how
-        they look below.
+        A style consists of a &quot;font&quot; family, a variant (weight and
+        slant), and a set of decorations. You can try a couple of combinations
+        and see how they look below.
       </P>
       <br />
 
