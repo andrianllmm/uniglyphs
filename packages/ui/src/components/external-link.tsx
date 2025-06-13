@@ -3,11 +3,14 @@ import { cn } from "@workspace/ui/lib/utils";
 import { ExternalLinkIcon } from "lucide-react";
 
 function ExternalLink({
+  children,
   className,
   href,
-  children,
+  showIcon = true,
   ...props
-}: React.ComponentProps<"a">) {
+}: React.ComponentProps<"a"> & {
+  showIcon?: boolean;
+}) {
   return (
     <a
       className={cn(
@@ -20,7 +23,9 @@ function ExternalLink({
       {...props}
     >
       {children}
-      <ExternalLinkIcon className="size-4" />
+      {showIcon && (
+        <ExternalLinkIcon className="w-4 h-4 text-muted-foreground" />
+      )}
       <span className="sr-only">Opens in a new window</span>
     </a>
   );
