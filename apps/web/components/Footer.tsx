@@ -11,6 +11,9 @@ export function Footer() {
       <ExternalLink href="/terms" showIcon={false}>
         Terms of Use
       </ExternalLink>
+      <ExternalLink href="/contact" showIcon={false}>
+        Contact
+      </ExternalLink>
     </div>
   );
 }
