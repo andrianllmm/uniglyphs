@@ -14,7 +14,20 @@ import { Footer } from "@/components/Footer";
 export const metadata: Metadata = {
   title: "UniGlyphs",
   description:
-    "A browser extension to style Unicode text anywhere using a floating toolbar.",
+    "A browser extension that lets you style text on any website using a dynamic toolbar.",
+  keywords: [
+    "text styling",
+    "browser extension",
+    "custom fonts",
+    "font changer",
+    "text editor",
+    "floating toolbar",
+    "unicode",
+  ],
+  authors: [
+    { name: "Andrian Lloyd Maagma", url: "https://andrianllmm.github.io" },
+  ],
+  creator: "Andrian Lloyd Maagma",
 };
 
 export default function RootLayout({

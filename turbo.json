@@ -1,6 +1,6 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalEnv": ["WXT_UNIGLYPHS_WEBSITE_URL"],
+  "globalEnv": ["NEXT_UNIGLYPHS_WEBSITE_URL", "WXT_UNIGLYPHS_WEBSITE_URL"],
   "ui": "tui",
   "tasks": {
     "build": {
