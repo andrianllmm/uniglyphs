@@ -48,17 +48,25 @@ export function Editor({
   );
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(value);
-    setIsCopied(true);
-    setTimeout(() => setIsCopied(false), 1000);
+    try {
+      navigator.clipboard.writeText(value);
+      setIsCopied(true);
+      setTimeout(() => setIsCopied(false), 1000);
+    } catch (error) {
+      console.error("Failed to copy text to clipboard:", error);
+    }
   };
 
   const handlePaste = () => {
-    navigator.clipboard.readText().then((text) => {
-      setValue(text);
-    });
-    setIsPasted(true);
-    setTimeout(() => setIsPasted(false), 1000);
+    try {
+      navigator.clipboard.readText().then((text) => {
+        setValue(text);
+      });
+      setIsPasted(true);
+      setTimeout(() => setIsPasted(false), 1000);
+    } catch (error) {
+      console.error("Failed to paste text from clipboard:", error);
+    }
   };
 
   const increaseFontSize = () =>
@@ -109,7 +117,14 @@ export function Editor({
   return (
     <div className={cn("flex flex-col gap-8", className)}>
       <ToolbarStateProvider textboxRef={textAreaRef} offset={toolbarOffset}>
-        <ToolbarProvider textboxRef={textAreaRef}>
+        <ToolbarProvider
+          textboxRef={textAreaRef}
+          onInsertText={() => {
+            const textArea = textAreaRef.current;
+            if (!textArea) return;
+            setValue(textArea.value);
+          }}
+        >
           <Toolbar className={cn(toolbarClassName)} {...restToolbarProps} />
         </ToolbarProvider>
       </ToolbarStateProvider>

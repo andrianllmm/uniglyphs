@@ -37,9 +37,10 @@ export const useToolbar = () => {
 type Props = {
   children: React.ReactNode;
   textboxRef: React.RefObject<TextboxElement | null>;
+  onInsertText?: (text: string) => void;
 };
 
-export function ToolbarProvider({ children, textboxRef }: Props) {
+export function ToolbarProvider({ children, textboxRef, onInsertText }: Props) {
   const [style, setStyle] = useState<TextStyle>({
     family: "serif",
     bold: false,
@@ -65,6 +66,8 @@ export function ToolbarProvider({ children, textboxRef }: Props) {
       );
       textbox.focus();
     }, 0);
+
+    if (onInsertText) onInsertText(text);
   };
 
   // Apply a text style to the current selection
