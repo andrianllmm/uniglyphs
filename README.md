@@ -3,7 +3,7 @@
 </div>
 
 <div align="center">
-   <strong>A browser extension that lets users style text using Unicode characters.</strong>
+   <strong>A browser extension that lets you 𝓼𝓽𝔂𝓵𝓮 text on any website using a dynamic toolbar.</strong>
 </div>
 
 ###
@@ -16,7 +16,7 @@
 
 ## About
 
-**UniGlyphs** is a browser extension that lets users style text using Unicode characters. It provides a floating toolbar for styling text that works on websites like Facebook, along with a full-page editor and popup editor in the browser. It gives users an expressive way to write posts, comments, and more, even on platforms that don’t allow custom fonts. Styled text is generated using Unicode characters that resemble different font styles, such as 𝐛𝐨𝐥𝐝, 𝑖𝑡𝑎𝑙𝑖𝑐, and 𝔤𝔬𝔱𝔥𝔦𝔠, which persists their look anywhere.
+**UniGlyphs** is a browser extension that lets users style text using Unicode. It provides a floating toolbar for styling text that works on websites like Facebook, along with a full-page editor and popup editor in the browser. It gives users an expressive way to write posts, comments, and more, even on platforms that don’t allow custom fonts. Styled text is generated using Unicode characters that resemble different font styles, such as 𝐛𝐨𝐥𝐝, 𝑖𝑡𝑎𝑙𝑖𝑐, and 𝔤𝔬𝔱𝔥𝔦𝔠, which persists their look anywhere.
 
 
 ## Features
