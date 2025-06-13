@@ -48,7 +48,7 @@ export function Toolbar({
   return (
     <div
       className={cn(
-        "flex flex-wrap gap-0.5 items-center justify-center",
+        "flex flex-wrap gap-[2px] items-center justify-center text-[14px]",
         className
       )}
     >
@@ -62,17 +62,22 @@ export function Toolbar({
             }}
           >
             <SelectTrigger
-              className="p-0.5 !w-fit !h-fit border-transparent shadow-none hover:bg-muted"
+              className="text-[14px] p-[2px] !w-fit !h-fit border-transparent shadow-none hover:bg-muted"
               title="Font"
             >
-              <SelectValue placeholder="Font" />
+              <SelectValue className="text-[14px]" placeholder="Font" />
             </SelectTrigger>
             <SelectContent
-              className="z-[9999]"
+              className="z-[999999999] text-[14px] gap-[4px]"
               portalContainer={portalContainer}
             >
               {fontFamilies.map((fam) => (
-                <SelectItem key={fam} value={fam} title={formatFontName(fam)}>
+                <SelectItem
+                  className="text-[14px]"
+                  key={fam}
+                  value={fam}
+                  title={formatFontName(fam)}
+                >
                   {applyTextStyles(formatFontName(fam), {
                     ...style,
                     family: fam,
@@ -98,15 +103,15 @@ export function Toolbar({
             }}
           >
             {Object.entries(toolbarData.fontVariants?.tools || {}).map(
-              ([value, { label, icon, hotkey, handler: onSelect }]) => (
+              ([value, { label, icon: Icon, hotkey, handler: onSelect }]) => (
                 <ToggleGroupItem
                   key={value}
                   value={value}
-                  className="p-1 w-fit h-fit"
+                  className="p-[4px] w-fit h-fit"
                   title={`${label} (${hotkey})`}
                   onSelect={onSelect}
                 >
-                  {icon}
+                  <Icon style={{ width: "16px", height: "16px" }} />
                 </ToggleGroupItem>
               )
             )}
@@ -121,15 +126,15 @@ export function Toolbar({
             }}
           >
             {Object.entries(toolbarData.textDecorations?.tools || {}).map(
-              ([value, { label, icon, hotkey, handler: onSelect }]) => (
+              ([value, { label, icon: Icon, hotkey, handler: onSelect }]) => (
                 <ToggleGroupItem
                   key={value}
                   value={value}
-                  className="p-1 w-fit h-fit"
+                  className="p-[4px] w-fit h-fit"
                   title={`${label} (${hotkey})`}
                   onSelect={onSelect}
                 >
-                  {icon}
+                  <Icon style={{ width: "16px", height: "16px" }} />
                 </ToggleGroupItem>
               )
             )}
@@ -137,16 +142,16 @@ export function Toolbar({
 
           {/* Miscellaneous toolbar buttons (e.g., clear) */}
           {Object.entries(toolbarData.miscellaneous?.tools || {}).map(
-            ([value, { label, icon, hotkey, handler: onClick }]) => (
+            ([value, { label, icon: Icon, hotkey, handler: onClick }]) => (
               <Button
                 key={value}
                 variant="ghost"
                 size="icon"
-                className="p-1 w-fit h-fit"
+                className="p-[4px] w-fit h-fit"
                 title={`${label} (${hotkey})`}
                 onClick={onClick}
               >
-                {icon}
+                <Icon style={{ width: "16px", height: "16px" }} />
               </Button>
             )
           )}
@@ -157,33 +162,38 @@ export function Toolbar({
               <Button
                 variant="ghost"
                 size="icon"
-                className="p-1 w-fit h-fit"
+                className="p-[4px] w-fit h-fit"
                 title="Options"
               >
-                <EllipsisVerticalIcon />
+                <EllipsisVerticalIcon
+                  style={{ width: "16px", height: "16px" }}
+                />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
               portalContainer={portalContainer}
-              className="z-[9999] text-xs"
+              className="z-[999999999] text-[14px] gap-[4px]"
             >
               <DropdownMenuItem
+                className="text-[14px]"
                 onSelect={() => setTimeout(() => setSticky(!sticky), 10)}
               >
                 {sticky ? (
                   <>
-                    <PinOffIcon /> Unstick
+                    <PinOffIcon style={{ width: "16px", height: "16px" }} />{" "}
+                    Unstick
                   </>
                 ) : (
                   <>
-                    <PinIcon /> Stick
+                    <PinIcon style={{ width: "16px", height: "16px" }} /> Stick
                   </>
                 )}
               </DropdownMenuItem>
               <DropdownMenuItem
+                className="text-[14px]"
                 onSelect={() => setTimeout(() => setHidden(true), 10)}
               >
-                <EyeOffIcon /> Hide
+                <EyeOffIcon style={{ width: "16px", height: "16px" }} /> Hide
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -193,7 +203,7 @@ export function Toolbar({
         <Button
           variant="ghost"
           size="icon"
-          className="p-1 bg-popover text-popover-foreground text-lg font-bold rounded-full border-2 shadow-lg hover:text-xl hover:rotate-[21deg] transition-all"
+          className="p-[16px] bg-popover text-popover-foreground text-[18px] font-bold rounded-full border-2 shadow-lg hover:text-[20px] hover:rotate-[21deg] transition-all"
           title="Show Uniglyphs Toolbar"
           onClick={() => setTimeout(() => setHidden(false), 10)}
         >

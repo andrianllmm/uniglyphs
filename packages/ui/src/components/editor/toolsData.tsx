@@ -13,7 +13,7 @@ export type ToolbarData = {
     tools: {
       [toolName: string]: {
         label: string;
-        icon: React.ReactNode;
+        icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
         hotkey: string;
         handler: () => void;
       };
@@ -32,13 +32,13 @@ export function getToolbarData(handlers: {
       tools: {
         bold: {
           label: "Bold",
-          icon: <BoldIcon />,
+          icon: BoldIcon,
           hotkey: "ctrl+b",
           handler: () => handlers.toggleVariant("bold"),
         },
         italic: {
           label: "Italic",
-          icon: <ItalicIcon />,
+          icon: ItalicIcon,
           hotkey: "ctrl+i",
           handler: () => handlers.toggleVariant("italic"),
         },
@@ -49,13 +49,13 @@ export function getToolbarData(handlers: {
       tools: {
         underline: {
           label: "Underline",
-          icon: <UnderlineIcon />,
+          icon: UnderlineIcon,
           hotkey: "ctrl+u",
           handler: () => handlers.toggleDecoration("underline"),
         },
         strikethrough: {
           label: "Strikethrough",
-          icon: <StrikethroughIcon />,
+          icon: StrikethroughIcon,
           hotkey: "ctrl+s",
           handler: () => handlers.toggleDecoration("strikethrough"),
         },
@@ -66,7 +66,7 @@ export function getToolbarData(handlers: {
       tools: {
         clearFormatting: {
           label: "Clear formatting",
-          icon: <RemoveFormattingIcon />,
+          icon: RemoveFormattingIcon,
           hotkey: "ctrl+/",
           handler: () =>
             handlers.styleSelection({

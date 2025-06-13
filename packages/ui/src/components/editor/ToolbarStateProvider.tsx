@@ -153,7 +153,7 @@ export function ToolbarStateProvider({
       {toolbarReady && (
         <div
           ref={toolbarRef}
-          className="bg-transparent absolute z-[9000] transition-all duration-300"
+          className="bg-transparent absolute z-[999999998] transition-all duration-300"
           tabIndex={0}
           style={{
             top: `${toolbarPos.top}px`,
@@ -162,8 +162,8 @@ export function ToolbarStateProvider({
         >
           <div
             className={cn(
-              "bg-popover text-popover-foreground p-1 rounded-lg shadow-lg flex gap-1 items-center justify-center animate-in fade-in slide-in-from-bottom-4 duration-500 transition-all",
-              hidden && "bg-transparent shadow-none p-0"
+              "bg-popover text-popover-foreground p-[4px] rounded-lg shadow-lg flex gap-[4px] items-center justify-center animate-in fade-in slide-in-from-bottom-4 duration-500 transition-all",
+              hidden && "bg-transparent shadow-none p-[0px]"
             )}
           >
             {children}
