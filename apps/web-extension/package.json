@@ -1,6 +1,6 @@
 {
   "name": "UniGlyphs",
-  "description": "A browser extension to style Unicode text anywhere using a dynamic toolbar.",
+  "description": "UniGlyphs lets you style text on any website using a dynamic toolbar.",
   "private": true,
   "version": "0.1.0",
   "type": "module",
