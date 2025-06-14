@@ -1,15 +1,13 @@
 export type TextboxElement =
   | HTMLTextAreaElement
-  | HTMLInputElement
+  // | HTMLInputElement
   | HTMLElement; // Supported textbox-like elements
 
 /** Checks if element is a text input (textarea or input[type=text]) */
-export function isTextInput(
-  el: EventTarget | null
-): el is HTMLTextAreaElement | HTMLInputElement {
+export function isTextInput(el: EventTarget | null): el is HTMLTextAreaElement {
   return (
-    el instanceof HTMLTextAreaElement ||
-    (el instanceof HTMLInputElement && el.type === "text")
+    el instanceof HTMLTextAreaElement
+    // (el instanceof HTMLInputElement && el.type === "text")
   );
 }
 
