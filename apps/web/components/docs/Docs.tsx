@@ -1,4 +1,5 @@
 import { StylesSection } from "./StylesSection";
+import { UnicodeSection } from "./UnicodeSection";
 import { FeaturesSection } from "./FeaturesSection";
 import { FAQ } from "./FAQ";
 import { GlitchStyledText } from "@workspace/ui/components/glitch-styles";
@@ -39,6 +40,7 @@ export function Docs({ className = "" }: { className?: string }) {
       <br />
 
       <StylesSection />
+      <UnicodeSection />
       <FeaturesSection />
       <FAQ />
       <br />
