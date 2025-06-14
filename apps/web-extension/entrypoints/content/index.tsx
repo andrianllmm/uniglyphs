@@ -2,9 +2,10 @@ import "@workspace/ui/styles/globals.css";
 import "./styles.css";
 import ReactDOM from "react-dom/client";
 import { App } from "./App";
+import { CONTENT_SCRIPT_MATCHES } from "../../utils/matches";
 
 export default defineContentScript({
-  matches: ["*://*/*"],
+  matches: CONTENT_SCRIPT_MATCHES,
   cssInjectionMode: "ui",
 
   async main(ctx) {

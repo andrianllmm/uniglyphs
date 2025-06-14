@@ -40,7 +40,7 @@
 ## Usage
 
 1. Install from the [Chrome Web Store](https://chromewebstore.google.com/detail/) (Not yet available, see how to clone in [development](#development)). Once installed, the toolbar activates on supported text inputs.
-2. Visit a supported site with a text box (e.g., Facebook).
+2. Visit a supported site with a text box (e.g., Facebook) (see [supported sites](/apps/web-extension/utils/matches.ts)).
 3. Click into any text input field (like when posting) to show the toolbar following the caret.
 4. Or open the extension popup to use the editor and then copy the text.
 5. You can also visit the [homepage](https://uniglyphs.vercel.app/) to use the web-based editor and copy the text there. While you're there, you can also read the documentation and FAQs.
