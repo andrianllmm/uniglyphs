@@ -38,8 +38,10 @@ export function applyTextStyles(text: string, style: TextStyle): string {
   const variant = getFontVariantKey(bold, italic);
 
   // Get style offsets for the font family and variant
-  const offsets =
-    styleOffsets[family][variant] ?? styleOffsets[family]["normal"];
+  const familyOffsets = styleOffsets[family];
+  if (!familyOffsets) return text;
+
+  const offsets = familyOffsets[variant] ?? familyOffsets["normal"];
   if (!offsets) return text;
 
   // Convert decorations to corresponding combining marks
@@ -151,7 +153,12 @@ export function stripTextStyles(text: string): string {
   text = text.normalize("NFKC").normalize("NFD").replace(COMBINING_MARKS, "");
 
   const { family, bold, italic } = inferTextStyles(text);
-  const offsets = styleOffsets[family][getFontVariantKey(bold, italic)];
+  const variant = getFontVariantKey(bold, italic);
+
+  const familyOffsets = styleOffsets[family];
+  if (!familyOffsets) return text;
+
+  const offsets = familyOffsets[variant];
   if (!offsets) return text;
 
   const result: string[] = [];

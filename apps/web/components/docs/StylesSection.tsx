@@ -149,8 +149,8 @@ export function StylesSection() {
           >
             {applyTextStyles(variant, {
               family: "serif",
-              bold: false,
-              italic: false,
+              bold: getFontVariantByKey(variant).bold,
+              italic: getFontVariantByKey(variant).italic,
               decorations: [],
             })}
           </ToggleGroupItem>
