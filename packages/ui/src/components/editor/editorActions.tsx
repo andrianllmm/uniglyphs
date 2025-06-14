@@ -29,13 +29,13 @@ export function getEditorActions(
       label: "Copy",
       icon: CopyIcon,
       handler: copy,
-      hotkey: "ctrl+c",
+      hotkey: "",
     },
     paste: {
       label: "Paste",
       icon: ClipboardIcon,
       handler: paste,
-      hotkey: "ctrl+v",
+      hotkey: "",
     },
     undo: {
       label: "Undo",
