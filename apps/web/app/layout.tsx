@@ -28,6 +28,9 @@ export const metadata: Metadata = {
     { name: "Andrian Lloyd Maagma", url: "https://andrianllmm.github.io" },
   ],
   creator: "Andrian Lloyd Maagma",
+  verification: {
+    google: "OLTB6tZCygn9YxrUbII3TsDDnmCXnC3YZa2xmwWXjRU",
+  },
 };
 
 export default function RootLayout({
