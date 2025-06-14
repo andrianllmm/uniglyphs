@@ -3,13 +3,16 @@
 </div>
 
 <div align="center">
-   <strong>A browser extension that lets you 𝓼𝓽𝔂𝓵𝓮 text on any website using a dynamic toolbar.</strong>
+   <strong>A browser extension that lets you 𝓼𝓽𝔂𝓵𝓮 text on any website using a dynamic toolbar</strong>
 </div>
 
 ###
 
 <div align="center">
-  <img src="readme_preview/demo.gif" alt="Demo" width="720">
+  <a href="https://youtu.be/p0QjqGF4K7A" target="_blank">
+    <img src="readme_preview/preview.gif" alt="Preview" width="640">
+  </a>
+  <p><em>Tap the preview to view the full video</em></p>
 </div>
 
 ###
@@ -18,6 +21,10 @@
 
 **UniGlyphs** is a browser extension that lets users style text using Unicode. It provides a floating toolbar for styling text that works on websites like Facebook, along with a full-page editor and popup editor in the browser. It gives users an expressive way to write posts, comments, and more, even on platforms that don’t allow custom fonts. Styled text is generated using Unicode characters that resemble different font styles, such as 𝐛𝐨𝐥𝐝, 𝑖𝑡𝑎𝑙𝑖𝑐, and 𝔤𝔬𝔱𝔥𝔦𝔠, which persists their look anywhere.
 
+<div align="center" style="display: flex; justify-content: space-between;">
+  <img src="readme_preview/main.png" alt="Main" width="480">
+  <img src="readme_preview/popup.png" alt="Popup" width="480">
+</div>
 
 ## Features
 
@@ -32,21 +39,11 @@
 
 ## Usage
 
-1. Install from the [Chrome Web Store](https://chrome.google.com/webstore) (Not yet available, see how to clone in [development](#development)). Once installed, the toolbar activates on supported text inputs.
+1. Install from the [Chrome Web Store](https://chromewebstore.google.com/detail/) (Not yet available, see how to clone in [development](#development)). Once installed, the toolbar activates on supported text inputs.
 2. Visit a supported site with a text box (e.g., Facebook).
 3. Click into any text input field (like when posting) to show the toolbar following the caret.
 4. Or open the extension popup to use the editor and then copy the text.
-5. Similarly, you can also visit the [homepage](#) to use the web-based editor and copy the text there. While you're there, you can also read the documentation and FAQs.
-
-
-## Examples
-
-<div style="display: flex; justify-content: space-between;">
-  <img src="readme_preview/demo1.png" alt="Example 1" width="250">
-  <img src="readme_preview/demo2.png" alt="Example 2" width="250">
-  <img src="readme_preview/demo3.png" alt="Example 3" width="250">
-  <img src="readme_preview/demo4.png" alt="Example 4" width="250">
-</div>
+5. You can also visit the [homepage](https://uniglyphs.vercel.app/) to use the web-based editor and copy the text there. While you're there, you can also read the documentation and FAQs.
 
 
 ## Development
