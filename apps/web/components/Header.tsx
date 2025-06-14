@@ -52,7 +52,11 @@ export function Header() {
             title="Install"
             asChild
           >
-            <a href="#" target="_blank" rel="noreferrer">
+            <a
+              href={process.env.NEXT_UNIGLYPHS_CHROME_WEB_STORE_URL}
+              target="_blank"
+              rel="noreferrer"
+            >
               <DownloadIcon size={4} />
             </a>
           </Button>
