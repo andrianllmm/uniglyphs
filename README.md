@@ -39,7 +39,7 @@
 
 ## Usage
 
-1. Install from the [Chrome Web Store](https://chromewebstore.google.com/detail/) (Not yet available, see how to clone in [development](#development)). Once installed, the toolbar activates on supported text inputs.
+1. Install from the [Chrome Web Store](https://chromewebstore.google.com/detail/hcnbmicjiggmklnmkpljeomkmagigkbc). Once installed, the toolbar activates on supported text inputs.
 2. Visit a supported site with a text box (e.g., Facebook) (see [supported sites](/apps/web-extension/utils/matches.ts)).
 3. Click into any text input field (like when posting) to show the toolbar following the caret.
    Note: If the toolbar behaves strangely, the site may be using custom input components that aren’t fully supported. Use the popup or full editor instead.

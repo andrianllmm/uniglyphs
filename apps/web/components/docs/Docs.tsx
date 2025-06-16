@@ -15,7 +15,7 @@ export function Docs({ className = "" }: { className?: string }) {
       <P className="leading-6">
         UniGlyphs is a browser extension that lets you{" "}
         <span className="border-dashed border-2 py-0.5 px-1">
-          𝓼𝓽𝔂𝓵𝓮 𝕥𝕖𝕩𝕥 on any 𝐰𝐞𝐛𝐬𝐢𝐭𝐞
+          𝓼𝓽𝔂𝓵𝓮 text on any website
         </span>
         ,<br />
         like <ExternalLink href="https://facebook.com/">Facebook</ExternalLink>,
@@ -32,7 +32,7 @@ export function Docs({ className = "" }: { className?: string }) {
       <H1>Getting Started</H1>
       <P>
         Install the UniGlyphs extension from the{" "}
-        <ExternalLink href="https://chrome.google.com/webstore">
+        <ExternalLink href={process.env.NEXT_UNIGLYPHS_CHROME_WEB_STORE_URL}>
           Chrome Web Store
         </ExternalLink>
         . Once installed, you can activate the toolbar on any supported website.
