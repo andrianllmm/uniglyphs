@@ -22,14 +22,13 @@
 **UniGlyphs** is a browser extension that lets users style text using Unicode. It provides a floating toolbar for styling text that works on websites like Facebook, along with a full-page editor and popup editor in the browser. It gives users an expressive way to write posts, comments, and more, even on platforms that don’t allow custom fonts. Styled text is generated using Unicode characters that resemble different font styles, such as 𝐛𝐨𝐥𝐝, 𝑖𝑡𝑎𝑙𝑖𝑐, and 𝔤𝔬𝔱𝔥𝔦𝔠, which persists their look anywhere.
 
 <div align="center" style="display: flex; justify-content: space-between;">
-  <img src="readme_preview/main.png" alt="Main" width="480">
-  <img src="readme_preview/popup.png" alt="Popup" width="480">
+  <img src="readme_preview/main.png" alt="Main" width="400">
+  <img src="readme_preview/popup.png" alt="Popup" width="400">
 </div>
 
 ## Features
 
 - **Floating Toolbar**: for formatting their texts in any textbox. It appears when a supported text field is clicked and follows the caret as it moves.
-  ⚠️ Can be buggy on some sites due to custom text field implementations.
 - **Popup Editor**: for times when the floating toolbar is not available.
 - **Web-Based Editor**: for more extensive editing and documentation.
 - **Style Variety**: diverse selection of Unicode sets that mimic font styles, such as bold serif (𝐀), italic sans (𝘈), double-struck (𝔸).
@@ -39,11 +38,19 @@
 
 ## Usage
 
-1. Install from the [Chrome Web Store](https://chromewebstore.google.com/detail/hcnbmicjiggmklnmkpljeomkmagigkbc). Once installed, the toolbar activates on supported text inputs.
-2. Visit a supported site with a text box (e.g., Facebook) (see [supported sites](/apps/web-extension/utils/matches.ts)).
-3. Click into any text input field (like when posting) to show the toolbar following the caret.
-   Note: If the toolbar behaves strangely, the site may be using custom input components that aren’t fully supported. Use the popup or full editor instead.
-4. Or open the extension popup to use the editor and then copy the text.
+1. Install from:
+
+| Platform    | Status      | Link                       |
+| ----------- | ----------- | -------------------------- |
+| **Chrome**  | Available   | [Chrome Web Store][chrome] |
+| **Firefox** | Unavailable | _Planned_                  |
+
+[chrome]: https://chromewebstore.google.com/detail/hcnbmicjiggmklnmkpljeomkmagigkbc
+
+2. Visit a supported site (e.g., Facebook) (see [supported sites](/apps/web-extension/utils/matches.ts)).
+3. Click any text box (like when posting) to show the toolbar following the caret.
+   > ⚠️ If the toolbar behaves strangely, the site may be using input components that aren’t fully supported. Use the popup instead.
+4. Open the extension popup to use the editor and then copy the text.
 5. You can also visit the [homepage](https://uniglyphs.vercel.app/) to use the web-based editor and copy the text there. While you're there, you can also read the documentation and FAQs.
 
 ## Development
