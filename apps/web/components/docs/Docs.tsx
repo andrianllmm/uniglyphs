@@ -15,17 +15,16 @@ export function Docs({ className = "" }: { className?: string }) {
       <P className="leading-6">
         UniGlyphs is a browser extension that lets you{" "}
         <span className="border-dashed border-2 py-0.5 px-1">
-          𝓼𝓽𝔂𝓵𝓮 text on any website
+          <abbr title="format">𝓯𝓸𝓻𝓶𝓪𝓽</abbr> text on any website
         </span>
         ,<br />
         like <ExternalLink href="https://facebook.com/">Facebook</ExternalLink>,
-        using a dynamic toolbar.
+        using an inline toolbar.
       </P>
       <P className="text-muted-foreground leading-6">
         Whether it&apos;s a tweet, comment, or bio, UniGlyphs adds{" "}
         <span className="border-2 border-dashed py-0.5 px-1">𝕡𝕖𝕣𝕤𝕠𝕟𝕒𝕝𝕚𝕥𝕪</span>{" "}
-        to your writings. No more copy-pasting from sketchy font sites. Just you
-        and your keyboard.
+        to your writings. No more copy-pasting from sketchy font sites.
       </P>
       <br />
 

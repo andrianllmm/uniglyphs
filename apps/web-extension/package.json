@@ -1,6 +1,6 @@
 {
   "name": "UniGlyphs",
-  "description": "UniGlyphs lets you style text on any website using a dynamic toolbar.",
+  "description": "UniGlyphs lets you format text on any website using an inline toolbar.",
   "private": true,
   "version": "0.1.0",
   "type": "module",
