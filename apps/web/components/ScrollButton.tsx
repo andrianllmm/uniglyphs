@@ -17,7 +17,7 @@ export function ScrollButton({ className }: { className?: string }) {
       ([entry]) => {
         setShowBackToTop(entry?.isIntersecting ?? false);
       },
-      { threshold: 0.1 }
+      { threshold: 0.1 },
     );
 
     observer.observe(docsSection);
@@ -32,7 +32,7 @@ export function ScrollButton({ className }: { className?: string }) {
         "rounded-full bg-background/80 hover:bg-background/90 text-foreground/70 hover:text-foreground/80 text-sm",
         "transition-transform hover:scale-105",
         !showBackToTop && "animate-bounce",
-        className
+        className,
       )}
       asChild
     >

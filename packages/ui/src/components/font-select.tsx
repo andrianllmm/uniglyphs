@@ -33,7 +33,7 @@ export function FontSelect({ className }: { className?: string }) {
     localStorage.setItem(FONT_KEY, font);
     document.documentElement.style.setProperty(
       "--chosen-font",
-      `var(--font-${font})`
+      `var(--font-${font})`,
     );
   }, [font]);
 
@@ -42,7 +42,7 @@ export function FontSelect({ className }: { className?: string }) {
       <SelectTrigger
         className={cn(
           "p-2 hover:bg-accent hover:text-accent-foreground font-extrabold border-0 shadow-none gap-0",
-          className
+          className,
         )}
         title="Font"
       >

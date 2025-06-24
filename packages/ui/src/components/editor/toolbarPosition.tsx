@@ -10,7 +10,7 @@ export function getToolbarPos(
   textbox: TextboxElement | null,
   toolbar: HTMLDivElement | null,
   fallback_alignment: "center" | "right" | "left" = "center",
-  offset: number = DEFAULT_TOOLBAR_OFFSET
+  offset: number = DEFAULT_TOOLBAR_OFFSET,
 ) {
   if (!textbox) return { top: 0, left: 0 };
 
@@ -32,13 +32,13 @@ export function getToolbarPos(
     newTop,
     window.innerHeight -
       (toolbar?.offsetHeight || TOOLBAR_FALLBACK_HEIGHT) -
-      offset
+      offset,
   );
   newLeft = Math.min(
     newLeft,
     window.innerWidth -
       (toolbar?.offsetWidth || TOOLBAR_FALLBACK_WIDTH) -
-      offset
+      offset,
   );
 
   newTop = Math.max(newTop, 0);
@@ -50,7 +50,7 @@ export function getToolbarPos(
 export function getAlignToolbarPos(
   toolbar: HTMLDivElement | null,
   alignment: "center" | "right" | "left" = "center",
-  offset: number = DEFAULT_TOOLBAR_OFFSET
+  offset: number = DEFAULT_TOOLBAR_OFFSET,
 ) {
   const toolbarHeight = toolbar?.offsetHeight || TOOLBAR_FALLBACK_HEIGHT;
   const toolbarWidth = toolbar?.offsetWidth || TOOLBAR_FALLBACK_WIDTH;

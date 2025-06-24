@@ -22,7 +22,7 @@ export function getEditorActions(
   undo: () => void,
   redo: () => void,
   decreaseFontSize: () => void,
-  increaseFontSize: () => void
+  increaseFontSize: () => void,
 ): EditorActions {
   return {
     copy: {

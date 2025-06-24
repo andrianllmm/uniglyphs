@@ -49,7 +49,7 @@ export function Toolbar({
     <div
       className={cn(
         "flex flex-wrap gap-[2px] items-center justify-center text-[14px]",
-        className
+        className,
       )}
     >
       {!hidden ? (
@@ -113,7 +113,7 @@ export function Toolbar({
                 >
                   <Icon style={{ width: "16px", height: "16px" }} />
                 </ToggleGroupItem>
-              )
+              ),
             )}
           </ToggleGroup>
 
@@ -136,7 +136,7 @@ export function Toolbar({
                 >
                   <Icon style={{ width: "16px", height: "16px" }} />
                 </ToggleGroupItem>
-              )
+              ),
             )}
           </ToggleGroup>
 
@@ -153,7 +153,7 @@ export function Toolbar({
               >
                 <Icon style={{ width: "16px", height: "16px" }} />
               </Button>
-            )
+            ),
           )}
 
           {/* Toolbar options */}

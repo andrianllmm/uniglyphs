@@ -62,7 +62,7 @@ export function ToolbarProvider({ children, textboxRef, onInsertText }: Props) {
       updateTextboxSelection(
         textbox,
         selectionStart,
-        selectionStart + text.length
+        selectionStart + text.length,
       );
       textbox.focus();
     }, 0);
@@ -77,7 +77,7 @@ export function ToolbarProvider({ children, textboxRef, onInsertText }: Props) {
       bold: false,
       italic: false,
       decorations: [],
-    }
+    },
   ) => {
     const textbox = textboxRef.current;
     if (!textbox) return;
@@ -123,7 +123,7 @@ export function ToolbarProvider({ children, textboxRef, onInsertText }: Props) {
         getTextboxState(textbox);
 
       const inferredStyles = inferTextStyles(
-        selectionStart === selectionEnd ? adjacentChar : selection
+        selectionStart === selectionEnd ? adjacentChar : selection,
       );
 
       setStyle(inferredStyles);
@@ -136,18 +136,18 @@ export function ToolbarProvider({ children, textboxRef, onInsertText }: Props) {
     const documentEvents = ["selectionchange"];
 
     windowEvents.forEach((e) =>
-      window.addEventListener(e, handleSelectionChange)
+      window.addEventListener(e, handleSelectionChange),
     );
     documentEvents.forEach((e) =>
-      document.addEventListener(e, handleSelectionChange)
+      document.addEventListener(e, handleSelectionChange),
     );
 
     return () => {
       windowEvents.forEach((e) =>
-        window.removeEventListener(e, handleSelectionChange)
+        window.removeEventListener(e, handleSelectionChange),
       );
       documentEvents.forEach((e) =>
-        document.removeEventListener(e, handleSelectionChange)
+        document.removeEventListener(e, handleSelectionChange),
       );
     };
   }, [textboxRef]);

@@ -152,24 +152,17 @@ Found a bug or issue? Report it on the
 
 <!-- URLs -->
 
-[chrome-url]:
-  https://chromewebstore.google.com/detail/hcnbmicjiggmklnmkpljeomkmagigkbc
+[chrome-url]: https://chromewebstore.google.com/detail/hcnbmicjiggmklnmkpljeomkmagigkbc
 [firefox-url]: https://addons.mozilla.org/en-US/firefox/extensions
 [vercel-url]: https://uniglyphs.vercel.app
 [youtube-url]: https://youtu.be/p0QjqGF4K7A
 
 <!-- Badges -->
 
-[chrome-logo]:
-  https://img.shields.io/badge/-Chrome-4285F4?logo=googlechrome&logoColor=white&style=for-the-badge
-[firefox-logo]:
-  https://img.shields.io/badge/-Firefox-FF7139?logo=firefox&logoColor=white&style=for-the-badge
-[chrome-badge]:
-  https://img.shields.io/badge/-Chrome%20Web%20Store-blue?logo=google-chrome&logoColor=white&style=flat
+[chrome-logo]: https://img.shields.io/badge/-Chrome-4285F4?logo=googlechrome&logoColor=white&style=for-the-badge
+[firefox-logo]: https://img.shields.io/badge/-Firefox-FF7139?logo=firefox&logoColor=white&style=for-the-badge
+[chrome-badge]: https://img.shields.io/badge/-Chrome%20Web%20Store-blue?logo=google-chrome&logoColor=white&style=flat
 [vercel-badge]: https://vercelbadge.vercel.app/api/andrianllmm/uniglyphs
-[license-badge]:
-  https://img.shields.io/github/license/andrianllmm/uniglyphs?style=flat
-[stargazers-badge]:
-  https://img.shields.io/github/stars/andrianllmm/uniglyphs?style=flat&logo=github
-[youtube-badge]:
-  https://img.shields.io/badge/Watch%20Demo-red?style=flat&logo=youtube&logoColor=white
+[license-badge]: https://img.shields.io/github/license/andrianllmm/uniglyphs?style=flat
+[stargazers-badge]: https://img.shields.io/github/stars/andrianllmm/uniglyphs?style=flat&logo=github
+[youtube-badge]: https://img.shields.io/badge/Watch%20Demo-red?style=flat&logo=youtube&logoColor=white

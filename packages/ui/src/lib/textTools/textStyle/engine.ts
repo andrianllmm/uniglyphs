@@ -124,7 +124,7 @@ export function inferTextStyles(text: string): TextStyle {
 
       if (upperInRange || lowerInRange || digitInRange) {
         const { bold: b, italic: i } = getFontVariantByKey(
-          variant as FontVariant
+          variant as FontVariant,
         );
         bold = b;
         italic = i;

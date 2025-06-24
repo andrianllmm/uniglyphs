@@ -27,7 +27,7 @@ const SYMBOLS = ".,";
 const SAMPLE_TEXT = "Pack my box with five dozen liquor jugs.";
 
 const toggleGroupItemClass = cva(
-  "p-1 border-2 rounded! text-center bg-background! hover:border-primary data-[state=on]:border-primary data-[state=off]:border-dotted"
+  "p-1 border-2 rounded! text-center bg-background! hover:border-primary data-[state=on]:border-primary data-[state=off]:border-dotted",
 );
 
 export function StylesSection() {
@@ -61,7 +61,7 @@ export function StylesSection() {
           {[
             ...applyTextStyles(
               [...letters, ...NUMBERS, ...SYMBOLS].join(""),
-              style
+              style,
             ),
           ].map((char, index) => (
             <div

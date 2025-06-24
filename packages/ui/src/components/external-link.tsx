@@ -15,7 +15,7 @@ function ExternalLink({
     <a
       className={cn(
         "inline-flex items-center gap-1 transition-all hover:underline",
-        className
+        className,
       )}
       href={href}
       target="_blank"

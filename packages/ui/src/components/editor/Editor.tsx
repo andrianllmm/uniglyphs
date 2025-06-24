@@ -35,7 +35,7 @@ export function Editor({
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
   const [value, setValue] = useState<string>("");
   const [fontSize, setFontSize] = useState(
-    Math.max(Math.min(defaultFontSize, MAX_FONT_SIZE), MIN_FONT_SIZE)
+    Math.max(Math.min(defaultFontSize, MAX_FONT_SIZE), MIN_FONT_SIZE),
   );
 
   const undoStack = useRef<string[]>([]);
@@ -116,7 +116,7 @@ export function Editor({
     undo,
     redo,
     decreaseFontSize,
-    increaseFontSize
+    increaseFontSize,
   );
 
   useEffect(() => {
@@ -169,7 +169,7 @@ export function Editor({
       const keyCombo = [...modifiers, key].join("+");
 
       const action = Object.values(actions).find(
-        (action) => action.hotkey === keyCombo
+        (action) => action.hotkey === keyCombo,
       );
       if (action?.handler) {
         event.preventDefault();
@@ -216,7 +216,7 @@ export function Editor({
         placeholder="Type something..."
         className={cn(
           "border-transparent focus-visible:border-transparent focus-visible:ring-0 p-0 rounded-none",
-          textAreaClassName
+          textAreaClassName,
         )}
         style={{ fontSize: `${fontSize}px` }}
         {...restTextAreaProps}
@@ -247,7 +247,7 @@ export function Editor({
               >
                 {<Icon />}
               </Button>
-            )
+            ),
           )}
         </div>
       </div>

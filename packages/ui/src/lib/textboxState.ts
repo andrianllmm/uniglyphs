@@ -67,12 +67,12 @@ export function getTextboxState(textbox: TextboxElement): TextboxState {
       state.selectionStart = getNodeOffset(
         textbox,
         range.startContainer,
-        range.startOffset
+        range.startOffset,
       );
       state.selectionEnd = getNodeOffset(
         textbox,
         range.endContainer,
-        range.endOffset
+        range.endOffset,
       );
     }
   }
@@ -159,7 +159,7 @@ export function insertTextboxValue(textbox: TextboxElement, text: string) {
 export function updateTextboxSelection(
   textbox: TextboxElement,
   selectionStart: number,
-  selectionEnd: number
+  selectionEnd: number,
 ) {
   if (isTextInput(textbox)) {
     textbox.selectionStart = selectionStart;
@@ -172,11 +172,11 @@ export function updateTextboxSelection(
 
     const { node: startNode, nodeOffset: startOffset } = getNodeAtOffset(
       textbox,
-      selectionStart
+      selectionStart,
     );
     const { node: endNode, nodeOffset: endOffset } = getNodeAtOffset(
       textbox,
-      selectionEnd
+      selectionEnd,
     );
 
     if (!startNode || !endNode) return;
@@ -223,7 +223,7 @@ function simulatePaste(el: HTMLElement, text: string): boolean {
 function getNodeOffset(
   root: HTMLElement,
   node: Node,
-  nodeOffset: number
+  nodeOffset: number,
 ): number {
   let totalOffset = 0;
 
@@ -242,7 +242,7 @@ function getNodeOffset(
         }
         return NodeFilter.FILTER_SKIP;
       },
-    }
+    },
   );
 
   // Walk the tree until the target node is found
@@ -273,7 +273,7 @@ function getNodeOffset(
  */
 function getNodeAtOffset(
   root: HTMLElement,
-  offset: number
+  offset: number,
 ): { node: Text | Element | null; nodeOffset: number } {
   let runningTotal = 0;
 
@@ -292,7 +292,7 @@ function getNodeAtOffset(
         }
         return NodeFilter.FILTER_SKIP;
       },
-    }
+    },
   );
 
   // Walk the tree until the offset falls within this text node

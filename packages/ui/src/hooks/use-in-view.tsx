@@ -2,7 +2,7 @@ import { useEffect, useState, RefObject } from "react";
 
 export function useInView(
   target: RefObject<HTMLElement | null>,
-  options: IntersectionObserverInit
+  options: IntersectionObserverInit,
 ) {
   const [isIntersecting, setIsIntersecting] = useState(false);
 

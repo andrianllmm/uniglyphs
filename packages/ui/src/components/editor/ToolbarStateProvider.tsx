@@ -31,14 +31,14 @@ export type ToolbarStateContextType = {
 };
 
 const ToolbarStateContext = createContext<ToolbarStateContextType | undefined>(
-  undefined
+  undefined,
 );
 
 export const useToolbarState = () => {
   const context = useContext(ToolbarStateContext);
   if (!context) {
     throw new Error(
-      "useToolbarState must be used within a ToolbarStateProvider"
+      "useToolbarState must be used within a ToolbarStateProvider",
     );
   }
   return context;
@@ -84,7 +84,7 @@ export function ToolbarStateProvider({
     }
 
     setToolbarPos(
-      getToolbarPos(textboxRef.current, toolbarRef.current, "center", offset)
+      getToolbarPos(textboxRef.current, toolbarRef.current, "center", offset),
     );
   }, [textboxRef, sticky, hidden, offset]);
 
@@ -121,19 +121,19 @@ export function ToolbarStateProvider({
     const documentEvents = ["selectionchange"];
 
     windowEvents.forEach((e) =>
-      window.addEventListener(e, updateCaretPosDebounced)
+      window.addEventListener(e, updateCaretPosDebounced),
     );
     documentEvents.forEach((e) =>
-      document.addEventListener(e, updateCaretPosDebounced)
+      document.addEventListener(e, updateCaretPosDebounced),
     );
 
     return () => {
       clearTimeout(timeoutId);
       windowEvents.forEach((e) =>
-        window.removeEventListener(e, updateCaretPosDebounced)
+        window.removeEventListener(e, updateCaretPosDebounced),
       );
       documentEvents.forEach((e) =>
-        document.removeEventListener(e, updateCaretPosDebounced)
+        document.removeEventListener(e, updateCaretPosDebounced),
       );
     };
   }, [updateCaretPosDebounced, offset]);
@@ -163,7 +163,7 @@ export function ToolbarStateProvider({
           <div
             className={cn(
               "bg-popover text-popover-foreground p-[4px] rounded-lg shadow-lg flex gap-[4px] items-center justify-center animate-in fade-in slide-in-from-bottom-4 duration-500 transition-all",
-              hidden && "bg-transparent shadow-none p-[0px]"
+              hidden && "bg-transparent shadow-none p-[0px]",
             )}
           >
             {children}
