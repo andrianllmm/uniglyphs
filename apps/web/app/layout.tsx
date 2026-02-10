@@ -7,6 +7,7 @@ import "@fontsource/merriweather";
 import "@fontsource/playfair";
 import "@fontsource/lora";
 import { Metadata } from "next";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import { Providers } from "@/components/providers";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -40,6 +41,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        {process.env.NEXT_PUBLIC_GA_ID && (
+          <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />
+        )}
+      </head>
       <body className="font-custom antialiased">
         <Providers>
           <div className="container max-w-[640px] mx-auto flex flex-col">
