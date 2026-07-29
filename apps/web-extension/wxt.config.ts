@@ -12,4 +12,15 @@ export default defineConfig({
       port: 1234,
     },
   },
+  manifest: ({ browser }) => ({
+    ...(browser === "firefox" && {
+      browser_specific_settings: {
+        gecko: {
+          data_collection_permissions: {
+            required: ["none"],
+          },
+        },
+      },
+    }),
+  }),
 });
