@@ -33,6 +33,10 @@ export function Docs({ className = "" }: { className?: string }) {
         Install the UniGlyphs extension from the{" "}
         <ExternalLink href={process.env.NEXT_UNIGLYPHS_CHROME_WEB_STORE_URL}>
           Chrome Web Store
+        </ExternalLink>{" "}
+        or{" "}
+        <ExternalLink href={process.env.NEXT_UNIGLYPHS_FIREFOX_ADDON_URL}>
+          Firefox Add-ons
         </ExternalLink>
         . Once installed, you can activate the toolbar on any supported website.
       </P>
