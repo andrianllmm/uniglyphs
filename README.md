@@ -1,6 +1,7 @@
 <div align="center">
 
 [![Chrome Web Store][chrome-badge]][chrome-url]
+[![Firefox Add-ons][firefox-badge]][firefox-url]
 [![Vercel][vercel-badge]][vercel-url] [![License][license-badge]](LICENSE)
 [![GitHub stars][stargazers-badge]](https://github.com/andrianllmm/uniglyphs/stargazers)
 
@@ -91,7 +92,7 @@ styling sticks no matter where you paste it.
 | Browser                  | Status    | Install from                   |
 | ------------------------ | --------- | ------------------------------ |
 | ![Chrome][chrome-logo]   | Available | [Chrome Web Store][chrome-url] |
-| ![Firefox][firefox-logo] | Planned   | [Firefox Add-ons][firefox-url] |
+| ![Firefox][firefox-logo] | Available | [Firefox Add-ons][firefox-url] |
 
 ## Usage
 
@@ -146,7 +147,7 @@ Distributed under the [MIT License](LICENSE).
 <!-- URLs -->
 
 [chrome-url]: https://chromewebstore.google.com/detail/hcnbmicjiggmklnmkpljeomkmagigkbc
-[firefox-url]: https://addons.mozilla.org/en-US/firefox/extensions
+[firefox-url]: https://addons.mozilla.org/en-US/firefox/addon/uniglyphs/
 [vercel-url]: https://uniglyphs.vercel.app
 [youtube-url]: https://youtu.be/p0QjqGF4K7A
 
@@ -154,7 +155,8 @@ Distributed under the [MIT License](LICENSE).
 
 [chrome-logo]: https://img.shields.io/badge/-Chrome-4285F4?logo=googlechrome&logoColor=white&style=for-the-badge
 [firefox-logo]: https://img.shields.io/badge/-Firefox-FF7139?logo=firefox&logoColor=white&style=for-the-badge
-[chrome-badge]: https://img.shields.io/badge/-Chrome%20Web%20Store-blue?logo=google-chrome&logoColor=white&style=flat
+[chrome-badge]: https://img.shields.io/badge/-Chrome%20Web%20Store-4285F4?logo=google-chrome&logoColor=white&style=flat
+[firefox-badge]: https://img.shields.io/badge/-Firefox%20Add--ons-FF7139?logo=firefox&logoColor=white&style=flat
 [vercel-badge]: https://vercelbadge.vercel.app/api/andrianllmm/uniglyphs
 [license-badge]: https://img.shields.io/github/license/andrianllmm/uniglyphs?style=flat
 [stargazers-badge]: https://img.shields.io/github/stars/andrianllmm/uniglyphs?style=flat&logo=github
