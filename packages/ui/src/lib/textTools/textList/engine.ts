@@ -3,22 +3,53 @@ import {
   ListStyle,
 } from "@workspace/ui/lib/textTools/textList/styles";
 
+// Two spaces per nesting level. Spaces (not a tab character) so indentation
+// stays consistent when pasted into places that mangle literal tabs.
+export const INDENT_UNIT = "  ";
+
 const BULLET_MARKER = "• ";
-const NUMBERED_MARKER_PATTERN = /^\d+\.\s/;
+const BULLET_OUTLINE_MARKER = "◦ ";
+const NUMBERED_MARKER_PATTERN = /^([0-9]+|[a-z]+)\.\s/;
 const CHECKLIST_UNCHECKED_MARKER = "☐ ";
 const CHECKLIST_CHECKED_MARKER = "☑ ";
 
+/** Splits a line into its leading indentation and the rest of its content */
+function splitIndent(line: string): { indent: string; rest: string } {
+  const [indent] = /^ */.exec(line) ?? [""];
+  return { indent, rest: line.slice(indent.length) };
+}
+
+/** Nesting depth implied by a line's leading indentation */
+function getDepth(indent: string): number {
+  return Math.floor(indent.length / INDENT_UNIT.length);
+}
+
+/** Converts a 1-indexed number to a lowercase letter sequence (1 -> a, 27 -> aa) */
+function toAlpha(n: number): string {
+  let s = "";
+  let num = n;
+  while (num > 0) {
+    num -= 1;
+    s = String.fromCharCode(97 + (num % 26)) + s;
+    num = Math.floor(num / 26);
+  }
+  return s;
+}
+
 /** Checks whether a single line already has the given list style's marker */
 function lineHasMarker(line: string, style: ListStyle): boolean {
+  const { rest } = splitIndent(line);
   switch (style) {
     case "bullet":
-      return line.startsWith(BULLET_MARKER);
+      return (
+        rest.startsWith(BULLET_MARKER) || rest.startsWith(BULLET_OUTLINE_MARKER)
+      );
     case "numbered":
-      return NUMBERED_MARKER_PATTERN.test(line);
+      return NUMBERED_MARKER_PATTERN.test(rest);
     case "checklist":
       return (
-        line.startsWith(CHECKLIST_UNCHECKED_MARKER) ||
-        line.startsWith(CHECKLIST_CHECKED_MARKER)
+        rest.startsWith(CHECKLIST_UNCHECKED_MARKER) ||
+        rest.startsWith(CHECKLIST_CHECKED_MARKER)
       );
   }
 }
@@ -26,29 +57,47 @@ function lineHasMarker(line: string, style: ListStyle): boolean {
 /** Removes a single list style's marker from a single line, if present */
 function stripLineMarker(line: string, style: ListStyle): string {
   if (!lineHasMarker(line, style)) return line;
+  const { indent, rest } = splitIndent(line);
   switch (style) {
     case "bullet":
-      return line.slice(BULLET_MARKER.length);
+      return indent + rest.replace(/^(•|◦) /, "");
     case "numbered":
-      return line.replace(NUMBERED_MARKER_PATTERN, "");
+      return indent + rest.replace(NUMBERED_MARKER_PATTERN, "");
     case "checklist":
-      return line.slice(CHECKLIST_UNCHECKED_MARKER.length);
+      return indent + rest.slice(CHECKLIST_UNCHECKED_MARKER.length);
   }
 }
 
-/** Prepends the list marker to every line that doesn't already have it */
+/**
+ * Prepends the list marker to every line that doesn't already have it.
+ * Bullets alternate filled/outline and numbering alternates digits/letters
+ * by nesting depth (each level's own counter resets whenever a shallower
+ * line is seen, and resumes where it left off when nested back into).
+ */
 export function applyListStyle(text: string, style: ListStyle): string {
+  const numCounters: number[] = [];
+
   return text
     .split("\n")
-    .map((line, i) => {
+    .map((line) => {
       if (lineHasMarker(line, style)) return line;
-      const marker =
-        style === "bullet"
-          ? BULLET_MARKER
-          : style === "numbered"
-            ? `${i + 1}. `
-            : CHECKLIST_UNCHECKED_MARKER;
-      return marker + line;
+
+      const { indent, rest } = splitIndent(line);
+      const depth = getDepth(indent);
+
+      let marker: string;
+      if (style === "bullet") {
+        marker = depth % 2 === 0 ? BULLET_MARKER : BULLET_OUTLINE_MARKER;
+      } else if (style === "numbered") {
+        numCounters[depth] = (numCounters[depth] || 0) + 1;
+        numCounters.length = depth + 1;
+        const n = numCounters[depth];
+        marker = depth % 2 === 0 ? `${n}. ` : `${toAlpha(n)}. `;
+      } else {
+        marker = CHECKLIST_UNCHECKED_MARKER;
+      }
+
+      return indent + marker + rest;
     })
     .join("\n");
 }
@@ -98,7 +147,9 @@ export function cycleChecklist(text: string): string {
 
   const allChecked =
     nonEmptyLines.length > 0 &&
-    nonEmptyLines.every((line) => line.startsWith(CHECKLIST_CHECKED_MARKER));
+    nonEmptyLines.every((line) =>
+      splitIndent(line).rest.startsWith(CHECKLIST_CHECKED_MARKER),
+    );
 
   if (!hasListStyle(text, "checklist")) {
     return applyListStyle(clearOtherListStyles(text, "checklist"), "checklist");
@@ -107,11 +158,53 @@ export function cycleChecklist(text: string): string {
   if (allChecked) return stripListStyle(text, "checklist");
 
   return lines
-    .map((line) =>
-      line.startsWith(CHECKLIST_UNCHECKED_MARKER)
-        ? CHECKLIST_CHECKED_MARKER +
-          line.slice(CHECKLIST_UNCHECKED_MARKER.length)
-        : line,
-    )
+    .map((line) => {
+      const { indent, rest } = splitIndent(line);
+      if (!rest.startsWith(CHECKLIST_UNCHECKED_MARKER)) return line;
+      return (
+        indent +
+        CHECKLIST_CHECKED_MARKER +
+        rest.slice(CHECKLIST_UNCHECKED_MARKER.length)
+      );
+    })
     .join("\n");
+}
+
+/** Indents (or outdents) a single line by one level */
+export function shiftLineIndent(line: string, direction: 1 | -1): string {
+  if (direction > 0) return INDENT_UNIT + line;
+
+  const { indent, rest } = splitIndent(line);
+  return (
+    indent.slice(0, Math.max(0, indent.length - INDENT_UNIT.length)) + rest
+  );
+}
+
+/**
+ * Recomputes bullet/numbered markers across a block of lines (e.g. after
+ * their indentation changed) so nesting and numbering stay consistent.
+ * Checklist markers don't depend on depth, so they're left as-is.
+ */
+export function reflowListMarkers(text: string): string {
+  for (const style of listStyles) {
+    if (style === "checklist") continue;
+    if (hasListStyle(text, style)) {
+      return applyListStyle(stripListStyle(text, style), style);
+    }
+  }
+  return text;
+}
+
+/**
+ * Shifts the nesting depth of every line in a block by one level (Tab/Shift+Tab).
+ * If the block is an active bullet or numbered list, markers are recomputed
+ * for the new depths (see applyListStyle).
+ */
+export function shiftIndent(text: string, direction: 1 | -1): string {
+  const indented = text
+    .split("\n")
+    .map((line) => shiftLineIndent(line, direction))
+    .join("\n");
+
+  return reflowListMarkers(indented);
 }
