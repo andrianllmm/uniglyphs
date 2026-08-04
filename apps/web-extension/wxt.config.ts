@@ -12,6 +12,9 @@ export default defineConfig({
       port: 1234,
     },
   },
+  zip: {
+    zipSources: true,
+  },
   manifest: ({ browser }) => ({
     ...(browser === "firefox" && {
       browser_specific_settings: {
