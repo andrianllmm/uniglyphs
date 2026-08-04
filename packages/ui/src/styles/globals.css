@@ -36,13 +36,13 @@
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
 
+  --font-playfair: "Playfair Display", serif;
+  --font-merriweather: "Merriweather", serif;
+  --font-lora: "Lora", serif;
   --font-notoSans: "Noto Sans", sans-serif;
   --font-roboto: "Roboto", sans-serif;
   --font-inter: "Inter", sans-serif;
-  --font-merriweather: "Merriweather", serif;
-  --font-playfair: "Playfair Display", serif;
-  --font-lora: "Lora", serif;
-  --chosen-font: var(--font-notoSans);
+  --chosen-font: var(--font-playfair);
 }
 
 @theme inline {
