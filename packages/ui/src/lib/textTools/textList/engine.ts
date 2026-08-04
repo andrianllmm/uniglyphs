@@ -5,20 +5,35 @@ import {
 
 const BULLET_MARKER = "• ";
 const NUMBERED_MARKER_PATTERN = /^\d+\.\s/;
+const CHECKLIST_UNCHECKED_MARKER = "☐ ";
+const CHECKLIST_CHECKED_MARKER = "☑ ";
 
 /** Checks whether a single line already has the given list style's marker */
 function lineHasMarker(line: string, style: ListStyle): boolean {
-  return style === "bullet"
-    ? line.startsWith(BULLET_MARKER)
-    : NUMBERED_MARKER_PATTERN.test(line);
+  switch (style) {
+    case "bullet":
+      return line.startsWith(BULLET_MARKER);
+    case "numbered":
+      return NUMBERED_MARKER_PATTERN.test(line);
+    case "checklist":
+      return (
+        line.startsWith(CHECKLIST_UNCHECKED_MARKER) ||
+        line.startsWith(CHECKLIST_CHECKED_MARKER)
+      );
+  }
 }
 
 /** Removes a single list style's marker from a single line, if present */
 function stripLineMarker(line: string, style: ListStyle): string {
   if (!lineHasMarker(line, style)) return line;
-  return style === "bullet"
-    ? line.slice(BULLET_MARKER.length)
-    : line.replace(NUMBERED_MARKER_PATTERN, "");
+  switch (style) {
+    case "bullet":
+      return line.slice(BULLET_MARKER.length);
+    case "numbered":
+      return line.replace(NUMBERED_MARKER_PATTERN, "");
+    case "checklist":
+      return line.slice(CHECKLIST_UNCHECKED_MARKER.length);
+  }
 }
 
 /** Prepends the list marker to every line that doesn't already have it */
@@ -27,7 +42,12 @@ export function applyListStyle(text: string, style: ListStyle): string {
     .split("\n")
     .map((line, i) => {
       if (lineHasMarker(line, style)) return line;
-      const marker = style === "bullet" ? BULLET_MARKER : `${i + 1}. `;
+      const marker =
+        style === "bullet"
+          ? BULLET_MARKER
+          : style === "numbered"
+            ? `${i + 1}. `
+            : CHECKLIST_UNCHECKED_MARKER;
       return marker + line;
     })
     .join("\n");

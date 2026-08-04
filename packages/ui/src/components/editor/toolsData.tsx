@@ -2,6 +2,7 @@ import { ToolbarContextType } from "./ToolbarProvider";
 import {
   BoldIcon,
   ItalicIcon,
+  ListChecksIcon,
   ListIcon,
   ListOrderedIcon,
   RemoveFormattingIcon,
@@ -78,6 +79,12 @@ export function getToolbarData(handlers: {
           icon: ListOrderedIcon,
           hotkey: "ctrl+shift+7",
           handler: () => handlers.toggleList("numbered"),
+        },
+        checklist: {
+          label: "Checklist",
+          icon: ListChecksIcon,
+          hotkey: "ctrl+shift+9",
+          handler: () => handlers.toggleList("checklist"),
         },
       },
     },
