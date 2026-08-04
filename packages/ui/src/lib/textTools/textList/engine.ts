@@ -3,8 +3,7 @@ import {
   ListStyle,
 } from "@workspace/ui/lib/textTools/textList/styles";
 
-// Two spaces per nesting level. Spaces (not a tab character) so indentation
-// stays consistent when pasted into places that mangle literal tabs.
+// Spaces, not a tab character, so indentation survives pasting elsewhere
 export const INDENT_UNIT = "  ";
 
 const BULLET_MARKER = "• ";
@@ -13,18 +12,16 @@ const NUMBERED_MARKER_PATTERN = /^([0-9]+|[a-z]+)\.\s/;
 const CHECKLIST_UNCHECKED_MARKER = "☐ ";
 const CHECKLIST_CHECKED_MARKER = "☑ ";
 
-/** Splits a line into its leading indentation and the rest of its content */
 function splitIndent(line: string): { indent: string; rest: string } {
   const [indent] = /^ */.exec(line) ?? [""];
   return { indent, rest: line.slice(indent.length) };
 }
 
-/** Nesting depth implied by a line's leading indentation */
 function getDepth(indent: string): number {
   return Math.floor(indent.length / INDENT_UNIT.length);
 }
 
-/** Converts a 1-indexed number to a lowercase letter sequence (1 -> a, 27 -> aa) */
+// 1-indexed: 1 -> a, 26 -> z, 27 -> aa
 function toAlpha(n: number): string {
   let s = "";
   let num = n;
@@ -36,7 +33,6 @@ function toAlpha(n: number): string {
   return s;
 }
 
-/** Checks whether a single line already has the given list style's marker */
 function lineHasMarker(line: string, style: ListStyle): boolean {
   const { rest } = splitIndent(line);
   switch (style) {
@@ -54,7 +50,6 @@ function lineHasMarker(line: string, style: ListStyle): boolean {
   }
 }
 
-/** Removes a single list style's marker from a single line, if present */
 function stripLineMarker(line: string, style: ListStyle): string {
   if (!lineHasMarker(line, style)) return line;
   const { indent, rest } = splitIndent(line);
@@ -68,12 +63,8 @@ function stripLineMarker(line: string, style: ListStyle): string {
   }
 }
 
-/**
- * Prepends the list marker to every line that doesn't already have it.
- * Bullets alternate filled/outline and numbering alternates digits/letters
- * by nesting depth (each level's own counter resets whenever a shallower
- * line is seen, and resumes where it left off when nested back into).
- */
+// Each depth's numbering counter resets when a shallower line is seen and
+// resumes where it left off when nested back into
 export function applyListStyle(text: string, style: ListStyle): string {
   const numCounters: number[] = [];
 
@@ -102,7 +93,6 @@ export function applyListStyle(text: string, style: ListStyle): string {
     .join("\n");
 }
 
-/** Removes the list marker from every line that has it */
 export function stripListStyle(text: string, style: ListStyle): string {
   return text
     .split("\n")
@@ -110,14 +100,13 @@ export function stripListStyle(text: string, style: ListStyle): string {
     .join("\n");
 }
 
-/** Checks whether every non-empty line already has the list style applied */
+// Empty lines don't count against the style being active
 export function hasListStyle(text: string, style: ListStyle): boolean {
   const lines = text.split("\n").filter((line) => line.trim().length > 0);
   if (lines.length === 0) return false;
   return lines.every((line) => lineHasMarker(line, style));
 }
 
-/** Removes markers from every list style other than the given one */
 function clearOtherListStyles(text: string, style: ListStyle): string {
   return listStyles.reduce(
     (acc, otherStyle) =>
@@ -126,21 +115,14 @@ function clearOtherListStyles(text: string, style: ListStyle): string {
   );
 }
 
-/**
- * Toggles the list style on the given block of text (one or more lines).
- * Activating a style clears markers from any other list style first, so a
- * line can only belong to one list style at a time.
- */
+// Activating a style clears any other, so a line only ever has one at a time
 export function toggleListStyle(text: string, style: ListStyle): string {
   if (hasListStyle(text, style)) return stripListStyle(text, style);
   return applyListStyle(clearOtherListStyles(text, style), style);
 }
 
-/**
- * Cycles a checklist through three states: not a checklist -> unchecked ->
- * checked -> not a checklist. Mixed/partial states are treated as unchecked
- * (i.e. the next step checks all items).
- */
+// Cycles: not a checklist -> unchecked -> checked -> not a checklist.
+// Mixed/partial checked states are treated as unchecked.
 export function cycleChecklist(text: string): string {
   const lines = text.split("\n");
   const nonEmptyLines = lines.filter((line) => line.trim().length > 0);
@@ -170,7 +152,6 @@ export function cycleChecklist(text: string): string {
     .join("\n");
 }
 
-/** Indents (or outdents) a single line by one level */
 export function shiftLineIndent(line: string, direction: 1 | -1): string {
   if (direction > 0) return INDENT_UNIT + line;
 
@@ -180,11 +161,7 @@ export function shiftLineIndent(line: string, direction: 1 | -1): string {
   );
 }
 
-/**
- * Recomputes bullet/numbered markers across a block of lines (e.g. after
- * their indentation changed) so nesting and numbering stay consistent.
- * Checklist markers don't depend on depth, so they're left as-is.
- */
+// Checklist markers don't depend on depth, so they're left as-is
 export function reflowListMarkers(text: string): string {
   for (const style of listStyles) {
     if (style === "checklist") continue;
@@ -195,11 +172,6 @@ export function reflowListMarkers(text: string): string {
   return text;
 }
 
-/**
- * Shifts the nesting depth of every line in a block by one level (Tab/Shift+Tab).
- * If the block is an active bullet or numbered list, markers are recomputed
- * for the new depths (see applyListStyle).
- */
 export function shiftIndent(text: string, direction: 1 | -1): string {
   const indented = text
     .split("\n")
@@ -209,22 +181,18 @@ export function shiftIndent(text: string, direction: 1 | -1): string {
   return reflowListMarkers(indented);
 }
 
-/** Converts a lowercase letter sequence back to its 1-indexed number (a -> 1, aa -> 27) */
+// Inverse of toAlpha: a -> 1, aa -> 27
 function fromAlpha(s: string): number {
   let n = 0;
   for (const ch of s) n = n * 26 + (ch.charCodeAt(0) - 96);
   return n;
 }
 
+// What pressing Enter on a list line should do: continue with the next
+// marker, or - if the line is just a marker with no content - exit the
+// list. Null if the line isn't a list item.
 export type ListContinuation = { prefix: string } | { empty: true };
 
-/**
- * Determines what pressing Enter on a list line should do: continue the
- * list with the next marker at the same depth (same bullet/checklist symbol,
- * or the next number/letter for a numbered list), or - if the line has no
- * content beyond its marker - signal that the list should be exited instead.
- * Returns null if the line isn't a list item at all.
- */
 export function getListContinuation(line: string): ListContinuation | null {
   const { indent, rest } = splitIndent(line);
 

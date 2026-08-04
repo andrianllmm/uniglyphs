@@ -24,11 +24,8 @@ import {
   insertTextboxValue,
 } from "../../lib/textboxState";
 
-/**
- * Expands [lineStart, lineEnd) outward to the full contiguous run of
- * non-blank lines around it (a blank line breaks the run). Used so a Tab
- * press on a single list item can renumber siblings elsewhere in the list.
- */
+// Expands [lineStart, lineEnd) to the surrounding run of non-blank lines,
+// so a Tab press on one item can renumber siblings elsewhere in the list
 function getBlockRange(text: string, lineStart: number, lineEnd: number) {
   let blockStart = lineStart;
   while (blockStart > 0) {
@@ -51,12 +48,8 @@ function getBlockRange(text: string, lineStart: number, lineEnd: number) {
   return { blockStart, blockEnd };
 }
 
-/**
- * Reflows bullet/numbered markers across the contiguous list block around
- * [lineStart, lineEnd) in `text`, writes the result into the textbox, and
- * returns the absolute position at the end of that (now reflowed) line -
- * used to place a collapsed cursor there afterwards.
- */
+// Reflows the list block around [lineStart, lineEnd), writes it into the
+// textbox, and returns the cursor position at the end of the target line
 function reflowBlockAndLocateLineEnd(
   textbox: TextboxElement,
   text: string,
@@ -78,9 +71,8 @@ function reflowBlockAndLocateLineEnd(
 
   updateTextboxSelection(textbox, blockStart, blockEnd);
   insertTextboxValue(textbox, reflowed);
-  // Collapse the selection synchronously: leaving the whole block selected
-  // (even briefly, until a later setTimeout) risks a fast keystroke right
-  // after this - very common right after Enter - replacing the entire block.
+  // Collapse synchronously - a keystroke landing before an async restore
+  // would replace the whole selected block instead of just the cursor
   updateTextboxSelection(textbox, finalCursorPos, finalCursorPos);
 
   return finalCursorPos;
@@ -122,11 +114,9 @@ export function ToolbarProvider({ children, textboxRef, onInsertText }: Props) {
   });
   const [line, setLine] = useState("");
 
-  // Check whether the current line(s) already have a given list style applied
   const isListActive = (listStyle: ListStyle) => hasListStyle(line, listStyle);
 
-  // Insert text into the textbox and preserve selection.
-  // "line" replaces the whole line(s) the selection spans, rather than just the selection.
+  // "line" replaces the whole line(s) the selection spans, not just the selection
   const insertText = (
     text: string = "",
     type: "selection" | "line" = "selection",
@@ -140,9 +130,8 @@ export function ToolbarProvider({ children, textboxRef, onInsertText }: Props) {
     let end: number;
 
     if (type === "line") {
-      // Keep the cursor at its same relative offset within the line (e.g.
-      // shifted forward by however many characters a marker added) instead
-      // of selecting the whole newly-formatted line.
+      // Shift the cursor by however many chars the marker added/removed,
+      // rather than selecting the whole newly-formatted line
       const delta = text.length - state.line.length;
       const newLineStart = state.lineStart;
       const newLineEnd = state.lineStart + text.length;
@@ -162,9 +151,7 @@ export function ToolbarProvider({ children, textboxRef, onInsertText }: Props) {
     }
 
     insertTextboxValue(textbox, text);
-    // Collapse/restore synchronously so a fast keystroke right after can't
-    // land on a stale wide selection
-    updateTextboxSelection(textbox, start, end);
+    updateTextboxSelection(textbox, start, end); // sync, to avoid a stale wide selection
 
     setTimeout(() => {
       updateTextboxSelection(textbox, start, end);
@@ -209,7 +196,6 @@ export function ToolbarProvider({ children, textboxRef, onInsertText }: Props) {
     styleSelection({ ...style, decorations: newDecorations });
   };
 
-  // Toggle a list style on the line(s) the selection spans
   const toggleList = (listStyle: ListStyle) => {
     const textbox = textboxRef.current;
     if (!textbox) return;
@@ -313,7 +299,6 @@ export function ToolbarProvider({ children, textboxRef, onInsertText }: Props) {
     };
   }, [toolbarData]);
 
-  // Tab / Shift+Tab indent or outdent the line(s) the selection spans
   const insertTextRef = useRef(insertText);
   insertTextRef.current = insertText;
 
@@ -332,11 +317,9 @@ export function ToolbarProvider({ children, textboxRef, onInsertText }: Props) {
         getTextboxState(textbox);
       const wasCollapsed = selectionStart === selectionEnd;
 
-      // Only the target line(s) - one for a collapsed cursor, more for an
-      // actual selection - get (out)indented. But markers are reflowed
-      // across the whole contiguous list block (blockStart/blockEnd), so
-      // numbered/lettered siblings outside the target range stay correctly
-      // sequenced instead of restarting their count in isolation.
+      // Only the target line(s) get (out)indented, but markers are reflowed
+      // across the whole list block so siblings outside the target range
+      // stay correctly sequenced
       const { blockStart, blockEnd } = getBlockRange(text, lineStart, lineEnd);
       const blockText = text.slice(blockStart, blockEnd);
 
@@ -354,7 +337,6 @@ export function ToolbarProvider({ children, textboxRef, onInsertText }: Props) {
       updateTextboxSelection(textbox, blockStart, blockEnd);
       insertTextboxValue(textbox, reflowed);
 
-      // Restore the selection to the shifted target lines' new bounds
       const targetLineIndex =
         blockText.slice(0, relStart).split("\n").length - 1;
       const targetLineCount = targetText.split("\n").length;
@@ -370,10 +352,8 @@ export function ToolbarProvider({ children, textboxRef, onInsertText }: Props) {
       const absStart = blockStart + newRelStart;
       const absEnd = blockStart + newRelEnd;
 
-      // For a collapsed cursor (the common case), keep it collapsed at its
-      // same relative offset within the line instead of selecting the whole
-      // (now indented) line. An actual multi-line selection stays selected,
-      // matching how most editors let you Tab a selection repeatedly.
+      // A collapsed cursor stays collapsed at its relative offset; an actual
+      // selection stays selected, so Tab can be pressed again on it
       let finalStart = absStart;
       let finalEnd = absEnd;
       if (wasCollapsed) {
@@ -387,10 +367,7 @@ export function ToolbarProvider({ children, textboxRef, onInsertText }: Props) {
         finalEnd = collapsedPos;
       }
 
-      // Collapse/restore synchronously: leaving the whole block selected
-      // (even briefly, until a later setTimeout) risks a fast keystroke
-      // right after Tab landing on a stale wide selection instead.
-      updateTextboxSelection(textbox, finalStart, finalEnd);
+      updateTextboxSelection(textbox, finalStart, finalEnd); // sync, to avoid a stale wide selection
       textbox.focus();
 
       setLine(targetLinesReflowed.join("\n"));
@@ -403,8 +380,7 @@ export function ToolbarProvider({ children, textboxRef, onInsertText }: Props) {
     };
   }, [textboxRef]);
 
-  // Enter on a list line continues the list (or exits it, if the item is
-  // empty) instead of just inserting a plain newline
+  // Enter on a list line continues the list, or exits it if the item is empty
   useEffect(() => {
     const handleEnterKey = (event: KeyboardEvent) => {
       if (event.key !== "Enter") return;
@@ -424,9 +400,7 @@ export function ToolbarProvider({ children, textboxRef, onInsertText }: Props) {
       event.stopPropagation();
 
       if ("empty" in continuation) {
-        // Exit the list: clear the (empty) item's marker, no line break added.
-        // Collapse the selection synchronously (see reflowBlockAndLocateLineEnd)
-        // so a fast keystroke right after Enter can't land on a stale selection.
+        // Exit the list: clear the (empty) item's marker, no line break added
         const { lineStart } = state;
         updateTextboxSelection(textbox, state.lineStart, state.lineEnd);
         insertTextboxValue(textbox, "");
@@ -444,16 +418,13 @@ export function ToolbarProvider({ children, textboxRef, onInsertText }: Props) {
 
       updateTextboxSelection(textbox, insertPos, insertPos);
       insertTextboxValue(textbox, insertion);
-      // Collapse synchronously (see reflowBlockAndLocateLineEnd) so a fast
-      // keystroke right after Enter can't land on a stale wide selection
       updateTextboxSelection(
         textbox,
         insertPos + insertion.length,
         insertPos + insertion.length,
-      );
+      ); // sync, to avoid a stale wide selection
 
-      // Reflow the block so any numbered/lettered siblings that now follow
-      // this new line stay correctly sequenced
+      // Reflow so numbered/lettered siblings after this new line stay sequenced
       const freshText = getTextboxState(textbox).text;
       const newCursorPos = insertPos + insertion.length;
       const newLineStart = freshText.lastIndexOf("\n", newCursorPos - 1) + 1;
