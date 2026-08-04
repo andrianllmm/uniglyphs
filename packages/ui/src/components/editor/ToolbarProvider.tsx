@@ -13,6 +13,7 @@ import {
   cycleChecklist,
   shiftLineIndent,
   reflowListMarkers,
+  getListContinuation,
   ListStyle,
 } from "@workspace/ui/lib/textTools/textList";
 import { getToolbarData, ToolbarData } from "./toolsData";
@@ -48,6 +49,41 @@ function getBlockRange(text: string, lineStart: number, lineEnd: number) {
   }
 
   return { blockStart, blockEnd };
+}
+
+/**
+ * Reflows bullet/numbered markers across the contiguous list block around
+ * [lineStart, lineEnd) in `text`, writes the result into the textbox, and
+ * returns the absolute position at the end of that (now reflowed) line -
+ * used to place a collapsed cursor there afterwards.
+ */
+function reflowBlockAndLocateLineEnd(
+  textbox: TextboxElement,
+  text: string,
+  lineStart: number,
+  lineEnd: number,
+): number {
+  const { blockStart, blockEnd } = getBlockRange(text, lineStart, lineEnd);
+  const blockText = text.slice(blockStart, blockEnd);
+  const reflowed = reflowListMarkers(blockText);
+
+  const lineIndex =
+    blockText.slice(0, lineStart - blockStart).split("\n").length - 1;
+  const reflowedLines = reflowed.split("\n");
+  const linesBefore = reflowedLines.slice(0, lineIndex);
+  const targetLine = reflowedLines[lineIndex] ?? "";
+  const relEnd =
+    linesBefore.reduce((sum, l) => sum + l.length + 1, 0) + targetLine.length;
+  const finalCursorPos = blockStart + relEnd;
+
+  updateTextboxSelection(textbox, blockStart, blockEnd);
+  insertTextboxValue(textbox, reflowed);
+  // Collapse the selection synchronously: leaving the whole block selected
+  // (even briefly, until a later setTimeout) risks a fast keystroke right
+  // after this - very common right after Enter - replacing the entire block.
+  updateTextboxSelection(textbox, finalCursorPos, finalCursorPos);
+
+  return finalCursorPos;
 }
 
 export type ToolbarContextType = {
@@ -310,10 +346,11 @@ export function ToolbarProvider({ children, textboxRef, onInsertText }: Props) {
       const absStart = blockStart + newRelStart;
       const absEnd = blockStart + newRelEnd;
 
-      setTimeout(() => {
-        updateTextboxSelection(textbox, absStart, absEnd);
-        textbox.focus();
-      }, 0);
+      // Collapse/restore synchronously: leaving the whole block selected
+      // (even briefly, until a later setTimeout) risks a fast keystroke
+      // right after Tab landing on a stale wide selection instead.
+      updateTextboxSelection(textbox, absStart, absEnd);
+      textbox.focus();
 
       setLine(targetLinesReflowed.join("\n"));
     };
@@ -322,6 +359,75 @@ export function ToolbarProvider({ children, textboxRef, onInsertText }: Props) {
 
     return () => {
       window.removeEventListener("keydown", handleTabKey, { capture: true });
+    };
+  }, [textboxRef]);
+
+  // Enter on a list line continues the list (or exits it, if the item is
+  // empty) instead of just inserting a plain newline
+  useEffect(() => {
+    const handleEnterKey = (event: KeyboardEvent) => {
+      if (event.key !== "Enter") return;
+      if (event.ctrlKey || event.metaKey || event.altKey || event.shiftKey)
+        return;
+
+      const textbox = textboxRef.current;
+      if (!textbox || document.activeElement !== textbox) return;
+
+      const state = getTextboxState(textbox);
+      if (state.selectionStart !== state.selectionEnd) return;
+
+      const continuation = getListContinuation(state.line);
+      if (!continuation) return;
+
+      event.preventDefault();
+      event.stopPropagation();
+
+      if ("empty" in continuation) {
+        // Exit the list: clear the (empty) item's marker, no line break added.
+        // Collapse the selection synchronously (see reflowBlockAndLocateLineEnd)
+        // so a fast keystroke right after Enter can't land on a stale selection.
+        const { lineStart } = state;
+        updateTextboxSelection(textbox, state.lineStart, state.lineEnd);
+        insertTextboxValue(textbox, "");
+        updateTextboxSelection(textbox, lineStart, lineStart);
+
+        setTimeout(() => {
+          updateTextboxSelection(textbox, lineStart, lineStart);
+          textbox.focus();
+        }, 0);
+        return;
+      }
+
+      const insertPos = state.selectionStart;
+      const insertion = "\n" + continuation.prefix;
+
+      updateTextboxSelection(textbox, insertPos, insertPos);
+      insertTextboxValue(textbox, insertion);
+      // Collapse synchronously (see reflowBlockAndLocateLineEnd) so a fast
+      // keystroke right after Enter can't land on a stale wide selection
+      updateTextboxSelection(
+        textbox,
+        insertPos + insertion.length,
+        insertPos + insertion.length,
+      );
+
+      // Reflow the block so any numbered/lettered siblings that now follow
+      // this new line stay correctly sequenced
+      const freshText = getTextboxState(textbox).text;
+      const newCursorPos = insertPos + insertion.length;
+      const newLineStart = freshText.lastIndexOf("\n", newCursorPos - 1) + 1;
+      const newLineEndRaw = freshText.indexOf("\n", newCursorPos);
+      const newLineEnd =
+        newLineEndRaw === -1 ? freshText.length : newLineEndRaw;
+
+      reflowBlockAndLocateLineEnd(textbox, freshText, newLineStart, newLineEnd);
+      textbox.focus();
+    };
+
+    window.addEventListener("keydown", handleEnterKey, { capture: true });
+
+    return () => {
+      window.removeEventListener("keydown", handleEnterKey, { capture: true });
     };
   }, [textboxRef]);
 

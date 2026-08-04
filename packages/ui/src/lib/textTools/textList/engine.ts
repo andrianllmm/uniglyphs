@@ -208,3 +208,64 @@ export function shiftIndent(text: string, direction: 1 | -1): string {
 
   return reflowListMarkers(indented);
 }
+
+/** Converts a lowercase letter sequence back to its 1-indexed number (a -> 1, aa -> 27) */
+function fromAlpha(s: string): number {
+  let n = 0;
+  for (const ch of s) n = n * 26 + (ch.charCodeAt(0) - 96);
+  return n;
+}
+
+export type ListContinuation = { prefix: string } | { empty: true };
+
+/**
+ * Determines what pressing Enter on a list line should do: continue the
+ * list with the next marker at the same depth (same bullet/checklist symbol,
+ * or the next number/letter for a numbered list), or - if the line has no
+ * content beyond its marker - signal that the list should be exited instead.
+ * Returns null if the line isn't a list item at all.
+ */
+export function getListContinuation(line: string): ListContinuation | null {
+  const { indent, rest } = splitIndent(line);
+
+  if (
+    rest.startsWith(BULLET_MARKER) ||
+    rest.startsWith(BULLET_OUTLINE_MARKER)
+  ) {
+    const marker = rest.startsWith(BULLET_MARKER)
+      ? BULLET_MARKER
+      : BULLET_OUTLINE_MARKER;
+    const content = rest.slice(marker.length);
+    return content.trim().length === 0
+      ? { empty: true }
+      : { prefix: indent + marker };
+  }
+
+  if (
+    rest.startsWith(CHECKLIST_UNCHECKED_MARKER) ||
+    rest.startsWith(CHECKLIST_CHECKED_MARKER)
+  ) {
+    const marker = rest.startsWith(CHECKLIST_UNCHECKED_MARKER)
+      ? CHECKLIST_UNCHECKED_MARKER
+      : CHECKLIST_CHECKED_MARKER;
+    const content = rest.slice(marker.length);
+    return content.trim().length === 0
+      ? { empty: true }
+      : { prefix: indent + CHECKLIST_UNCHECKED_MARKER };
+  }
+
+  const numberedMatch = NUMBERED_MARKER_PATTERN.exec(rest);
+  if (numberedMatch) {
+    const token = numberedMatch[1]!;
+    const content = rest.slice(numberedMatch[0].length);
+    if (content.trim().length === 0) return { empty: true };
+
+    const isNumeric = /^[0-9]+$/.test(token);
+    const nextToken = isNumeric
+      ? String(Number(token) + 1)
+      : toAlpha(fromAlpha(token) + 1);
+    return { prefix: indent + `${nextToken}. ` };
+  }
+
+  return null;
+}
