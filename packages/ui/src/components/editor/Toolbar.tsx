@@ -8,6 +8,7 @@ import {
   TextDecoration,
   formatFontName,
 } from "@workspace/ui/lib/textTools/textStyle/";
+import { ListStyle } from "@workspace/ui/lib/textTools/textList/";
 import { useToolbar } from "./ToolbarProvider";
 import { useToolbarState } from "./ToolbarStateProvider";
 import {
@@ -42,7 +43,7 @@ export function Toolbar({
   portalContainer?: HTMLElement;
   className?: string;
 }) {
-  const { style, toolbarData, styleSelection } = useToolbar();
+  const { style, toolbarData, styleSelection, isListActive } = useToolbar();
   const { hidden, sticky, setHidden, setSticky } = useToolbarState();
 
   return (
@@ -133,6 +134,36 @@ export function Toolbar({
                   className="p-[4px] w-fit h-fit"
                   title={`${label} (${hotkey})`}
                   onSelect={onSelect}
+                >
+                  <Icon style={{ width: "16px", height: "16px" }} />
+                </ToggleGroupItem>
+              ),
+            )}
+          </ToggleGroup>
+
+          {/* Toggle buttons for list styles */}
+          <ToggleGroup
+            type="multiple"
+            value={Object.keys(toolbarData.listStyles?.tools || {}).filter(
+              (value) => isListActive(value as ListStyle),
+            )}
+            onValueChange={(value: string[]) => {
+              Object.entries(toolbarData.listStyles?.tools || {}).forEach(
+                ([key, tool]) => {
+                  const wasActive = isListActive(key as ListStyle);
+                  const isActive = value.includes(key);
+                  if (wasActive !== isActive) tool.handler();
+                },
+              );
+            }}
+          >
+            {Object.entries(toolbarData.listStyles?.tools || {}).map(
+              ([value, { label, icon: Icon, hotkey }]) => (
+                <ToggleGroupItem
+                  key={value}
+                  value={value}
+                  className="p-[4px] w-fit h-fit"
+                  title={`${label} (${hotkey})`}
                 >
                   <Icon style={{ width: "16px", height: "16px" }} />
                 </ToggleGroupItem>
