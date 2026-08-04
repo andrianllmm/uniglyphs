@@ -10,14 +10,14 @@ import {
 } from "@workspace/ui/components/select";
 
 const fontOptions = [
+  { value: "playfair", label: "Playfair" },
+  { value: "merriweather", label: "Merriweather" },
+  { value: "lora", label: "Lora" },
   { value: "notoSans", label: "Noto Sans" },
   { value: "roboto", label: "Roboto" },
   { value: "inter", label: "Inter" },
-  { value: "merriweather", label: "Merriweather" },
-  { value: "playfair", label: "Playfair" },
-  { value: "lora", label: "Lora" },
 ];
-const defaultFont = "notoSans";
+const defaultFont = "playfair";
 const FONT_KEY = "font";
 
 export function FontSelect({ className }: { className?: string }) {
