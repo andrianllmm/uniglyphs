@@ -6,7 +6,7 @@
     "build": "turbo build",
     "start": "turbo start",
     "dev": "turbo dev",
-    "version:sync": "pnpm -r version $npm_package_version",
+    "version:sync": "pnpm --filter UniGlyphs --filter UniGlyphsWeb exec -- npm version $npm_package_version --no-git-tag-version --allow-same-version",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "prepare": "husky"
