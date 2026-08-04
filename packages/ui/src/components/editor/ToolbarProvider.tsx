@@ -135,17 +135,39 @@ export function ToolbarProvider({ children, textboxRef, onInsertText }: Props) {
     if (!textbox) return;
 
     const state = getTextboxState(textbox);
-    const start = type === "line" ? state.lineStart : state.selectionStart;
+
+    let start: number;
+    let end: number;
 
     if (type === "line") {
+      // Keep the cursor at its same relative offset within the line (e.g.
+      // shifted forward by however many characters a marker added) instead
+      // of selecting the whole newly-formatted line.
+      const delta = text.length - state.line.length;
+      const newLineStart = state.lineStart;
+      const newLineEnd = state.lineStart + text.length;
+      start = Math.min(
+        Math.max(state.selectionStart + delta, newLineStart),
+        newLineEnd,
+      );
+      end = Math.min(
+        Math.max(state.selectionEnd + delta, newLineStart),
+        newLineEnd,
+      );
+
       updateTextboxSelection(textbox, state.lineStart, state.lineEnd);
+    } else {
+      start = state.selectionStart;
+      end = start + text.length;
     }
 
     insertTextboxValue(textbox, text);
+    // Collapse/restore synchronously so a fast keystroke right after can't
+    // land on a stale wide selection
+    updateTextboxSelection(textbox, start, end);
 
-    // Restore selection after update
     setTimeout(() => {
-      updateTextboxSelection(textbox, start, start + text.length);
+      updateTextboxSelection(textbox, start, end);
       textbox.focus();
     }, 0);
 
@@ -306,7 +328,9 @@ export function ToolbarProvider({ children, textboxRef, onInsertText }: Props) {
       event.stopPropagation();
 
       const direction = event.shiftKey ? -1 : 1;
-      const { text, lineStart, lineEnd } = getTextboxState(textbox);
+      const { text, lineStart, lineEnd, selectionStart, selectionEnd } =
+        getTextboxState(textbox);
+      const wasCollapsed = selectionStart === selectionEnd;
 
       // Only the target line(s) - one for a collapsed cursor, more for an
       // actual selection - get (out)indented. But markers are reflowed
@@ -346,10 +370,27 @@ export function ToolbarProvider({ children, textboxRef, onInsertText }: Props) {
       const absStart = blockStart + newRelStart;
       const absEnd = blockStart + newRelEnd;
 
+      // For a collapsed cursor (the common case), keep it collapsed at its
+      // same relative offset within the line instead of selecting the whole
+      // (now indented) line. An actual multi-line selection stays selected,
+      // matching how most editors let you Tab a selection repeatedly.
+      let finalStart = absStart;
+      let finalEnd = absEnd;
+      if (wasCollapsed) {
+        const targetDelta =
+          targetLinesReflowed.join("\n").length - targetText.length;
+        const collapsedPos = Math.min(
+          Math.max(selectionStart + targetDelta, absStart),
+          absEnd,
+        );
+        finalStart = collapsedPos;
+        finalEnd = collapsedPos;
+      }
+
       // Collapse/restore synchronously: leaving the whole block selected
       // (even briefly, until a later setTimeout) risks a fast keystroke
       // right after Tab landing on a stale wide selection instead.
-      updateTextboxSelection(textbox, absStart, absEnd);
+      updateTextboxSelection(textbox, finalStart, finalEnd);
       textbox.focus();
 
       setLine(targetLinesReflowed.join("\n"));
