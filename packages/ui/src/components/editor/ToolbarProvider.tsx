@@ -7,6 +7,11 @@ import {
   TextDecoration,
   TextStyle,
 } from "@workspace/ui/lib/textTools/textStyle";
+import {
+  hasListStyle,
+  toggleListStyle,
+  ListStyle,
+} from "@workspace/ui/lib/textTools/textList";
 import { getToolbarData, ToolbarData } from "./toolsData";
 import {
   getTextboxState,
@@ -17,11 +22,13 @@ import {
 
 export type ToolbarContextType = {
   style: TextStyle;
+  isListActive: (listStyle: ListStyle) => boolean;
   toolbarData: ToolbarData;
   insertText: (text?: string, type?: "selection" | "line") => void;
   toggleVariant: (variant: "bold" | "italic") => void;
   toggleDecoration: (decoration: TextDecoration) => void;
   styleSelection: (style: TextStyle) => void;
+  toggleList: (listStyle: ListStyle) => void;
 };
 
 const ToolbarContext = createContext<ToolbarContextType | undefined>(undefined);
@@ -47,23 +54,32 @@ export function ToolbarProvider({ children, textboxRef, onInsertText }: Props) {
     italic: false,
     decorations: [],
   });
+  const [line, setLine] = useState("");
 
-  // Insert text into the textbox and preserve selection
-  const insertText = (text: string = "") => {
+  // Check whether the current line(s) already have a given list style applied
+  const isListActive = (listStyle: ListStyle) => hasListStyle(line, listStyle);
+
+  // Insert text into the textbox and preserve selection.
+  // "line" replaces the whole line(s) the selection spans, rather than just the selection.
+  const insertText = (
+    text: string = "",
+    type: "selection" | "line" = "selection",
+  ) => {
     const textbox = textboxRef.current;
     if (!textbox) return;
 
-    const { selectionStart } = getTextboxState(textbox);
+    const state = getTextboxState(textbox);
+    const start = type === "line" ? state.lineStart : state.selectionStart;
+
+    if (type === "line") {
+      updateTextboxSelection(textbox, state.lineStart, state.lineEnd);
+    }
 
     insertTextboxValue(textbox, text);
 
     // Restore selection after update
     setTimeout(() => {
-      updateTextboxSelection(
-        textbox,
-        selectionStart,
-        selectionStart + text.length,
-      );
+      updateTextboxSelection(textbox, start, start + text.length);
       textbox.focus();
     }, 0);
 
@@ -105,11 +121,24 @@ export function ToolbarProvider({ children, textboxRef, onInsertText }: Props) {
     styleSelection({ ...style, decorations: newDecorations });
   };
 
+  // Toggle a list style on the line(s) the selection spans
+  const toggleList = (listStyle: ListStyle) => {
+    const textbox = textboxRef.current;
+    if (!textbox) return;
+
+    const { line } = getTextboxState(textbox);
+    const toggled = toggleListStyle(line, listStyle);
+    insertText(toggled, "line");
+
+    setLine(toggled);
+  };
+
   // Build toolbar config from available tools
   const toolbarData = getToolbarData({
     styleSelection,
     toggleVariant,
     toggleDecoration,
+    toggleList,
   });
 
   // Listen to selection changes and update style state accordingly
@@ -119,7 +148,7 @@ export function ToolbarProvider({ children, textboxRef, onInsertText }: Props) {
       if (!textbox) return;
 
       // Infer style from selected text or adjacent char if collapsed
-      const { selection, adjacentChar, selectionStart, selectionEnd } =
+      const { selection, adjacentChar, selectionStart, selectionEnd, line } =
         getTextboxState(textbox);
 
       const inferredStyles = inferTextStyles(
@@ -127,6 +156,7 @@ export function ToolbarProvider({ children, textboxRef, onInsertText }: Props) {
       );
 
       setStyle(inferredStyles);
+      setLine(line);
     };
 
     const textbox = textboxRef.current;
@@ -168,7 +198,11 @@ export function ToolbarProvider({ children, textboxRef, onInsertText }: Props) {
       if (event.metaKey) modifiers.push("meta");
       if (event.altKey) modifiers.push("alt");
       if (event.shiftKey) modifiers.push("shift");
-      const key = event.key.toLowerCase();
+
+      // For digit keys, use the physical key (event.code) rather than
+      // event.key, since Shift remaps event.key to a symbol (e.g. "8" -> "*")
+      const digitMatch = /^Digit(\d)$/.exec(event.code);
+      const key = digitMatch ? digitMatch[1] : event.key.toLowerCase();
 
       const keyCombo = [...modifiers, key].join("+");
 
@@ -192,11 +226,13 @@ export function ToolbarProvider({ children, textboxRef, onInsertText }: Props) {
     <ToolbarContext.Provider
       value={{
         style,
+        isListActive,
         toolbarData,
         insertText,
         styleSelection,
         toggleVariant,
         toggleDecoration,
+        toggleList,
       }}
     >
       {children}

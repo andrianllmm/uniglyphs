@@ -2,6 +2,7 @@ import { ToolbarContextType } from "./ToolbarProvider";
 import {
   BoldIcon,
   ItalicIcon,
+  ListIcon,
   RemoveFormattingIcon,
   StrikethroughIcon,
   UnderlineIcon,
@@ -25,6 +26,7 @@ export function getToolbarData(handlers: {
   styleSelection: ToolbarContextType["styleSelection"];
   toggleVariant: ToolbarContextType["toggleVariant"];
   toggleDecoration: ToolbarContextType["toggleDecoration"];
+  toggleList: ToolbarContextType["toggleList"];
 }): ToolbarData {
   return {
     fontVariants: {
@@ -58,6 +60,17 @@ export function getToolbarData(handlers: {
           icon: StrikethroughIcon,
           hotkey: "ctrl+s",
           handler: () => handlers.toggleDecoration("strikethrough"),
+        },
+      },
+    },
+    listStyles: {
+      type: "multiple",
+      tools: {
+        bullet: {
+          label: "Bulleted list",
+          icon: ListIcon,
+          hotkey: "ctrl+shift+8",
+          handler: () => handlers.toggleList("bullet"),
         },
       },
     },
