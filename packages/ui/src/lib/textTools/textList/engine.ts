@@ -68,6 +68,15 @@ export function hasListStyle(text: string, style: ListStyle): boolean {
   return lines.every((line) => lineHasMarker(line, style));
 }
 
+/** Removes markers from every list style other than the given one */
+function clearOtherListStyles(text: string, style: ListStyle): string {
+  return listStyles.reduce(
+    (acc, otherStyle) =>
+      otherStyle === style ? acc : stripListStyle(acc, otherStyle),
+    text,
+  );
+}
+
 /**
  * Toggles the list style on the given block of text (one or more lines).
  * Activating a style clears markers from any other list style first, so a
@@ -75,11 +84,34 @@ export function hasListStyle(text: string, style: ListStyle): boolean {
  */
 export function toggleListStyle(text: string, style: ListStyle): string {
   if (hasListStyle(text, style)) return stripListStyle(text, style);
+  return applyListStyle(clearOtherListStyles(text, style), style);
+}
 
-  const cleared = listStyles.reduce(
-    (acc, otherStyle) =>
-      otherStyle === style ? acc : stripListStyle(acc, otherStyle),
-    text,
-  );
-  return applyListStyle(cleared, style);
+/**
+ * Cycles a checklist through three states: not a checklist -> unchecked ->
+ * checked -> not a checklist. Mixed/partial states are treated as unchecked
+ * (i.e. the next step checks all items).
+ */
+export function cycleChecklist(text: string): string {
+  const lines = text.split("\n");
+  const nonEmptyLines = lines.filter((line) => line.trim().length > 0);
+
+  const allChecked =
+    nonEmptyLines.length > 0 &&
+    nonEmptyLines.every((line) => line.startsWith(CHECKLIST_CHECKED_MARKER));
+
+  if (!hasListStyle(text, "checklist")) {
+    return applyListStyle(clearOtherListStyles(text, "checklist"), "checklist");
+  }
+
+  if (allChecked) return stripListStyle(text, "checklist");
+
+  return lines
+    .map((line) =>
+      line.startsWith(CHECKLIST_UNCHECKED_MARKER)
+        ? CHECKLIST_CHECKED_MARKER +
+          line.slice(CHECKLIST_UNCHECKED_MARKER.length)
+        : line,
+    )
+    .join("\n");
 }

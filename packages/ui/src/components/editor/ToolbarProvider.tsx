@@ -10,6 +10,7 @@ import {
 import {
   hasListStyle,
   toggleListStyle,
+  cycleChecklist,
   ListStyle,
 } from "@workspace/ui/lib/textTools/textList";
 import { getToolbarData, ToolbarData } from "./toolsData";
@@ -127,7 +128,10 @@ export function ToolbarProvider({ children, textboxRef, onInsertText }: Props) {
     if (!textbox) return;
 
     const { line } = getTextboxState(textbox);
-    const toggled = toggleListStyle(line, listStyle);
+    const toggled =
+      listStyle === "checklist"
+        ? cycleChecklist(line)
+        : toggleListStyle(line, listStyle);
     insertText(toggled, "line");
 
     setLine(toggled);
