@@ -9,8 +9,7 @@
 
 <!-- UniGlyphs -->
 
-**A browser extension that lets you format text on any website using an inline
-toolbar**
+**A browser extension for formatting text on any website using an inline toolbar**
 
 <img src="docs/images/preview.gif" alt="Preview" width="600">
 
@@ -50,7 +49,7 @@ some text, and an inline toolbar pops up, so you can format it on the spot.
 There's also a full-page editor and a popup version if you want more space to
 work.
 
-With UniGlyphs, you can make your posts and comments stand out—even on platforms
+With UniGlyphs, you can make your posts and comments stand out even on platforms
 that don’t normally allow it. Behind the scenes, it uses
 <a href="https://en.wikipedia.org/wiki/Unicode" target="_blank">Unicode</a>
 characters that mimic different "fonts", like 𝐛𝐨𝐥𝐝, 𝑖𝑡𝑎𝑙𝑖𝑐, and 𝔤𝔬𝔱𝔥𝔦𝔠, so the
@@ -76,7 +75,7 @@ styling sticks no matter where you paste it.
 - **Keyboard Shortcuts**: use familiar keys like <kbd>Ctrl</kbd>+<kbd>B</kbd>
   for bold or <kbd>Ctrl</kbd>+<kbd>I</kbd> for italic to format text faster.
 - **Persistent State**: keeps your text and settings, so you can pick up where
-  you left off—even if you close the tab.
+  you left off even if you close the tab.
 
 ### Technologies
 
@@ -153,11 +152,11 @@ Distributed under the [MIT License](LICENSE).
 
 <!-- Badges -->
 
-[chrome-logo]: https://img.shields.io/badge/-Chrome-4285F4?logo=googlechrome&logoColor=white&style=for-the-badge
-[firefox-logo]: https://img.shields.io/badge/-Firefox-FF7139?logo=firefox&logoColor=white&style=for-the-badge
-[chrome-badge]: https://img.shields.io/badge/-Chrome%20Web%20Store-4285F4?logo=google-chrome&logoColor=white&style=flat
-[firefox-badge]: https://img.shields.io/badge/-Firefox%20Add--ons-FF7139?logo=firefox&logoColor=white&style=flat
-[vercel-badge]: https://vercelbadge.vercel.app/api/andrianllmm/uniglyphs
-[license-badge]: https://img.shields.io/github/license/andrianllmm/uniglyphs?style=flat
-[stargazers-badge]: https://img.shields.io/github/stars/andrianllmm/uniglyphs?style=flat&logo=github
-[youtube-badge]: https://img.shields.io/badge/Watch%20Demo-red?style=flat&logo=youtube&logoColor=white
+[chrome-logo]: https://img.shields.io/badge/-Chrome-ffffff?logo=googlechrome&logoColor=111111&style=for-the-badge&labelColor=ffffff
+[firefox-logo]: https://img.shields.io/badge/-Firefox-ffffff?logo=firefox&logoColor=111111&style=for-the-badge&labelColor=ffffff
+[chrome-badge]: https://img.shields.io/badge/-Chrome%20Web%20Store-ffffff?logo=google-chrome&logoColor=111111&style=flat&labelColor=ffffff
+[firefox-badge]: https://img.shields.io/badge/-Firefox%20Add--ons-ffffff?logo=firefox&logoColor=111111&style=flat&labelColor=ffffff
+[vercel-badge]: https://img.shields.io/badge/-Vercel-ffffff?logo=vercel&logoColor=111111&style=flat&labelColor=ffffff
+[license-badge]: https://img.shields.io/github/license/andrianllmm/uniglyphs?style=flat&labelColor=ffffff&color=ffffff
+[stargazers-badge]: https://img.shields.io/github/stars/andrianllmm/uniglyphs?style=flat&logo=github&labelColor=ffffff&color=ffffff&logoColor=111111
+[youtube-badge]: https://img.shields.io/badge/Watch%20Demo-ffffff?style=flat&logo=youtube&logoColor=111111&labelColor=ffffff
