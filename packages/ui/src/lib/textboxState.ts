@@ -123,36 +123,99 @@ export function insertTextboxValue(textbox: TextboxElement, text: string) {
     const start = textbox.selectionStart ?? 0;
     const end = textbox.selectionEnd ?? 0;
     const value = textbox.value;
-    // Replace selected text with new text
-    textbox.value = value.slice(0, start) + text + value.slice(end);
-  } else if (isContentEditable(textbox)) {
-    // Simulate paste event first
-    const inserted = simulatePaste(textbox, text);
+    const newValue = value.slice(0, start) + text + value.slice(end);
 
-    if (!inserted) {
-      // Replace based on current selection range
-      const selection = window.getSelection();
-      if (!selection || selection.rangeCount === 0) return;
-
-      const range = selection.getRangeAt(0);
-      range.deleteContents();
-
-      // Insert lines with <br> for newlines
-      const lines = text.split("\n");
-      const fragment = document.createDocumentFragment();
-      lines.forEach((line, i) => {
-        fragment.appendChild(document.createTextNode(line));
-        if (i < lines.length - 1)
-          fragment.appendChild(document.createElement("br"));
-      });
-
-      range.insertNode(fragment);
-
-      // Collapse selection after inserted text
-      range.collapse(false);
-      selection.removeAllRanges();
-      selection.addRange(range);
+    // Use the native setter (not the instance property) so frameworks like
+    // React, which patch the instance setter to track controlled inputs,
+    // still observe the change via the subsequent "input" event
+    const nativeSetter = Object.getOwnPropertyDescriptor(
+      window.HTMLTextAreaElement.prototype,
+      "value",
+    )?.set;
+    if (nativeSetter) {
+      nativeSetter.call(textbox, newValue);
+    } else {
+      textbox.value = newValue;
     }
+
+    textbox.dispatchEvent(
+      new InputEvent("input", {
+        bubbles: true,
+        cancelable: true,
+        inputType: "insertText",
+        data: text,
+      }),
+    );
+  } else if (isContentEditable(textbox)) {
+    // Let the browser perform the insertion via execCommand rather than mutating the DOM ourselves.
+    // It replaces the current selection and emits trusted beforeinput/input events,
+    // so framework-managed editors (React/Slate/Draft.js/Lexical-style) sync their internal model exactly once,
+    // and the native undo stack stays intact.
+    //
+    // We can't insert ourselves and also let a framework react:
+    // those editors commit their model change asynchronously (on the next render),
+    // so no synchronous check can tell whether they already handled it.
+    // Synthetic events are also untrusted, so they never trigger the native insertion on their own.
+    if (execInsertText(text)) return;
+
+    // Fallback for the rare element where execCommand is unavailable or refuses the edit.
+    // Nothing was inserted, so doing it by hand and announcing it with a synthetic "input" is safe here.
+    const selection = window.getSelection();
+    if (!selection || selection.rangeCount === 0) return;
+
+    const range = selection.getRangeAt(0);
+    range.deleteContents();
+
+    // Insert lines with <br> for newlines
+    const lines = text.split("\n");
+    const fragment = document.createDocumentFragment();
+    lines.forEach((line, i) => {
+      fragment.appendChild(document.createTextNode(line));
+      if (i < lines.length - 1)
+        fragment.appendChild(document.createElement("br"));
+    });
+
+    range.insertNode(fragment);
+
+    // Collapse selection after inserted text
+    range.collapse(false);
+    selection.removeAllRanges();
+    selection.addRange(range);
+
+    // Notify any listeners that sync their state from "input"
+    textbox.dispatchEvent(
+      new InputEvent("input", {
+        bubbles: true,
+        cancelable: false,
+        inputType: "insertText",
+        data: text,
+      }),
+    );
+  }
+}
+
+/**
+ * Replaces the current selection with `text` using execCommand,
+ * so the browser performs (and announces) the edit itself.
+ * Returns whether the edit was carried out.
+ */
+function execInsertText(text: string): boolean {
+  const selection = window.getSelection();
+  if (!selection || selection.rangeCount === 0) return false;
+
+  try {
+    if (text === "") {
+      // insertText with an empty string is a no-op in some engines,
+      // so clear the selection explicitly
+      // but only when something is actually selected,
+      // since "delete" on a collapsed caret would eat the preceding character
+      if (selection.isCollapsed) return true;
+      return document.execCommand("delete");
+    }
+
+    return document.execCommand("insertText", false, text);
+  } catch {
+    return false;
   }
 }
 
@@ -189,31 +252,6 @@ export function updateTextboxSelection(
     selection.addRange(range);
 
     textbox.dispatchEvent(new Event("selectionchange", { bubbles: true }));
-  }
-}
-
-/** Simulates a paste event with given text on an element */
-function simulatePaste(el: HTMLElement, text: string): boolean {
-  try {
-    // Create a DataTransfer object to hold the pasted text
-    const dataTransfer = new DataTransfer();
-    dataTransfer.setData("text/plain", text);
-
-    // Create a synthetic paste event carrying the dataTransfer payload
-    const pasteEvent = new ClipboardEvent("paste", {
-      clipboardData: dataTransfer,
-      bubbles: true,
-      cancelable: true,
-    });
-
-    // Dispatch the event to the element
-    const dispatched = el.dispatchEvent(pasteEvent);
-
-    // Return true if the paste was handled or if the content was updated
-    return !dispatched || !!el.textContent?.includes(text);
-  } catch {
-    // Return false if an error occurred during the simulation
-    return false;
   }
 }
 
